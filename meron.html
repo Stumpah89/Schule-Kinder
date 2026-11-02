@@ -360,10 +360,18 @@ function toggleTask(d, i) {
   const nextVal = !(localStorage.getItem(k) === "true");
   localStorage.setItem(k, nextVal);
   renderTasks();
-  syncEvent({ type: "TASK_UPDATE", child: "meron", day: d, taskIdx: i, done: nextVal });
+  const payload = { type: "TASK_UPDATE", child: "meron", day: d, taskIdx: i, done: nextVal, ts: Date.now() };
+  if (typeof BroadcastChannel !== "undefined") {
+    try {
+      const bc = new BroadcastChannel("schule_kinder_sync");
+      bc.postMessage(payload);
+      bc.close();
+    } catch(e){}
+  }
+  syncEvent(payload);
 }
 
-// REAL-TIME SYNC ENGINE (EventSource + NDJSON Polling Fallback)
+// REAL-TIME SYNC ENGINE (BroadcastChannel + EventSource + NDJSON Polling Fallback)
 const SYNC_URL = "https://ntfy.sh/schule_kinder_stumpah89_sync";
 
 function syncEvent(payload) {
@@ -377,17 +385,18 @@ function syncEvent(payload) {
 // Process sync message from Mama
 function handleSyncMessage(data) {
   if (!data) return;
-  const lastReset = +(localStorage.getItem("meron_last_reset_ts") || 0);
 
   // Mama reset week command
   const isReset = (data.type === "RESET_WEEK" || data.action === "reset_week");
-  if (isReset && (data.target === "all" || data.target === "meron") && data.ts > lastReset) {
-    localStorage.setItem("meron_last_reset_ts", data.ts);
+  if (isReset && (data.target === "all" || data.target === "meron")) {
+    if (data.ts) localStorage.setItem("meron_last_reset_ts", data.ts);
     Object.keys(localStorage).forEach(k => {
-      if (k.startsWith(PFX)) localStorage.removeItem(k);
+      if (k.startsWith(PFX) || k.startsWith("meron_app_") || k.startsWith("meron_plan_")) {
+        localStorage.removeItem(k);
+      }
     });
     stampedCount = 0;
-    localStorage.setItem("meron_pass_stamps", 0);
+    localStorage.setItem("meron_pass_stamps", "0");
     renderTasks();
     if (typeof renderPass === "function") renderPass();
   }
@@ -402,6 +411,22 @@ function handleSyncMessage(data) {
     renderTasks();
   }
 }
+
+// 0. Live tab-to-tab sync via BroadcastChannel (0 ms Latenz)
+if (typeof BroadcastChannel !== "undefined") {
+  try {
+    const bc = new BroadcastChannel("schule_kinder_sync");
+    bc.onmessage = (e) => {
+      handleSyncMessage(e.data);
+    };
+  } catch(err){}
+}
+
+window.addEventListener("storage", () => {
+  stampedCount = +(localStorage.getItem("meron_pass_stamps") || 0);
+  renderTasks();
+  if (typeof renderPass === "function") renderPass();
+});
 
 // 1. Live SSE Connection
 if (window.EventSource) {

@@ -398,6 +398,45 @@ function sendResetCommand(target) {
   const targetLabel = target === "all" ? "ALLE drei Kinder" : target.toUpperCase();
   if (!confirm(`Möchtest du den Wochenplan und die Sterne für ${targetLabel} auf 0 zurücksetzen?`)) return;
 
+  const kids = (target === "all") ? ["rufta", "meron", "eldana"] : [target];
+
+  // 1. SOFORT LOKAL ZURÜCKSETZEN (100% zuverlässig, synchron & ohne Verzögerung)
+  kids.forEach(kid => {
+    localStorage.setItem(`${kid}_pass_stamps`, "0");
+    updateStampsDisplay(kid, 0);
+
+    Object.keys(localStorage).forEach(k => {
+      if (
+        k.startsWith(`${kid}_app_`) || 
+        k.startsWith(`mama_task_${kid}_`) || 
+        k.startsWith(`mama_check_${kid}_`) ||
+        k.startsWith(`${kid}_plan_`)
+      ) {
+        localStorage.removeItem(k);
+      }
+    });
+  });
+
+  renderMamaTasks("rufta", "tasks-rufta");
+  renderMamaTasks("meron", "tasks-meron");
+  renderMamaTasks("eldana", "tasks-eldana");
+
+  // 2. SOFORT AN ALLE OFFENEN TABS IM BROWSER SENDEN (0 ms Latenz)
+  if (typeof BroadcastChannel !== "undefined") {
+    try {
+      const bc = new BroadcastChannel("schule_kinder_sync");
+      bc.postMessage({
+        type: "RESET_WEEK",
+        action: "reset_week",
+        target: target,
+        resetStars: true,
+        ts: Date.now()
+      });
+      bc.close();
+    } catch(e){}
+  }
+
+  // 3. AN DIE TABLETS ÜBERS INTERNET SENDEN (im Hintergrund, blockiert niemals)
   const payload = {
     type: "RESET_WEEK",
     action: "reset_week",
@@ -407,34 +446,18 @@ function sendResetCommand(target) {
     by: "mama"
   };
 
-  fetch(SYNC_URL, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload)
-  }).then(() => {
-    // Clear Mama's tasks for the target
-    Object.keys(localStorage).forEach(k => {
-      if (k.startsWith("mama_task_")) {
-        if (target === "all" || k.startsWith(`mama_task_${target}_`)) {
-          localStorage.removeItem(k);
-        }
-      }
-    });
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 4000);
+    fetch(SYNC_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+      signal: controller.signal
+    }).catch(() => {}).finally(() => clearTimeout(timeoutId));
+  } catch(e){}
 
-    // Reset stars for the target in Mama's view & storage
-    const kids = target === "all" ? ["rufta", "meron", "eldana"] : [target];
-    kids.forEach(k => {
-      localStorage.setItem(`${k}_pass_stamps`, 0);
-      updateStampsDisplay(k, 0);
-    });
-
-    renderMamaTasks("rufta", "tasks-rufta");
-    renderMamaTasks("meron", "tasks-meron");
-    renderMamaTasks("eldana", "tasks-eldana");
-    alert(`✅ Erfolgreich auf 0 gesetzt! Wochenplan und Sterne für ${targetLabel} wurden zurückgesetzt.`);
-  }).catch(e => {
-    alert("Hinweis: " + e.message);
-  });
+  alert(`✅ Fertig! Wochenplan und alle Sterne für ${targetLabel} stehen jetzt auf 0.`);
 }
 
 function updateStampsDisplay(child, count) {
@@ -498,6 +521,25 @@ function handleSyncMessage(data) {
     renderMamaTasks("eldana", "tasks-eldana");
   }
 }
+
+// 0. Live tab-to-tab sync via BroadcastChannel (0 ms Latenz)
+if (typeof BroadcastChannel !== "undefined") {
+  try {
+    const bc = new BroadcastChannel("schule_kinder_sync");
+    bc.onmessage = (e) => {
+      handleSyncMessage(e.data);
+    };
+  } catch(err){}
+}
+
+window.addEventListener("storage", () => {
+  updateStampsDisplay("rufta", +(localStorage.getItem("rufta_pass_stamps") || 0));
+  updateStampsDisplay("meron", +(localStorage.getItem("meron_pass_stamps") || 0));
+  updateStampsDisplay("eldana", +(localStorage.getItem("eldana_pass_stamps") || 0));
+  renderMamaTasks("rufta", "tasks-rufta");
+  renderMamaTasks("meron", "tasks-meron");
+  renderMamaTasks("eldana", "tasks-eldana");
+});
 
 // 1. Live SSE Connection
 if (window.EventSource) {
