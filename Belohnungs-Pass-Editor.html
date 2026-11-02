@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Belohnungs-Pass – Rufta, Meron & Eldana</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+@page { size: A4 landscape; margin: 0; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  font-family: 'Nunito', system-ui, -apple-system, sans-serif;
+  color: #2b2d42;
+  background: #f0f2f8;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+.toolbar {
+  position: sticky; top: 0; z-index: 50; display: flex; gap: 8px; align-items: center;
+  flex-wrap: wrap; padding: 10px 16px; background: #2b2d42; color: #fff; font-size: 13.5px;
+  box-shadow: 0 2px 10px rgba(0,0,0,.2);
+}
+.toolbar b { font-size: 16px; margin-right: 6px; }
+.toolbar button {
+  font: inherit; font-weight: 700; border: 0; border-radius: 20px; padding: 6px 14px;
+  cursor: pointer; background: #454866; color: #fff; transition: .15s;
+}
+.toolbar button:hover { transform: translateY(-1px); filter: brightness(1.15); }
+.toolbar button.on { background: var(--c, #4f7fe8); box-shadow: 0 0 0 2px #fff inset; }
+.toolbar .sp { flex: 1; }
+.toolbar .print { background: #2fae74; }
+.toolbar .stamp-mode-btn { background: #e07a22; }
+
+.info-bar {
+  max-width: 1200px; margin: 12px auto 0; padding: 0 16px;
+}
+.help {
+  background: #fff; border-radius: 10px; padding: 10px 16px; font-size: 13px; color: #555;
+  box-shadow: 0 2px 6px rgba(0,0,0,.04); border-left: 4px solid var(--c, #4f7fe8);
+}
+
+.page-viewport {
+  width: 100%; display: flex; justify-content: center; padding: 14px 12px 40px; overflow-x: auto;
+}
+
+.page {
+  width: 297mm; height: 210mm; min-width: 297mm; max-width: 297mm; min-height: 210mm; max-height: 210mm;
+  padding: 10mm 12mm; display: flex; flex-direction: column; gap: 5mm;
+  background: radial-gradient(circle at top right, #fffdf8, #f4f7ff);
+  border-radius: 4mm; box-shadow: 0 8px 30px rgba(0,0,0,.15); position: relative; overflow: hidden;
+}
+
+header {
+  display: flex; align-items: center; justify-content: space-between;
+  border-bottom: 1.2mm solid var(--c); padding-bottom: 3mm;
+}
+.head-left { display: flex; align-items: center; gap: 4mm; }
+.avatar {
+  width: 17mm; height: 17mm; border-radius: 50%; background: var(--c); color: #fff;
+  display: flex; align-items: center; justify-content: center; font-size: 10mm;
+}
+h1 { font-size: 8mm; font-weight: 900; color: #2b2d42; line-height: 1.1; }
+.subtitle { font-size: 3.6mm; color: #666; font-weight: 600; margin-top: 1mm; }
+.goal-badge {
+  background: var(--c); color: #fff; padding: 2.5mm 5mm; border-radius: 4mm; text-align: right;
+  box-shadow: 0 2mm 5mm rgba(0,0,0,.1);
+}
+.goal-badge small { font-size: 2.8mm; text-transform: uppercase; letter-spacing: 0.5px; opacity: .9; display: block; }
+.goal-badge strong { font-size: 4.2mm; font-weight: 900; }
+
+.main-content {
+  flex: 1; display: grid; grid-template-columns: 1fr 1.8fr; gap: 5mm; min-height: 0;
+}
+
+.left-panel {
+  display: flex; flex-direction: column; gap: 4mm;
+}
+.card {
+  background: #fff; border-radius: 3.5mm; padding: 3.5mm 4.5mm; border: 0.3mm solid #e2e5f0;
+  box-shadow: 0 1mm 3mm rgba(0,0,0,.04);
+}
+.card h3 { font-size: 3.8mm; color: var(--c); font-weight: 900; margin-bottom: 1.8mm; display: flex; align-items: center; gap: 2mm; }
+.card ul { padding-left: 4.5mm; font-size: 3.2mm; line-height: 1.45; }
+.card p { font-size: 3.2mm; line-height: 1.45; }
+
+.signatures {
+  margin-top: auto; display: grid; grid-template-columns: 1fr 1fr; gap: 4mm; padding-top: 2mm;
+}
+.sig-box {
+  border-top: 0.5mm dashed #b0b5c9; padding-top: 1.5mm; font-size: 2.7mm; color: #777; text-align: center;
+}
+
+/* Stars Grid */
+.right-panel {
+  background: #fff; border-radius: 4mm; padding: 4mm 5mm; border: 0.4mm solid #e2e5f0;
+  display: flex; flex-direction: column; box-shadow: 0 1.5mm 4mm rgba(0,0,0,.05);
+}
+.stars-header {
+  display: flex; justify-content: space-between; align-items: center; margin-bottom: 3mm;
+}
+.stars-header h2 { font-size: 4.5mm; font-weight: 900; color: #2b2d42; }
+.stars-counter {
+  font-size: 3.5mm; font-weight: 900; background: var(--soft); color: var(--c);
+  padding: 1.2mm 3.5mm; border-radius: 10mm;
+}
+
+.stars-grid {
+  flex: 1; display: grid; grid-template-columns: repeat(5, 1fr); grid-template-rows: repeat(4, 1fr);
+  gap: 3mm;
+}
+.star-slot {
+  border: 0.7mm dashed #cdd2e5; border-radius: 3.5mm; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; position: relative; cursor: pointer;
+  background: #fafbfe; transition: all .15s ease; user-select: none;
+}
+.star-slot:hover { border-color: var(--c); background: #f0f4ff; }
+.star-slot .num {
+  position: absolute; top: 1.2mm; left: 2mm; font-size: 2.6mm; font-weight: 900; color: #aaa;
+}
+.star-slot .icon {
+  font-size: 7mm; filter: grayscale(1); opacity: .2; transition: all .15s ease;
+}
+.star-slot.stamped {
+  border: 0.8mm solid var(--c); background: var(--soft);
+}
+.star-slot.stamped .icon {
+  filter: none; opacity: 1; transform: scale(1.1);
+}
+.star-slot.finish-slot {
+  background: linear-gradient(135deg, #fff7d6, #ffeaa7); border-color: #f39c12; border-style: solid;
+}
+.star-slot.finish-slot .icon { opacity: .4; }
+.star-slot.finish-slot.stamped .icon { opacity: 1; transform: scale(1.2); }
+
+[contenteditable] { outline: none; border-radius: 2px; }
+[contenteditable]:hover { background: rgba(255, 230, 120, .35); }
+[contenteditable]:focus { background: rgba(255, 230, 120, .65); }
+
+@media print {
+  body { background: none; }
+  .toolbar, .info-bar { display: none !important; }
+  .page-viewport { padding: 0; }
+  .page { margin: 0; box-shadow: none; border-radius: 0; }
+  [contenteditable]:hover, [contenteditable]:focus { background: none; }
+}
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <b>⭐ Belohnungs-Pass-Editor</b>
+  <span id="tabs"></span>
+  <span class="sp"></span>
+  <button id="btn-print" class="print">🖨️ Drucken / PDF</button>
+  <button id="btn-reset" style="background:#8a3b4a">↺ Zurücksetzen</button>
+</div>
+
+<div class="info-bar">
+  <div class="help">
+    <b>💡 Tipp:</b> Klicke direkt in Ziel, Regeln und Belohnung, um sie anzupassen. 
+    Auf die Stern-Felder klicken, um sie digital abzustempeln ⭐ (wird im Browser gespeichert). 
+    Zum Ausdrucken: <b>🖨️ Drucken / PDF</b> (Querformat, Ränder: Keine).
+  </div>
+</div>
+
+<div class="page-viewport">
+  <div id="root"></div>
+</div>
+
+<script>
+const DEFAULT_PASSES = [
+  {
+    name: "Rufta",
+    emoji: "🦉",
+    color: "#4f7fe8",
+    color2: "#7aa2ff",
+    goal: "Kino-Nachmittag mit Popcorn 🍿",
+    rules: [
+      "Jeder komplett erledigte Wochentag = 1 Stern ⭐",
+      "Klassenarbeit 1 Woche im Voraus vorbereitet = 2 Sterne ⭐⭐",
+      "Meron beim Einmaleins abgefragt = 1 Extra-Stern ⭐",
+      "Freiwillige Mathe-Zusatzaufgabe gerechnet = 1 Stern ⭐"
+    ],
+    agreement: "Ich halte mich an meinen Lernplan und gehe konzentriert an meine Aufgaben.",
+    stamps: 6
+  },
+  {
+    name: "Meron",
+    emoji: "🦊",
+    color: "#2fae74",
+    color2: "#5fd39c",
+    goal: "Gemeinsamer Ausflug / Trampolinhalle 🤸‍♂️",
+    rules: [
+      "Wochentag laut Lernplan ohne Trödeln geschafft = 1 Stern ⭐",
+      "Eine neue Einmaleins-Reihe fehlerfrei aufgesagt = 2 Sterne ⭐⭐",
+      "Schriftliches Rechnen ordentlich ins Heft geschrieben = 1 Stern ⭐",
+      "10 Min. laut vorgelesen = 1 Stern ⭐"
+    ],
+    agreement: "Ich gebe beim Rechnen mein Bestes und frage nach, wenn ich Hilfe brauche.",
+    stamps: 8
+  },
+  {
+    name: "Eldana",
+    emoji: "🐰",
+    color: "#f07a4a",
+    color2: "#ffa77f",
+    goal: "Besuch im Tierpark / Eis essen gehen 🍦🐰",
+    rules: [
+      "Jeden Tag fleißig Hausaufgaben gemacht = 1 Stern ⭐",
+      "10 Minuten laut vorgelesen (Lesetagebuch) = 1 Stern ⭐",
+      "5 Wörter ohne Fehler abgeschrieben = 1 Stern ⭐",
+      "Nach der Schule direkt den Schulranzen aufgeräumt = 1 Stern ⭐"
+    ],
+    agreement: "Ich lese jeden Tag mit Freude und probiere neue Wörter mutig aus.",
+    stamps: 11
+  }
+];
+
+const KEY = "belohnungspass-v1";
+let data = JSON.parse(localStorage.getItem(KEY) || "null") || structuredClone(DEFAULT_PASSES);
+let cur = 0;
+
+const save = () => localStorage.setItem(KEY, JSON.stringify(data));
+const esc = s => String(s).replace(/[&<>]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
+
+function tabs() {
+  document.getElementById("tabs").innerHTML = data.map((k, i) =>
+    `<button class="${i === cur ? 'on' : ''}" data-i="${i}">${k.emoji} ${k.name}</button>`
+  ).join(" ");
+  document.querySelectorAll("#tabs button").forEach(b => b.onclick = () => {
+    cur = +b.dataset.i;
+    render();
+  });
+}
+
+function render() {
+  const k = data[cur];
+  document.body.style.setProperty("--c", k.color);
+  document.body.style.setProperty("--soft", k.color + "18");
+  document.title = `Belohnungs-Pass ${k.name}`;
+
+  let slotsHtml = "";
+  const total = 20;
+  for (let s = 1; s <= total; s++) {
+    const isStamped = s <= (k.stamps || 0);
+    const isFinish = s === total;
+    slotsHtml += `
+      <div class="star-slot ${isStamped ? 'stamped' : ''} ${isFinish ? 'finish-slot' : ''}" data-slot="${s}">
+        <span class="num">${s}</span>
+        <span class="icon">${isFinish ? '🏆' : '⭐'}</span>
+      </div>
+    `;
+  }
+
+  const rulesList = k.rules.map((r, i) => `<li contenteditable data-rule="${i}">${esc(r)}</li>`).join("");
+
+  document.getElementById("root").innerHTML = `
+    <div class="page">
+      <header>
+        <div class="head-left">
+          <div class="avatar">${k.emoji}</div>
+          <div>
+            <h1>Belohnungs-Pass</h1>
+            <div class="subtitle">von <strong contenteditable data-k="name">${esc(k.name)}</strong> · Fleiß- &amp; Sternesammler</div>
+          </div>
+        </div>
+        <div class="goal-badge">
+          <small>Großes Ziel für 20 Sterne:</small>
+          <strong contenteditable data-k="goal">${esc(k.goal)}</strong>
+        </div>
+      </header>
+
+      <div class="main-content">
+        <div class="left-panel">
+          <div class="card">
+            <h3>⭐ Wie sammle ich Sterne?</h3>
+            <ul>${rulesList}</ul>
+          </div>
+          <div class="card">
+            <h3>🤝 Unser Familien-Versprechen</h3>
+            <p contenteditable data-k="agreement">„${esc(k.agreement)}“</p>
+          </div>
+          <div class="signatures">
+            <div class="sig-box">Unterschrift ${esc(k.name)}</div>
+            <div class="sig-box">Unterschrift Mama / Papa</div>
+          </div>
+        </div>
+
+        <div class="right-panel">
+          <div class="stars-header">
+            <h2>⭐ Meine 20 Meilenstein-Sterne</h2>
+            <div class="stars-counter" id="counter-display">${k.stamps || 0} von 20 Sternen geschafft</div>
+          </div>
+          <div class="stars-grid">${slotsHtml}</div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  tabs();
+  bind();
+}
+
+function bind() {
+  const k = data[cur];
+
+  document.querySelectorAll("[contenteditable]").forEach(el => {
+    el.addEventListener("input", () => {
+      const v = el.innerText.replace(/\n+$/, "");
+      if (el.dataset.rule !== undefined) k.rules[el.dataset.rule] = v;
+      else if (el.dataset.k) k[el.dataset.k] = v;
+      save();
+    });
+  });
+
+  document.querySelectorAll(".star-slot").forEach(slot => {
+    slot.onclick = () => {
+      const slotNum = +slot.dataset.slot;
+      k.stamps = (k.stamps === slotNum) ? slotNum - 1 : slotNum;
+      save();
+      render();
+    };
+  });
+}
+
+document.getElementById("btn-print").onclick = () => window.print();
+document.getElementById("btn-reset").onclick = () => {
+  if (confirm(`Pass von ${data[cur].name} zurücksetzen?`)) {
+    data[cur] = structuredClone(DEFAULT_PASSES[cur]);
+    save();
+    render();
+  }
+};
+
+render();
+</script>
+</body>
+</html>
+

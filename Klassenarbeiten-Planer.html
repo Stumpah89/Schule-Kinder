@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Klassenarbeiten &amp; Lern-Planer – Rufta, Meron &amp; Eldana</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+@page { size: A4 portrait; margin: 0; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Nunito', system-ui, -apple-system, sans-serif;
+  color: #2b2d42;
+  background: #f0f2f8;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+.toolbar {
+  position: sticky; top: 0; z-index: 50; display: flex; gap: 8px; align-items: center;
+  flex-wrap: wrap; padding: 10px 16px; background: #2b2d42; color: #fff; font-size: 13.5px;
+  box-shadow: 0 2px 10px rgba(0,0,0,.2);
+}
+.toolbar b { font-size: 16px; margin-right: 6px; }
+.toolbar button {
+  font: inherit; font-weight: 700; border: 0; border-radius: 20px; padding: 6px 14px;
+  cursor: pointer; background: #454866; color: #fff; transition: .15s;
+}
+.toolbar button:hover { transform: translateY(-1px); filter: brightness(1.15); }
+.toolbar button.on { background: #4f7fe8; box-shadow: 0 0 0 2px #fff inset; }
+.toolbar .sp { flex: 1; }
+.toolbar .print { background: #2fae74; }
+.toolbar .add-btn { background: #3d79b8; }
+
+.info-bar { max-width: 900px; margin: 12px auto 0; padding: 0 16px; }
+.help {
+  background: #fff; border-radius: 10px; padding: 10px 16px; font-size: 13px; color: #555;
+  box-shadow: 0 2px 6px rgba(0,0,0,.04); border-left: 4px solid #4f7fe8;
+}
+
+.page-viewport {
+  width: 100%; display: flex; justify-content: center; padding: 16px 12px 40px; overflow-x: auto;
+}
+
+.page {
+  width: 210mm; min-height: 297mm; max-width: 210mm;
+  padding: 12mm 14mm; display: flex; flex-direction: column; gap: 5mm;
+  background: #fff; border-radius: 4mm; box-shadow: 0 8px 30px rgba(0,0,0,.15);
+}
+
+header {
+  display: flex; align-items: center; justify-content: space-between;
+  border-bottom: 1.2mm solid #4f7fe8; padding-bottom: 3.5mm;
+}
+h1 { font-size: 6.5mm; font-weight: 900; color: #2b2d42; }
+.sub { font-size: 3.2mm; color: #666; font-weight: 600; margin-top: .8mm; }
+.header-badge {
+  background: #edf2ff; color: #4f7fe8; padding: 2mm 4mm; border-radius: 4mm; font-weight: 900; font-size: 3.4mm;
+}
+
+.routine-box {
+  background: #f8faff; border: 0.4mm solid #dbe4ff; border-radius: 3.5mm; padding: 3mm 4.5mm;
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 2.5mm; text-align: center; font-size: 2.8mm;
+}
+.step { background: #fff; padding: 2mm 1.5mm; border-radius: 2.5mm; border: 0.3mm solid #dbe4ff; }
+.step b { display: block; font-size: 3mm; color: #4f7fe8; margin-bottom: 1mm; }
+
+table {
+  width: 100%; border-collapse: collapse; margin-top: 2mm; font-size: 3.1mm;
+}
+th {
+  background: #2b2d42; color: #fff; padding: 2.5mm 3mm; text-align: left; font-weight: 900; font-size: 3mm;
+}
+th:first-child { border-top-left-radius: 2.5mm; }
+th:last-child { border-top-right-radius: 2.5mm; text-align: center; }
+td {
+  padding: 2.8mm 3mm; border-bottom: 0.3mm solid #e6e8f0; vertical-align: middle;
+}
+tr:hover td { background: #fafbfe; }
+.fach-pill {
+  display: inline-block; padding: 1mm 2.8mm; border-radius: 10mm; font-weight: 800; font-size: 2.8mm;
+  background: #eef2f8; color: #333;
+}
+.fach-mathe { background: #e3edff; color: #295bcc; }
+.fach-deutsch { background: #fee8ed; color: #c4274c; }
+.fach-englisch { background: #f0e6ff; color: #6b2bb8; }
+.fach-nawi { background: #e2f8ec; color: #1e824c; }
+
+.status-badge {
+  font-size: 2.6mm; font-weight: 800; padding: .8mm 2.5mm; border-radius: 10mm; display: inline-block;
+}
+.status-planned { background: #fff3cd; color: #856404; }
+.status-done { background: #d4edda; color: #155724; }
+
+.del-btn {
+  background: none; border: 0; color: #dc3545; cursor: pointer; font-size: 3.5mm; font-weight: 900;
+}
+
+[contenteditable] { outline: none; border-radius: 2px; }
+[contenteditable]:hover { background: rgba(255, 230, 120, .35); }
+[contenteditable]:focus { background: rgba(255, 230, 120, .65); }
+
+@media print {
+  body { background: none; }
+  .toolbar, .info-bar, .del-btn, .no-print { display: none !important; }
+  .page-viewport { padding: 0; }
+  .page { margin: 0; box-shadow: none; border-radius: 0; }
+  [contenteditable]:hover, [contenteditable]:focus { background: none; }
+}
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <b>📝 Klassenarbeiten &amp; Tests</b>
+  <span id="tabs"></span>
+  <span class="sp"></span>
+  <button id="btn-add" class="add-btn">+ Neue Arbeit</button>
+  <button id="btn-print" class="print">🖨️ Drucken / PDF</button>
+</div>
+
+<div class="info-bar">
+  <div class="help">
+    <b>💡 Tipp:</b> Trag hier alle anstehenden Arbeiten und Tests ein. 
+    Die goldene Regel: <b>7 Tage vorher anfangen</b>, jeden Tag nur 15 Minuten – so gibt es am Tag davor absolut keinen Stress!
+  </div>
+</div>
+
+<div class="page-viewport">
+  <div class="page">
+    <header>
+      <div>
+        <h1 id="page-title">Klassenarbeiten &amp; Tests von Rufta</h1>
+        <div class="sub">Übersicht, Lern-Countdown und Notizen · Schuljahr 2026/2027</div>
+      </div>
+      <div class="header-badge" id="name-badge">🦉 Rufta · 6. Klasse</div>
+    </header>
+
+    <div class="routine-box">
+      <div class="step">
+        <b>1. Tag -7</b>
+        Stoff &amp; Hefte ordnen, Themenliste schreiben
+      </div>
+      <div class="step">
+        <b>2. Tag -5 bis -3</b>
+        Schwere Aufgaben rechnen &amp; Vokabeln testen
+      </div>
+      <div class="step">
+        <b>3. Tag -2</b>
+        Probetest ohne Hilfe unter Zeit rechnen
+      </div>
+      <div class="step">
+        <b>4. Tag vor der Arbeit</b>
+        Nur kurz wiederholen, Schultasche packen, früh schlafen!
+      </div>
+    </div>
+
+    <table id="works-table">
+      <thead>
+        <tr>
+          <th style="width:18%">Datum</th>
+          <th style="width:20%">Fach</th>
+          <th style="width:34%">Thema &amp; Schwerpunkt</th>
+          <th style="width:18%">Start Lernen</th>
+          <th style="width:10%" class="no-print">Aktion</th>
+        </tr>
+      </thead>
+      <tbody id="table-body"></tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+const DEFAULT_TESTS = {
+  "Rufta": [
+    { date: "18.11.2026", fach: "Mathe", fachClass: "fach-mathe", topic: "Bruchrechnung & Textaufgaben", prep: "ab 11.11. (+15 Min.)" },
+    { date: "26.11.2026", fach: "Englisch", fachClass: "fach-englisch", topic: "Unit 2: Vocabulary & Past Tense", prep: "ab 19.11. (Karteikarten)" },
+    { date: "08.12.2026", fach: "Deutsch", fachClass: "fach-deutsch", topic: "Grammatik & Aufsatz / Diktat", prep: "ab 01.12. (Wörterliste)" }
+  ],
+  "Meron": [
+    { date: "15.11.2026", fach: "Mathe", fachClass: "fach-mathe", topic: "Einmaleins: 6er- und 7er-Reihe", prep: "Täglich 10 Min." },
+    { date: "24.11.2026", fach: "Deutsch", fachClass: "fach-deutsch", topic: "Lernwörter-Diktat bis 50 Wörter", prep: "Wörter abschreiben" }
+  ],
+  "Eldana": [
+    { date: "19.11.2026", fach: "Mathe", fachClass: "fach-mathe", topic: "Plus & Minus bis 100", prep: "Mit Rechenplättchen" },
+    { date: "27.11.2026", fach: "Deutsch", fachClass: "fach-deutsch", topic: "Silben & Schwingen / Leseprobe", prep: "Täglich laut lesen" }
+  ]
+};
+
+const KEY = "klassenarbeiten-planer-v1";
+let data = JSON.parse(localStorage.getItem(KEY) || "null") || DEFAULT_TESTS;
+let curKid = "Rufta";
+
+const save = () => localStorage.setItem(KEY, JSON.stringify(data));
+const esc = s => String(s).replace(/[&<>]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
+
+function tabs() {
+  const kids = [
+    { id: "Rufta", label: "🦉 Rufta (6. Kl.)" },
+    { id: "Meron", label: "🦊 Meron (3. Kl.)" },
+    { id: "Eldana", label: "🐰 Eldana (2. Kl.)" }
+  ];
+  document.getElementById("tabs").innerHTML = kids.map(k =>
+    `<button class="${k.id === curKid ? 'on' : ''}" data-kid="${k.id}">${k.label}</button>`
+  ).join(" ");
+
+  document.querySelectorAll("#tabs button").forEach(b => {
+    b.onclick = () => {
+      curKid = b.dataset.kid;
+      render();
+    };
+  });
+}
+
+function render() {
+  tabs();
+  document.getElementById("page-title").innerText = `Klassenarbeiten & Tests von ${curKid}`;
+  document.getElementById("name-badge").innerText = curKid === "Rufta" ? "🦉 Rufta · 6. Klasse" : (curKid === "Meron" ? "🦊 Meron · 3. Klasse" : "🐰 Eldana · 2. Klasse");
+
+  const list = data[curKid] || [];
+  let html = "";
+  list.forEach((item, idx) => {
+    html += `
+      <tr>
+        <td contenteditable data-i="${idx}" data-k="date"><strong>${esc(item.date)}</strong></td>
+        <td><span class="fach-pill ${item.fachClass || 'fach-mathe'}" contenteditable data-i="${idx}" data-k="fach">${esc(item.fach)}</span></td>
+        <td contenteditable data-i="${idx}" data-k="topic">${esc(item.topic)}</td>
+        <td contenteditable data-i="${idx}" data-k="prep">${esc(item.prep)}</td>
+        <td class="no-print" style="text-align:center"><button class="del-btn" data-del="${idx}" title="Löschen">×</button></td>
+      </tr>
+    `;
+  });
+
+  if (list.length === 0) {
+    html = `<tr><td colspan="5" style="text-align:center;color:#999;padding:6mm">Noch keine Arbeiten eingetragen. Klicke oben auf „+ Neue Arbeit“.</td></tr>`;
+  }
+
+  document.getElementById("table-body").innerHTML = html;
+
+  document.querySelectorAll("[contenteditable]").forEach(el => {
+    el.addEventListener("input", () => {
+      const idx = +el.dataset.i;
+      const key = el.dataset.k;
+      data[curKid][idx][key] = el.innerText.trim();
+      save();
+    });
+  });
+
+  document.querySelectorAll("[data-del]").forEach(btn => {
+    btn.onclick = () => {
+      const idx = +btn.dataset.del;
+      data[curKid].splice(idx, 1);
+      save();
+      render();
+    };
+  });
+}
+
+document.getElementById("btn-add").onclick = () => {
+  if (!data[curKid]) data[curKid] = [];
+  data[curKid].push({
+    date: "Datum eintragen",
+    fach: "Mathe",
+    fachClass: "fach-mathe",
+    topic: "Thema eintragen",
+    prep: "7 Tage vorher"
+  });
+  save();
+  render();
+};
+
+document.getElementById("btn-print").onclick = () => window.print();
+
+render();
+</script>
+</body>
+</html>
+

@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Urkunden-Generator – Rufta, Meron & Eldana</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+@page { size: A4 landscape; margin: 0; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Nunito', system-ui, sans-serif;
+  color: #232738;
+  background: #eaeef6;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+.toolbar {
+  position: sticky; top: 0; z-index: 50; display: flex; gap: 8px; align-items: center;
+  flex-wrap: wrap; padding: 10px 16px; background: #2b2d42; color: #fff; font-size: 13.5px;
+  box-shadow: 0 2px 10px rgba(0,0,0,.2);
+}
+.toolbar b { font-size: 16px; margin-right: 6px; }
+.toolbar button {
+  font: inherit; font-weight: 700; border: 0; border-radius: 20px; padding: 6px 14px;
+  cursor: pointer; background: #454866; color: #fff; transition: .15s;
+}
+.toolbar button:hover { transform: translateY(-1px); filter: brightness(1.15); }
+.toolbar button.on { background: #d4af37; color: #111; box-shadow: 0 0 0 2px #fff inset; }
+.toolbar .sp { flex: 1; }
+.toolbar .print { background: #2fae74; }
+
+.info-bar { max-width: 1200px; margin: 12px auto 0; padding: 0 16px; }
+.help {
+  background: #fff; border-radius: 10px; padding: 10px 16px; font-size: 13px; color: #555;
+  box-shadow: 0 2px 6px rgba(0,0,0,.04); border-left: 4px solid #d4af37;
+}
+
+.page-viewport {
+  width: 100%; display: flex; justify-content: center; padding: 16px 12px 40px; overflow-x: auto;
+}
+
+.page {
+  width: 297mm; height: 210mm; min-width: 297mm; max-width: 297mm; min-height: 210mm; max-height: 210mm;
+  padding: 12mm 15mm; display: flex; flex-direction: column; justify-content: space-between;
+  background: #fffdf8; border-radius: 4mm; box-shadow: 0 8px 30px rgba(0,0,0,.15);
+  position: relative; overflow: hidden;
+}
+
+/* Elegant Certificate Borders */
+.page::before {
+  content: ""; position: absolute; inset: 6mm;
+  border: 1.5mm solid #d4af37; border-radius: 3mm; pointer-events: none;
+}
+.page::after {
+  content: ""; position: absolute; inset: 8.5mm;
+  border: 0.4mm solid #b8972e; border-radius: 2mm; pointer-events: none;
+}
+
+.cert-head { text-align: center; margin-top: 4mm; }
+.seal-icon { font-size: 14mm; line-height: 1; margin-bottom: 2mm; }
+.cert-title {
+  font-family: 'Cinzel', serif; font-size: 11mm; font-weight: 900;
+  color: #b8860b; letter-spacing: 3px; text-transform: uppercase;
+}
+.cert-subtitle {
+  font-size: 4.2mm; font-weight: 700; color: #555; letter-spacing: 1px; margin-top: 1.5mm;
+}
+
+.cert-body { text-align: center; margin: 4mm 0; }
+.awarded-to { font-size: 4.2mm; color: #777; font-style: italic; margin-bottom: 2mm; }
+.recipient-name {
+  font-size: 11mm; font-weight: 900; color: #232738; letter-spacing: 0.5px;
+  border-bottom: 0.8mm solid #d4af37; display: inline-block; padding: 0 10mm 2mm;
+  min-width: 90mm;
+}
+.cert-reason {
+  max-width: 210mm; margin: 4mm auto 0; font-size: 4.6mm; line-height: 1.5; color: #3d4253;
+}
+
+.cert-footer {
+  display: flex; justify-content: space-between; align-items: flex-end;
+  padding: 0 15mm 4mm;
+}
+.cert-date, .cert-sig {
+  text-align: center; min-width: 55mm;
+}
+.line {
+  border-top: 0.5mm solid #2b2d42; margin-top: 8mm; padding-top: 1.8mm;
+  font-size: 3.2mm; font-weight: 700; color: #555;
+}
+
+.gold-badge {
+  width: 24mm; height: 24mm; border-radius: 50%;
+  background: radial-gradient(circle, #f9e38d, #d4af37);
+  box-shadow: 0 2mm 5mm rgba(0,0,0,.15); display: flex; flex-direction: column;
+  align-items: center; justify-content: center; font-weight: 900; color: #4a3800;
+  border: 0.6mm solid #fff;
+}
+.gold-badge span { font-size: 3.2mm; text-transform: uppercase; letter-spacing: 0.5px; }
+.gold-badge b { font-size: 5mm; }
+
+[contenteditable] { outline: none; border-radius: 2px; }
+[contenteditable]:hover { background: rgba(255, 230, 120, .35); }
+[contenteditable]:focus { background: rgba(255, 230, 120, .65); }
+
+@media print {
+  body { background: none; }
+  .toolbar, .info-bar { display: none !important; }
+  .page-viewport { padding: 0; }
+  .page { margin: 0; box-shadow: none; border-radius: 0; }
+  [contenteditable]:hover, [contenteditable]:focus { background: none; }
+}
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <b>🏆 Urkunden-Generator</b>
+  <span id="tabs"></span>
+  <span class="sp"></span>
+  <button id="btn-print" class="print">🖨️ Drucken / PDF</button>
+</div>
+
+<div class="info-bar">
+  <div class="help">
+    <b>💡 Tipp:</b> Klicke direkt auf den Namen, den Text oder das Datum, um die Urkunde anzupassen. 
+    Eignet sich perfekt als feierliche Auszeichnung nach fleißigen Wochen!
+  </div>
+</div>
+
+<div class="page-viewport">
+  <div id="root"></div>
+</div>
+
+<script>
+const CERTS = [
+  {
+    tab: "Meron (Einmaleins)",
+    title: "Urkunde",
+    subtitle: "ZUM EINMALEINS-MEISTER",
+    seal: "🔢",
+    badgeTop: "Klasse 3",
+    badgeBot: "1x1",
+    name: "Meron",
+    reason: "hat mit großem Fleiß, Geduld und Können alle Einmaleins-Reihen von 1 bis 10 gemeistert und erfolgreich angewendet. Eine herausragende Rechenleistung!",
+    date: "November 2026",
+    sigTitle: "Mama / Papa & Andreas"
+  },
+  {
+    tab: "Eldana (Lesen)",
+    title: "Urkunde",
+    subtitle: "ZUR LESE-KÖNIGIN",
+    seal: "📚",
+    badgeTop: "Super",
+    badgeBot: "Leserin",
+    name: "Eldana",
+    reason: "hat jeden Tag fleißig im Lesetagebuch gelesen, neue Geschichten entdeckt und viele neue Wörter mit Bravour gemeistert. Herzlichen Glückwunsch!",
+    date: "November 2026",
+    sigTitle: "Mama / Papa & Vorlesepartner"
+  },
+  {
+    tab: "Rufta (Mathe-Ass)",
+    title: "Ehren-Urkunde",
+    subtitle: "FÜR BESONDERE MATHE- & LERNLEISTUNGEN",
+    seal: "🦉",
+    badgeTop: "Klasse 6",
+    badgeBot: "Mathe-Ass",
+    name: "Rufta",
+    reason: "hat die Bruchrechnung und anspruchsvolle Textaufgaben selbstständig trainiert, regelmäßig Vokabeln gelernt und Meron beim Einmaleins vorbildlich geholfen!",
+    date: "November 2026",
+    sigTitle: "Mama / Papa"
+  }
+];
+
+let cur = 0;
+const esc = s => String(s).replace(/[&<>]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
+
+function tabs() {
+  document.getElementById("tabs").innerHTML = CERTS.map((c, i) =>
+    `<button class="${i === cur ? 'on' : ''}" data-i="${i}">${c.tab}</button>`
+  ).join(" ");
+  document.querySelectorAll("#tabs button").forEach(b => b.onclick = () => {
+    cur = +b.dataset.i;
+    render();
+  });
+}
+
+function render() {
+  const c = CERTS[cur];
+  document.title = `Urkunde ${c.name}`;
+
+  document.getElementById("root").innerHTML = `
+    <div class="page">
+      <div class="cert-head">
+        <div class="seal-icon">${c.seal}</div>
+        <div class="cert-title" contenteditable data-k="title">${esc(c.title)}</div>
+        <div class="cert-subtitle" contenteditable data-k="subtitle">${esc(c.subtitle)}</div>
+      </div>
+
+      <div class="cert-body">
+        <div class="awarded-to">Diese Auszeichnung wird mit Stolz verliehen an</div>
+        <div class="recipient-name" contenteditable data-k="name">${esc(c.name)}</div>
+        <div class="cert-reason" contenteditable data-k="reason">${esc(c.reason)}</div>
+      </div>
+
+      <div class="cert-footer">
+        <div class="cert-date">
+          <div class="line" contenteditable data-k="date">Datum: ${esc(c.date)}</div>
+        </div>
+
+        <div class="gold-badge">
+          <span contenteditable data-k="badgeTop">${esc(c.badgeTop)}</span>
+          <b contenteditable data-k="badgeBot">${esc(c.badgeBot)}</b>
+        </div>
+
+        <div class="cert-sig">
+          <div class="line" contenteditable data-k="sigTitle">${esc(c.sigTitle)}</div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  tabs();
+  bind();
+}
+
+function bind() {
+  const c = CERTS[cur];
+  document.querySelectorAll("[contenteditable]").forEach(el => {
+    el.addEventListener("input", () => {
+      const v = el.innerText.replace(/\n+$/, "");
+      if (el.dataset.k) c[el.dataset.k] = v;
+    });
+  });
+}
+
+document.getElementById("btn-print").onclick = () => window.print();
+render();
+</script>
+</body>
+</html>
+

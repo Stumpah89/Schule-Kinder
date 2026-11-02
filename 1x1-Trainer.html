@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Rechen-Blitz – 1x1 &amp; Kopfrechnen</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Nunito', system-ui, -apple-system, sans-serif;
+  background: linear-gradient(135deg, #1e2030, #2f3554);
+  color: #fff;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  touch-action: manipulation;
+}
+
+.nav-back {
+  position: absolute; top: 16px; left: 16px;
+  color: #c9d2f0; text-decoration: none; font-size: 14px; font-weight: 700;
+  display: flex; align-items: center; gap: 6px; background: rgba(255,255,255,.1);
+  padding: 8px 14px; border-radius: 20px;
+}
+.nav-back:hover { background: rgba(255,255,255,.2); }
+
+.card {
+  width: 100%; max-width: 500px;
+  background: #fff; color: #2b2d42;
+  border-radius: 24px; padding: 28px 24px;
+  box-shadow: 0 12px 40px rgba(0,0,0,.3);
+  text-align: center; position: relative; overflow: hidden;
+}
+
+h1 { font-size: 26px; font-weight: 900; margin-bottom: 4px; color: #1e2030; }
+.sub { font-size: 14px; color: #666; margin-bottom: 18px; font-weight: 600; }
+
+/* Mode selector */
+.mode-tabs {
+  display: flex; gap: 6px; justify-content: center; margin-bottom: 20px;
+}
+.mode-btn {
+  font: inherit; font-size: 13px; font-weight: 800; border: 0; border-radius: 20px;
+  padding: 7px 14px; cursor: pointer; background: #eef2f8; color: #555; transition: .15s;
+}
+.mode-btn.on { background: #2fae74; color: #fff; }
+
+.stats-bar {
+  display: flex; justify-content: space-between; align-items: center;
+  background: #f8fafc; border-radius: 14px; padding: 10px 16px; margin-bottom: 24px;
+  font-weight: 800; font-size: 15px; border: 1px solid #e2e8f0;
+}
+.star-count { color: #f59e0b; font-size: 17px; }
+
+/* Task Display */
+.task-box {
+  background: #f0fdf4; border: 2px solid #bbf7d0; border-radius: 18px;
+  padding: 24px 10px; margin-bottom: 24px;
+}
+.equation {
+  font-size: 48px; font-weight: 900; color: #15803d; letter-spacing: 2px;
+}
+
+/* 4 Answer options */
+.grid-answers {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 16px;
+}
+.ans-btn {
+  font: inherit; font-size: 28px; font-weight: 900; border: 2px solid #e2e8f0;
+  border-radius: 16px; padding: 16px; background: #fff; color: #2b2d42;
+  cursor: pointer; transition: all .12s ease;
+  box-shadow: 0 3px 8px rgba(0,0,0,.04);
+}
+.ans-btn:active { transform: scale(0.96); }
+.ans-btn.correct { background: #2fae74 !important; color: #fff !important; border-color: #2fae74 !important; }
+.ans-btn.wrong { background: #ef4444 !important; color: #fff !important; border-color: #ef4444 !important; }
+
+/* Canvas for Confetti */
+#confetti-canvas {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  pointer-events: none; z-index: 100;
+}
+</style>
+</head>
+<body>
+
+<a href="index.html" class="nav-back">← Zurück zum Portal</a>
+
+<div class="card">
+  <canvas id="confetti-canvas"></canvas>
+  <h1>⚡ Rechen-Blitz</h1>
+  <div class="sub">10 Aufgaben lösen und Meilenstein-Sterne sammeln!</div>
+
+  <div class="mode-tabs">
+    <button class="mode-btn on" data-mode="1x1">🦊 Meron (1x1)</button>
+    <button class="mode-btn" data-mode="plusminus">🐰 Eldana (bis 100)</button>
+    <button class="mode-btn" data-mode="hard">🦉 Rufta (Großes 1x1)</button>
+  </div>
+
+  <div class="stats-bar">
+    <span id="progress-text">Aufgabe 1 / 10</span>
+    <span class="star-count" id="stars-display">⭐ 0 Sterne</span>
+  </div>
+
+  <div class="task-box">
+    <div class="equation" id="equation-text">7 × 8 = ?</div>
+  </div>
+
+  <div class="grid-answers" id="answers-container"></div>
+</div>
+
+<script>
+let mode = "1x1";
+let currentTask = null;
+let currentQuestionIndex = 0;
+let correctCount = 0;
+let earnedStars = +(localStorage.getItem("rechenblitz-stars") || 0);
+
+document.getElementById("stars-display").innerText = `⭐ ${earnedStars} Sterne`;
+
+const modeBtns = document.querySelectorAll(".mode-btn");
+modeBtns.forEach(b => b.onclick = () => {
+  modeBtns.forEach(x => x.classList.remove("on"));
+  b.classList.add("on");
+  mode = b.dataset.mode;
+  restartGame();
+});
+
+function randomInt(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function generateTask() {
+  let a, b, op, ans, text;
+  if (mode === "1x1") {
+    a = randomInt(2, 9);
+    b = randomInt(2, 10);
+    ans = a * b;
+    text = `${a} × ${b}`;
+  } else if (mode === "plusminus") {
+    if (Math.random() > 0.5) {
+      a = randomInt(10, 60);
+      b = randomInt(5, 35);
+      ans = a + b;
+      text = `${a} + ${b}`;
+    } else {
+      a = randomInt(20, 95);
+      b = randomInt(5, Math.min(a - 1, 40));
+      ans = a - b;
+      text = `${a} - ${b}`;
+    }
+  } else {
+    // Rufta: Großes 1x1 oder Dreisatz
+    a = randomInt(11, 19);
+    b = randomInt(3, 9);
+    ans = a * b;
+    text = `${a} × ${b}`;
+  }
+
+  // Generate 3 wrong options
+  const wrong = new Set();
+  while (wrong.size < 3) {
+    let delta = randomInt(-5, 5);
+    if (delta === 0) delta = randomInt(1, 4);
+    let val = ans + delta;
+    if (val !== ans && val > 0) wrong.add(val);
+  }
+
+  const options = Array.from(wrong);
+  options.splice(randomInt(0, 3), 0, ans);
+
+  return { text, ans, options };
+}
+
+function showNextQuestion() {
+  if (currentQuestionIndex >= 10) {
+    finishRound();
+    return;
+  }
+  currentQuestionIndex++;
+  document.getElementById("progress-text").innerText = `Aufgabe ${currentQuestionIndex} / 10`;
+
+  currentTask = generateTask();
+  document.getElementById("equation-text").innerText = `${currentTask.text} = ?`;
+
+  const container = document.getElementById("answers-container");
+  container.innerHTML = "";
+  currentTask.options.forEach(opt => {
+    const btn = document.createElement("button");
+    btn.className = "ans-btn";
+    btn.innerText = opt;
+    btn.onclick = () => checkAnswer(btn, opt);
+    container.appendChild(btn);
+  });
+}
+
+function checkAnswer(btn, selected) {
+  const allBtns = document.querySelectorAll(".ans-btn");
+  allBtns.forEach(b => b.disabled = true);
+
+  if (selected === currentTask.ans) {
+    btn.classList.add("correct");
+    correctCount++;
+  } else {
+    btn.classList.add("wrong");
+    allBtns.forEach(b => {
+      if (+b.innerText === currentTask.ans) b.classList.add("correct");
+    });
+  }
+
+  setTimeout(showNextQuestion, 900);
+}
+
+function finishRound() {
+  const isPerfect = correctCount >= 8;
+  if (isPerfect) {
+    earnedStars++;
+    localStorage.setItem("rechenblitz-stars", earnedStars);
+    document.getElementById("stars-display").innerText = `⭐ ${earnedStars} Sterne`;
+    fireConfetti();
+  }
+
+  document.getElementById("equation-text").innerText = isPerfect ? "🎉 Super gemacht!" : "👍 Gut gekämpft!";
+  document.getElementById("progress-text").innerText = `Ergebnis: ${correctCount} von 10 richtig!`;
+  document.getElementById("answers-container").innerHTML = `
+    <button class="ans-btn" style="grid-column: span 2; background:#2fae74; color:#fff;" onclick="restartGame()">
+      🔄 Noch eine Runde spielen
+    </button>
+  `;
+}
+
+function restartGame() {
+  currentQuestionIndex = 0;
+  correctCount = 0;
+  showNextQuestion();
+}
+
+function fireConfetti() {
+  const canvas = document.getElementById("confetti-canvas");
+  const ctx = canvas.getContext("2d");
+  canvas.width = canvas.parentElement.clientWidth;
+  canvas.height = canvas.parentElement.clientHeight;
+
+  const particles = Array.from({ length: 70 }, () => ({
+    x: canvas.width / 2,
+    y: canvas.height / 2,
+    vx: (Math.random() - 0.5) * 12,
+    vy: (Math.random() - 0.7) * 14,
+    size: Math.random() * 8 + 4,
+    color: ['#f59e0b', '#10b981', '#3b82f6', '#ec4899', '#8b5cf6'][Math.floor(Math.random() * 5)]
+  }));
+
+  let frames = 0;
+  function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles.forEach(p => {
+      p.x += p.vx;
+      p.y += p.vy;
+      p.vy += 0.4;
+      ctx.fillStyle = p.color;
+      ctx.fillRect(p.x, p.y, p.size, p.size);
+    });
+    frames++;
+    if (frames < 70) requestAnimationFrame(animate);
+    else ctx.clearRect(0, 0, canvas.width, canvas.height);
+  }
+  animate();
+}
+
+restartGame();
+</script>
+</body>
+</html>
