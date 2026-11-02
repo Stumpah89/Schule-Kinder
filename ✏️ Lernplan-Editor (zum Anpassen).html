@@ -198,6 +198,18 @@ body.tracking-mode .star-btn:hover { transform: scale(1.2); }
 
 .day.over { outline: .9mm solid #e04a5f; }
 
+/* Readable screen font enhancements */
+@media screen {
+  .page {
+    box-shadow: 0 10px 35px rgba(0,0,0,.14);
+  }
+  .it { font-size: 3.3mm; line-height: 1.35; padding: 2mm 2.4mm; }
+  .it .t { font-size: 3.2mm; }
+  .day h2 { font-size: 3.8mm; padding: 2.2mm 1mm; }
+  .box h3 { font-size: 3.9mm; }
+  .box ul, .box p { font-size: 3.3mm; line-height: 1.4; }
+}
+
 /* Tracking mode hides controls */
 body.tracking-mode [contenteditable] { pointer-events: none; }
 body.tracking-mode .ctl, body.tracking-mode .add { display: none !important; }
@@ -221,6 +233,7 @@ body.tracking-mode .ctl, body.tracking-mode .add { display: none !important; }
   <span id="tabs"></span>
   <span class="sp"></span>
   <button id="btn-mode" class="btn-mode" title="Wechseln zwischen Vorlage bearbeiten und digitalem Tages-Check">✓ Tracker-Modus</button>
+  <button id="btn-new-week" style="background:#0284c7;font-weight:800;" title="Startet die aktuelle Woche bei 0 für das gewählte Kind">🔄 Neue Woche bei 0</button>
   <button id="btn-export" class="btn-export" title="Alle Pläne als JSON-Datei sichern">💾 Exportieren</button>
   <label class="file-btn btn-import" title="Gespeicherte JSON-Datei laden">
     📂 Importieren
@@ -610,6 +623,14 @@ document.getElementById("btn-clear-tracking").onclick = () => {
       saveTracking();
       render();
     }
+  }
+};
+
+document.getElementById("btn-new-week").onclick = () => {
+  if (confirm(`Neue Woche für ${S[cur].name} bei 0 starten (alle Häkchen & Sterne leeren)?`)) {
+    trackingState[S[cur].name] = { done: {}, stars: {} };
+    saveTracking();
+    render();
   }
 };
 
