@@ -86,6 +86,49 @@ h1 { font-size: 26px; font-weight: 900; }
 .task-time { font-size: 13px; font-weight: 800; color: #ea580c; margin-bottom: 2px; }
 .task-text { font-size: 17px; font-weight: 800; color: #1e293b; line-height: 1.35; }
 
+/* Day Star Banner */
+.day-star-card {
+  margin-top: 18px;
+  background: #fdfaf8;
+  border: 2px dashed #cbd5e1;
+  border-radius: 18px;
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  pointer-events: none;
+  transition: all .25s ease;
+}
+.day-star-card.earned {
+  background: #fff7ed;
+  border: 2px solid #ea580c;
+  box-shadow: 0 4px 16px rgba(234,88,12,.15);
+}
+.day-star-icon {
+  font-size: 34px;
+  transition: transform .25s ease;
+}
+.day-star-card.earned .day-star-icon {
+  transform: scale(1.15) rotate(5deg);
+}
+.day-star-info b {
+  font-size: 15.5px;
+  color: #475569;
+  display: block;
+  margin-bottom: 2px;
+}
+.day-star-card.earned .day-star-info b {
+  color: #ea580c;
+}
+.day-star-info span {
+  font-size: 12.5px;
+  color: #64748b;
+  font-weight: 600;
+}
+.day-star-card.earned .day-star-info span {
+  color: #c2410c;
+}
+
 /* Lese-Timer */
 .timer-display {
   font-size: 48px; font-weight: 900; color: #c2410c; text-align: center; margin: 16px 0;
@@ -103,7 +146,8 @@ h1 { font-size: 26px; font-weight: 900; }
 .star-stamp {
   border: 2px dashed #cbd5e1; border-radius: 14px; height: 56px;
   display: flex; flex-direction: column; align-items: center; justify-content: center;
-  cursor: pointer; background: #fafbfe; font-size: 24px; color: #cbd5e1; transition: all .15s;
+  pointer-events: none; /* read-only */
+  background: #fafbfe; font-size: 24px; color: #cbd5e1; transition: all .15s;
 }
 .star-stamp.stamped {
   border: 2px solid #f97316; background: #ffedd5; color: #ea580c; transform: scale(1.05);
@@ -148,12 +192,13 @@ h1 { font-size: 26px; font-weight: 900; }
 
       <div class="tasks-list" id="tasks-list"></div>
 
-      <div style="margin-top:16px;background:#fff7ed;border:2px dashed #fb923c;border-radius:16px;padding:14px;display:flex;align-items:center;justify-content:space-between">
-        <div>
-          <b style="font-size:15px;color:#9a3412;display:block">Tagesziel geschafft?</b>
-          <span style="font-size:12px;color:#c2410c">Klick für deinen Tages-Stern!</span>
+      <!-- Locked Day Star Banner (Automated when all tasks are done) -->
+      <div class="day-star-card" id="day-star-banner">
+        <div class="day-star-icon" id="day-star-icon">🔒</div>
+        <div class="day-star-info">
+          <b id="star-banner-title">🔒 Tages-Stern gesperrt</b>
+          <span id="star-banner-sub">Erledige alle Aufgaben, um deinen Tages-Stern zu bekommen!</span>
         </div>
-        <button id="day-star-btn" style="border:0;background:transparent;font-size:34px;cursor:pointer;filter:grayscale(1);opacity:.4;transition:all .15s">⭐</button>
       </div>
     </div>
   </div>
@@ -163,9 +208,9 @@ h1 { font-size: 26px; font-weight: 900; }
     <div class="card">
       <div class="card-title">
         <span>📖 10-Minuten Lesezeit</span>
-        <span style="font-size:13px;color:#ea580c;background:#ffedd5;padding:3px 10px;border-radius:20px" id="daily-read-status">⭐ 1 Stern/Tag</span>
+        <span style="font-size:13px;color:#ea580c;background:#ffedd5;padding:3px 10px;border-radius:20px">Täglich üben</span>
       </div>
-      <p style="font-size:14px;color:#64748b;text-align:center">Täglich 10 Min. laut vorlesen = 1 Stern für den Pass!</p>
+      <p style="font-size:14px;color:#64748b;text-align:center">Täglich 10 Min. laut vorlesen für flüssiges Lesen!</p>
 
       <div class="timer-display" id="timer-display">10:00</div>
 
@@ -175,9 +220,14 @@ h1 { font-size: 26px; font-weight: 900; }
       </div>
 
       <div style="background:#fdfaf8;border:1px solid #fed7aa;border-radius:14px;padding:12px;font-size:13px">
-        <b>📝 Buchtitel heute:</b>
+        <b>📝 Buchtitel eintragen:</b>
         <input type="text" id="read-title" placeholder="Welches Buch hast du gelesen?" style="width:100%;padding:8px;border:1px solid #cbd5e1;border-radius:8px;margin-top:6px;font:inherit">
-        <button onclick="saveReading()" style="width:100%;margin-top:8px;border:0;background:#ea580c;color:#fff;padding:8px;border-radius:8px;font:inherit;font-weight:800;cursor:pointer">Buch &amp; Stern eintragen ⭐</button>
+        <button onclick="saveReading()" style="width:100%;margin-top:8px;border:0;background:#ea580c;color:#fff;padding:8px;border-radius:8px;font:inherit;font-weight:800;cursor:pointer">Buch in Leseliste speichern 📖</button>
+      </div>
+
+      <div id="read-history-box" style="margin-top:14px">
+        <b style="font-size:13px;color:#c2410c">Gelesene Bücher:</b>
+        <div id="read-list" style="margin-top:6px;font-size:13px;color:#475569"></div>
       </div>
     </div>
   </div>
@@ -192,6 +242,7 @@ h1 { font-size: 26px; font-weight: 900; }
       <div style="background:#fff7ed;border:2px solid #fed7aa;border-radius:14px;padding:12px 14px;margin-bottom:14px">
         <small style="font-size:11px;color:#9a3412;font-weight:800;text-transform:uppercase">Mein großes Ziel:</small>
         <b style="font-size:18px;color:#7c2d12;display:block">Besuch im Tierpark &amp; Eis essen 🍦🐰</b>
+        <span style="font-size:12px;color:#c2410c;display:block;margin-top:4px">Wird automatisch freigeschaltet, wenn alle Tagesaufgaben erledigt sind!</span>
       </div>
 
       <div class="stars-grid-pass" id="pass-grid"></div>
@@ -269,6 +320,8 @@ function selectDay(i) {
   renderTasks();
 }
 
+let stampedCount = +(localStorage.getItem("eldana_pass_stamps") || 11);
+
 function renderTasks() {
   const day = DAYS[activeDay];
   document.getElementById("active-day-heading").innerText = `${day.icon} ${day.name}`;
@@ -288,27 +341,51 @@ function renderTasks() {
     `;
   }).join("");
 
+  // Automated Day Star Check
+  const allDone = day.tasks.length > 0 && day.tasks.every((_, idx) => localStorage.getItem(`${PFX}d${activeDay}_t${idx}`) === "true");
+  const starBanner = document.getElementById("day-star-banner");
+  const starIcon = document.getElementById("day-star-icon");
+  const starTitle = document.getElementById("star-banner-title");
+  const starSub = document.getElementById("star-banner-sub");
   const starKey = `${PFX}d${activeDay}_star`;
-  const star = localStorage.getItem(starKey) === "true";
-  const btn = document.getElementById("day-star-btn");
-  btn.style.filter = star ? "none" : "grayscale(1)";
-  btn.style.opacity = star ? "1" : ".4";
-  btn.onclick = () => {
-    localStorage.setItem(starKey, !star);
-    syncEvent({ action: "star", child: "eldana", day: activeDay, value: !star });
-    renderTasks();
-  };
+  const previouslyEarned = localStorage.getItem(starKey) === "true";
+
+  if (allDone) {
+    starBanner.classList.add("earned");
+    starIcon.innerText = "⭐";
+    starTitle.innerText = "🌟 Tages-Stern verdient!";
+    starSub.innerText = "Super gemacht, Eldana! Alle Aufgaben für heute geschafft!";
+    if (!previouslyEarned) {
+      localStorage.setItem(starKey, "true");
+      stampedCount = Math.min(20, stampedCount + 1);
+      localStorage.setItem("eldana_pass_stamps", stampedCount);
+      syncEvent({ type: "STAR_AWARDED", child: "eldana", day: activeDay, stamps: stampedCount });
+    }
+  } else {
+    starBanner.classList.remove("earned");
+    starIcon.innerText = "🔒";
+    starTitle.innerText = "🔒 Tages-Stern gesperrt";
+    starSub.innerText = "Erledige alle Aufgaben, um deinen Tages-Stern zu bekommen!";
+    if (previouslyEarned) {
+      localStorage.removeItem(starKey);
+      stampedCount = Math.max(0, stampedCount - 1);
+      localStorage.setItem("eldana_pass_stamps", stampedCount);
+      syncEvent({ type: "STAR_REVOKED", child: "eldana", day: activeDay, stamps: stampedCount });
+    }
+  }
 }
 
 function toggleTask(d, i) {
   const k = `${PFX}d${d}_t${i}`;
-  const nextVal = !(localStorage.getItem(k) === "true"));
+  const nextVal = !(localStorage.getItem(k) === "true");
   localStorage.setItem(k, nextVal);
-  syncEvent({ action: "task", child: "eldana", day: d, taskIndex: i, value: nextVal });
   renderTasks();
+  syncEvent({ type: "TASK_UPDATE", child: "eldana", day: d, taskIdx: i, done: nextVal });
 }
 
+// REAL-TIME SYNC ENGINE (EventSource + NDJSON Polling Fallback)
 const SYNC_URL = "https://ntfy.sh/schule_kinder_stumpah89_sync";
+
 function syncEvent(payload) {
   fetch(SYNC_URL, {
     method: "POST",
@@ -317,32 +394,77 @@ function syncEvent(payload) {
   }).catch(() => {});
 }
 
-function checkMamaReset() {
-  fetch(`${SYNC_URL}/json?poll=1`)
-    .then(r => r.json())
-    .then(msg => {
+// Process sync message
+function handleSyncMessage(data) {
+  if (!data) return;
+  const lastReset = +(localStorage.getItem("eldana_last_reset_ts") || 0);
+
+  // Mama reset week command
+  const isReset = (data.type === "RESET_WEEK" || data.action === "reset_week");
+  if (isReset && (data.target === "all" || data.target === "eldana") && data.ts > lastReset) {
+    localStorage.setItem("eldana_last_reset_ts", data.ts);
+    Object.keys(localStorage).forEach(k => {
+      if (k.startsWith(PFX)) localStorage.removeItem(k);
+    });
+    renderTasks();
+  }
+
+  // Mama task update
+  const isTaskUpdate = (data.type === "TASK_UPDATE" || data.action === "task");
+  if (isTaskUpdate && data.child === "eldana") {
+    const taskIdx = data.taskIdx !== undefined ? data.taskIdx : data.taskIndex;
+    const isDone = data.done !== undefined ? data.done : data.value;
+    const k = `${PFX}d${data.day}_t${taskIdx}`;
+    localStorage.setItem(k, isDone);
+    renderTasks();
+  }
+}
+
+// 1. Live SSE Connection
+if (window.EventSource) {
+  try {
+    const es = new EventSource(`${SYNC_URL}/sse`);
+    es.onmessage = (e) => {
       try {
-        const data = JSON.parse(msg.message);
-        const lastReset = +(localStorage.getItem("eldana_last_reset_ts") || 0);
-        if (data.action === "reset_week" && (data.target === "all" || data.target === "eldana") && data.ts > lastReset) {
-          localStorage.setItem("eldana_last_reset_ts", data.ts);
-          Object.keys(localStorage).forEach(k => {
-            if (k.startsWith(PFX)) localStorage.removeItem(k);
-          });
-          renderTasks();
-        }
-      } catch(e){}
+        const wrapper = JSON.parse(e.data);
+        const payload = JSON.parse(wrapper.message);
+        handleSyncMessage(payload);
+      } catch(err){}
+    };
+  } catch(err){}
+}
+
+// 2. Initial & periodic poll with NDJSON parser
+function pollSync() {
+  fetch(`${SYNC_URL}/json?poll=1`)
+    .then(r => r.text())
+    .then(text => {
+      const lines = text.trim().split("\n").filter(Boolean);
+      const events = [];
+      lines.forEach(l => {
+        try {
+          const wrapper = JSON.parse(l);
+          events.push(wrapper);
+        } catch(e){}
+      });
+      events.sort((a,b) => (a.time || 0) - (b.time || 0));
+      events.forEach(ev => {
+        try {
+          const data = JSON.parse(ev.message);
+          handleSyncMessage(data);
+        } catch(e){}
+      });
     }).catch(() => {});
 }
-setInterval(checkMamaReset, 12000);
-checkMamaReset();
+pollSync();
+setInterval(pollSync, 5000);
 
 function switchView(viewId, btn) {
   document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
   document.querySelectorAll(".nav-tab").forEach(b => b.classList.remove("active"));
   document.getElementById(viewId).classList.add("active");
   btn.classList.add("active");
-  if (viewId === 'view-timer') checkReadStatus();
+  if (viewId === 'view-timer') renderBookList();
   if (viewId === 'view-pass') renderPass();
 }
 
@@ -372,7 +494,7 @@ btnStart.onclick = () => {
         clearInterval(timerInterval);
         timerInterval = null;
         btnStart.innerText = "🎉 Fertig!";
-        alert("🎉 Bravo Eldana! 10 Minuten Lesezeit geschafft! Trag dein Buch unten ein ⭐");
+        alert("🎉 Bravo Eldana! 10 Minuten Lesezeit geschafft! Trag dein Buch unten in die Liste ein 📖");
       }
     }, 1000);
   }
@@ -386,50 +508,36 @@ document.getElementById("btn-timer-reset").onclick = () => {
   updateTimer();
 };
 
-function checkReadStatus() {
-  const todayKey = "eldana_read_star_" + new Date().toISOString().slice(0, 10);
-  const alreadyEarned = localStorage.getItem(todayKey) === "true";
-  document.getElementById("daily-read-status").innerText = alreadyEarned ? "✅ Tages-Stern verdient!" : "⭐ Tages-Stern verfügbar";
-}
-
 function saveReading() {
   const val = document.getElementById("read-title").value.trim();
   if (!val) { alert("Bitte einen Buchtitel eingeben!"); return; }
-
-  const todayKey = "eldana_read_star_" + new Date().toISOString().slice(0, 10);
-  const alreadyEarned = localStorage.getItem(todayKey) === "true";
-
-  if (!alreadyEarned) {
-    localStorage.setItem(todayKey, "true");
-    stampedCount = Math.min(20, stampedCount + 1);
-    localStorage.setItem("eldana_pass_stamps", stampedCount);
-    syncEvent({ action: "pass_stamp", child: "eldana", stamps: stampedCount });
-    alert(`⭐ Super Leistung, Eldana! „${val}“ wurde gespeichert und du hast 1 Stern für deinen Tierpark-Pass bekommen ⭐!`);
-  } else {
-    alert(`👏 Tolles Buch „${val}“! Deinen Tages-Lese-Stern hast du heute bereits gesammelt.`);
-  }
-
+  const log = JSON.parse(localStorage.getItem("eldana_books") || "[]");
+  log.unshift({ title: val, date: new Date().toLocaleDateString("de-DE") });
+  localStorage.setItem("eldana_books", JSON.stringify(log.slice(0, 10)));
+  alert(`👏 Super gelesen, Eldana! „${val}“ wurde in deiner Leseliste gespeichert! 🐰📖`);
   document.getElementById("read-title").value = "";
-  checkReadStatus();
+  renderBookList();
 }
 
-// Belohnungspass
-let stampedCount = +(localStorage.getItem("eldana_pass_stamps") || 11);
+function renderBookList() {
+  const log = JSON.parse(localStorage.getItem("eldana_books") || "[]");
+  const el = document.getElementById("read-list");
+  if (log.length === 0) {
+    el.innerHTML = "<i>Noch keine Bücher eingetragen.</i>";
+  } else {
+    el.innerHTML = log.map(b => `<div style="padding:4px 0;border-bottom:1px dashed #fed7aa">📖 <b>${b.title}</b> <span style="font-size:11px;color:#9a3412">(${b.date})</span></div>`).join("");
+  }
+}
+
+// Belohnungspass (Read-only display for child)
 function renderPass() {
   document.getElementById("pass-counter").innerText = `${stampedCount} von 20 Sternen`;
   let html = "";
   for (let i = 1; i <= 20; i++) {
     const isStamped = i <= stampedCount;
-    html += `<div class="star-stamp ${isStamped ? 'stamped' : ''}" onclick="toggleStamp(${i})">${i === 20 ? '🍦' : '⭐'}</div>`;
+    html += `<div class="star-stamp ${isStamped ? 'stamped' : ''}">${i === 20 ? '🍦' : '⭐'}</div>`;
   }
   document.getElementById("pass-grid").innerHTML = html;
-}
-
-function toggleStamp(i) {
-  stampedCount = stampedCount === i ? i - 1 : i;
-  localStorage.setItem("eldana_pass_stamps", stampedCount);
-  syncEvent({ action: "pass_stamp", child: "eldana", stamps: stampedCount });
-  renderPass();
 }
 
 function togglePack(el) {

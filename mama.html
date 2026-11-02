@@ -97,54 +97,64 @@ header h1 { font-size: 28px; font-weight: 900; display: flex; align-items: cente
   padding: 16px 18px; flex: 1; display: flex; flex-direction: column; gap: 12px;
 }
 .section-label {
-  font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; color: #64748b;
+  font-size: 12px; font-weight: 800; text-transform: uppercase;
+  color: #64748b; letter-spacing: .5px;
 }
 
 .today-tasks-mama {
   display: flex; flex-direction: column; gap: 8px;
 }
 .mama-task {
-  display: flex; align-items: flex-start; gap: 10px; background: #f8fafc;
-  border: 1px solid #e2e8f0; border-radius: 12px; padding: 10px 12px; font-size: 13.5px;
-  cursor: pointer; user-select: none; transition: all .12s;
+  display: flex; align-items: center; gap: 10px; padding: 10px 12px;
+  background: #f8fafc; border-radius: 12px; border: 1px solid #e2e8f0;
+  cursor: pointer; transition: all .15s; font-size: 13.5px;
 }
 .mama-task:hover { background: #f1f5f9; }
 .mama-task.checked {
-  background: #f0fdf4; border-color: #86efac; text-decoration: line-through; opacity: .7;
+  background: #f0fdf4; border-color: #86efac; text-decoration: line-through; opacity: .75;
 }
 .mama-chk {
-  width: 22px; height: 22px; border-radius: 6px; border: 2px solid #94a3b8;
+  width: 22px; height: 22px; border-radius: 6px; border: 2px solid #cbd5e1;
   display: flex; align-items: center; justify-content: center; font-size: 14px;
-  font-weight: 900; color: #16a34a; background: #fff; flex: none; margin-top: 1px;
+  font-weight: 900; background: #fff; flex: none; color: #16a34a;
 }
-.mama-task.checked .mama-chk { border-color: #16a34a; background: #22c55e; color: #fff; }
+.mama-task.checked .mama-chk {
+  background: #22c55e; border-color: #22c55e; color: #fff;
+}
 
-/* Pass progress bar */
 .progress-card {
-  background: #fdfefe; border: 1px solid #e2e8f0; border-radius: 12px; padding: 10px 12px;
+  background: #f8fafc; border-radius: 14px; padding: 12px 14px; border: 1px solid #e2e8f0;
+  display: flex; flex-direction: column; gap: 6px;
 }
-.progress-head { display: flex; justify-content: space-between; font-size: 13px; font-weight: 800; margin-bottom: 6px; }
+.progress-head {
+  display: flex; justify-content: space-between; font-size: 13px; font-weight: 800; color: #334155;
+}
 .bar-track {
-  width: 100%; height: 10px; background: #e2e8f0; border-radius: 10px; overflow: hidden;
+  height: 10px; background: #e2e8f0; border-radius: 10px; overflow: hidden;
 }
 .bar-fill {
   height: 100%; border-radius: 10px; transition: width .3s ease;
 }
 
-/* Control Tools */
+/* Management Tools */
 .tools-panel {
-  background: #fff; border-radius: 20px; padding: 22px 24px; border: 1px solid #e2e8f0;
-  box-shadow: 0 4px 16px rgba(0,0,0,.04); margin-bottom: 24px;
+  background: #fff; border-radius: 20px; padding: 22px;
+  border: 2px solid #e2e8f0; box-shadow: 0 4px 16px rgba(0,0,0,.04);
 }
-.tools-panel h2 { font-size: 20px; font-weight: 900; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
-.tools-row { display: flex; gap: 12px; flex-wrap: wrap; }
+.tools-panel h2 { font-size: 18px; font-weight: 900; color: #0f172a; margin-bottom: 14px; }
+.tools-row {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;
+}
 .tool-btn {
-  flex: 1; min-width: 200px; background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 14px;
-  padding: 14px 16px; text-decoration: none; color: inherit; display: flex; align-items: center; gap: 12px;
-  transition: all .15s;
+  text-decoration: none; background: #f8fafc; border: 1.5px solid #e2e8f0;
+  border-radius: 16px; padding: 14px 16px; display: flex; align-items: center; gap: 12px;
+  color: #1e293b; transition: all .15s;
 }
-.tool-btn:hover { border-color: #0284c7; transform: translateY(-2px); }
-.tool-btn b { font-size: 15px; display: block; }
+.tool-btn:hover {
+  background: #f1f5f9; border-color: #cbd5e1; transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,.05);
+}
+.tool-btn b { display: block; font-size: 14px; color: #0f172a; margin-bottom: 2px; }
 .tool-btn span { font-size: 12px; color: #64748b; }
 </style>
 </head>
@@ -182,7 +192,7 @@ header h1 { font-size: 28px; font-weight: 900; display: flex; align-items: cente
   <div class="alert-card">
     <div class="alert-text">
       <b id="banner-day">Heute auf einen Blick</b>
-      <span id="banner-hint">Hake hier ab, was du bei den Kindern kontrolliert hast:</span>
+      <span id="banner-hint">Hier siehst du live, was die Kinder auf ihren Tablets abgehakt haben:</span>
     </div>
     <div class="date-pill" id="date-pill">Montag · KW 45</div>
   </div>
@@ -272,7 +282,7 @@ header h1 { font-size: 28px; font-weight: 900; display: flex; align-items: cente
         <span style="font-size:28px">✏️</span>
         <div>
           <b>Lernpläne bearbeiten</b>
-          <span>Aufgaben, Zeiten &amp; Tipps anpassen</span>
+          <span>Aufgaben, Zeiten &amp; Pläne flexibel anpassen</span>
         </div>
       </a>
 
@@ -305,27 +315,42 @@ header h1 { font-size: 28px; font-weight: 900; display: flex; align-items: cente
 </div>
 
 <script>
-const TODAY_PLANS = {
+// Weekly plans for all children (Monday = 0, ..., Sunday = 6)
+const CHILD_PLANS = {
   rufta: [
-    { time: "17:15", title: "Hausaufgaben", done: false },
-    { time: "18:05", title: "Mathe: Brüche & Textaufgaben", done: false },
-    { time: "19:15", title: "Ranzen-Check für morgen", done: false }
+    /* Mo 0 */ [{ time: "17:00", text: "Ankommen, Snack & kurze Pause 🍎" }, { time: "17:15 – 18:00", text: "Hausaufgaben erledigen" }, { time: "18:05 – 18:45", text: "Mathe: Brüche & Textaufgaben" }],
+    /* Di 1 */ [{ time: "17:00", text: "Ankommen & Snack 🍎" }, { time: "17:10 – 17:40", text: "Hausaufgaben + 10 Min. Englisch-Vokabeln" }, { time: "18:00 – 19:30", text: "Taekwondo 🥋" }],
+    /* Mi 2 */ [{ time: "17:00", text: "Ankommen, Snack & Pause 🍎" }, { time: "17:15 – 18:00", text: "Hausaufgaben erledigen" }, { time: "18:05 – 18:45", text: "Mathe + Vokabelkarten wiederholen" }],
+    /* Do 3 */ [{ time: "17:00", text: "Ankommen & Snack 🍎" }, { time: "17:10 – 17:40", text: "Hausaufgaben + 10 Min. Kopfrechnen" }, { time: "18:00 – 19:30", text: "Taekwondo 🥋" }],
+    /* Fr 4 */ [{ time: "17:00", text: "Ankommen & Snack 🍎" }, { time: "17:10 – 17:40", text: "Hausaufgaben / Mathe-Wochenrückblick" }, { time: "18:00 – 19:30", text: "Englischkurs 🇬🇧" }],
+    /* Sa 5 */ [{ time: "10:00 – 11:00", text: "Mathe-Übungsblatt von Andreas + Vokabeln" }, { time: "18:00 – 19:30", text: "Englischkurs 🇬🇧" }],
+    /* So 6 */ [{ time: "30 Min.", text: "Woche planen, Schultasche prüfen 🎒" }]
   ],
   meron: [
-    { time: "17:15", title: "Hausaufgaben erledigen", done: false },
-    { time: "17:50", title: "Einmaleins + schriftlich Rechnen", done: false },
-    { time: "19:15", title: "Ranzen-Check für morgen", done: false }
+    /* Mo 0 */ [{ time: "17:00", text: "Ankommen, Snack & Pause 🍎" }, { time: "17:15 – 17:45", text: "Hausaufgaben erledigen" }, { time: "17:50 – 18:15", text: "Einmaleins + schriftlich Rechnen" }],
+    /* Di 1 */ [{ time: "17:00", text: "Ankommen & Snack 🍎" }, { time: "17:10 – 17:40", text: "Hausaufgaben + Einmaleins" }, { time: "18:00 – 19:30", text: "Taekwondo 🥋" }],
+    /* Mi 2 */ [{ time: "17:00", text: "Ankommen, Snack & Pause 🍎" }, { time: "17:15 – 17:45", text: "Hausaufgaben erledigen" }, { time: "17:50 – 18:15", text: "Mathe-Sachaufgaben + Lesen" }],
+    /* Do 3 */ [{ time: "17:00", text: "Ankommen & Snack 🍎" }, { time: "17:10 – 17:40", text: "Hausaufgaben + Einmaleins abfragen ⭐" }, { time: "18:00 – 19:30", text: "Taekwondo 🥋" }],
+    /* Fr 4 */ [{ time: "17:00", text: "Ankommen & Snack 🍎" }, { time: "17:10 – 17:40", text: "Mathe-Spiel / Kopfrechnen + Lesen" }, { time: "18:00 – 19:30", text: "Englischkurs 🇬🇧" }],
+    /* Sa 5 */ [{ time: "10:00 – 10:50", text: "Mathe-Übungsblatt von Andreas + Diktat" }, { time: "18:00 – 19:30", text: "Englischkurs 🇬🇧" }],
+    /* So 6 */ [{ time: "20 Min.", text: "Lesen im Lieblingsbuch & Ranzen packen 🎒" }]
   ],
   eldana: [
-    { time: "17:15", title: "Hausaufgaben erledigen", done: false },
-    { time: "17:45", title: "10 Min. laut vorlesen & schreiben", done: false },
-    { time: "19:15", title: "Ranzen-Check für morgen", done: false }
+    /* Mo 0 */ [{ time: "17:00", text: "Ankommen, Snack & Pause 🍎" }, { time: "17:15 – 17:40", text: "Hausaufgaben erledigen" }, { time: "17:45 – 18:05", text: "10 Min. laut vorlesen + Schreiben" }],
+    /* Di 1 */ [{ time: "17:00", text: "Ankommen & Snack 🍎" }, { time: "17:10 – 17:40", text: "Hausaufgaben + Plus/Minus bis 100" }, { time: "18:00 – 19:30", text: "Taekwondo 🥋" }],
+    /* Mi 2 */ [{ time: "17:00", text: "Ankommen, Snack & Pause 🍎" }, { time: "17:15 – 17:40", text: "Hausaufgaben erledigen" }, { time: "17:45 – 18:05", text: "Rechnen bis 100 + Vorlesen" }],
+    /* Do 3 */ [{ time: "17:00", text: "Ankommen & Snack 🍎" }, { time: "17:10 – 17:40", text: "Hausaufgaben + Wörter abschreiben" }, { time: "18:00 – 19:30", text: "Taekwondo 🥋" }],
+    /* Fr 4 */ [{ time: "17:00", text: "Ankommen & Snack 🍎" }, { time: "17:10 – 17:40", text: "Lesen + kleines Rechenspiel / Anton" }, { time: "18:00 – 19:30", text: "Englischkurs 🇬🇧" }],
+    /* Sa 5 */ [{ time: "10:00 – 10:40", text: "Übungsblatt von Andreas + Vorlesen" }, { time: "18:00 – 19:30", text: "Englischkurs 🇬🇧" }],
+    /* So 6 */ [{ time: "15 Min.", text: "Gemeinsam vorlesen mit Mama & Ranzen packen 🎒" }]
   ]
 };
 
 const dayNames = ["Sonntag", "Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag"];
 const now = new Date();
+const todayIdx = (now.getDay() + 6) % 7; // 0 = Mo, 1 = Di, ..., 6 = So
 const todayName = dayNames[now.getDay()];
+
 document.getElementById("banner-day").innerText = `Heute ist ${todayName}`;
 document.getElementById("date-pill").innerText = `${todayName}, ${now.toLocaleDateString("de-DE")}`;
 
@@ -335,37 +360,46 @@ if (now.getDay() === 2 || now.getDay() === 4) {
 
 function renderMamaTasks(kid, containerId) {
   const container = document.getElementById(containerId);
-  const tasks = TODAY_PLANS[kid];
+  const tasks = (CHILD_PLANS[kid] && CHILD_PLANS[kid][todayIdx]) ? CHILD_PLANS[kid][todayIdx] : [];
   container.innerHTML = tasks.map((t, idx) => {
-    const storageKey = `mama_check_${kid}_${idx}_${now.toISOString().slice(0,10)}`;
+    const storageKey = `mama_task_${kid}_d${todayIdx}_t${idx}`;
     const isDone = localStorage.getItem(storageKey) === "true";
     return `
-      <div class="mama-task ${isDone ? 'checked' : ''}" onclick="toggleMamaTask('${kid}', ${idx}, this, '${storageKey}')">
+      <div class="mama-task ${isDone ? 'checked' : ''}" onclick="toggleMamaTask('${kid}', ${idx}, '${storageKey}')">
         <div class="mama-chk">${isDone ? '✓' : ''}</div>
         <div>
-          <b style="font-size:12px;color:#64748b;display:block">${t.time} Uhr:</b>
-          <span style="font-weight:700">${t.title}</span>
+          <b style="font-size:12px;color:#64748b;display:block">${t.time}:</b>
+          <span style="font-weight:700">${t.text}</span>
         </div>
       </div>
     `;
   }).join("");
 }
 
-function toggleMamaTask(kid, idx, el, key) {
-  const isDone = !(localStorage.getItem(key) === "true");
-  localStorage.setItem(key, isDone);
-  el.classList.toggle("checked", isDone);
-  el.querySelector(".mama-chk").innerText = isDone ? "✓" : "";
+function toggleMamaTask(kid, idx, key) {
+  const nextVal = !(localStorage.getItem(key) === "true");
+  localStorage.setItem(key, nextVal);
+  renderMamaTasks(kid, `tasks-${kid}`);
+  syncEvent({ type: "TASK_UPDATE", child: kid, day: todayIdx, taskIdx: idx, done: nextVal });
 }
 
 // Master Reset broadcast across all devices
 const SYNC_URL = "https://ntfy.sh/schule_kinder_stumpah89_sync";
+
+function syncEvent(payload) {
+  fetch(SYNC_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ ...payload, ts: Date.now() })
+  }).catch(() => {});
+}
 
 function sendResetCommand(target) {
   const targetLabel = target === "all" ? "ALLE drei Kinder" : target.toUpperCase();
   if (!confirm(`Möchtest du die Aufgaben für ${targetLabel} auf allen Tablets auf 0 zurücksetzen?`)) return;
 
   const payload = {
+    type: "RESET_WEEK",
     action: "reset_week",
     target: target,
     ts: Date.now(),
@@ -377,9 +411,13 @@ function sendResetCommand(target) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload)
   }).then(() => {
-    // Also reset Mama's checks for today
+    // Clear Mama's tasks for the target
     Object.keys(localStorage).forEach(k => {
-      if (k.startsWith("mama_check_")) localStorage.removeItem(k);
+      if (k.startsWith("mama_task_")) {
+        if (target === "all" || k.startsWith(`mama_task_${target}_`)) {
+          localStorage.removeItem(k);
+        }
+      }
     });
     renderMamaTasks("rufta", "tasks-rufta");
     renderMamaTasks("meron", "tasks-meron");
@@ -390,34 +428,101 @@ function sendResetCommand(target) {
   });
 }
 
-// Realtime listener for child events
-function listenChildEvents() {
-  fetch(`${SYNC_URL}/json?poll=1`)
-    .then(r => r.json())
-    .then(msg => {
-      try {
-        const data = JSON.parse(msg.message);
-        if (data.action === "pass_stamp") {
-          updateStampsDisplay(data.child, data.stamps);
-        }
-      } catch(e){}
-    }).catch(() => {});
-}
-setInterval(listenChildEvents, 10000);
-listenChildEvents();
-
 function updateStampsDisplay(child, count) {
+  const c = Math.max(0, Math.min(20, count));
   if (child === "meron") {
-    document.getElementById("meron-pass-num").innerText = `${count} / 20`;
-    document.getElementById("meron-bar").style.width = `${(count / 20) * 100}%`;
+    document.getElementById("meron-pass-num").innerText = `${c} / 20`;
+    document.getElementById("meron-bar").style.width = `${(c / 20) * 100}%`;
   } else if (child === "eldana") {
-    document.getElementById("eldana-pass-num").innerText = `${count} / 20`;
-    document.getElementById("eldana-bar").style.width = `${(count / 20) * 100}%`;
+    document.getElementById("eldana-pass-num").innerText = `${c} / 20`;
+    document.getElementById("eldana-bar").style.width = `${(c / 20) * 100}%`;
   } else if (child === "rufta") {
-    document.getElementById("rufta-pass-num").innerText = `${count} / 20`;
-    document.getElementById("rufta-bar").style.width = `${(count / 20) * 100}%`;
+    document.getElementById("rufta-pass-num").innerText = `${c} / 20`;
+    document.getElementById("rufta-bar").style.width = `${(c / 20) * 100}%`;
   }
 }
+
+// Process incoming events from children's tablets
+function handleSyncMessage(data) {
+  if (!data) return;
+
+  // Star earned or revoked
+  if (data.type === "STAR_AWARDED" || data.type === "STAR_REVOKED" || data.action === "pass_stamp") {
+    const kid = data.child;
+    const stamps = data.stamps;
+    if (kid && stamps !== undefined) {
+      localStorage.setItem(`${kid}_pass_stamps`, stamps);
+      updateStampsDisplay(kid, stamps);
+    }
+  }
+
+  // Task checked on tablet
+  const isTaskUpdate = (data.type === "TASK_UPDATE" || data.action === "task");
+  if (isTaskUpdate && data.child) {
+    const kid = data.child;
+    const taskIdx = data.taskIdx !== undefined ? data.taskIdx : data.taskIndex;
+    const isDone = data.done !== undefined ? data.done : data.value;
+    if (data.day === todayIdx) {
+      localStorage.setItem(`mama_task_${kid}_d${todayIdx}_t${taskIdx}`, isDone);
+      renderMamaTasks(kid, `tasks-${kid}`);
+    }
+  }
+
+  // Week reset
+  const isReset = (data.type === "RESET_WEEK" || data.action === "reset_week");
+  if (isReset) {
+    const target = data.target;
+    Object.keys(localStorage).forEach(k => {
+      if (k.startsWith("mama_task_")) {
+        if (target === "all" || k.startsWith(`mama_task_${target}_`)) {
+          localStorage.removeItem(k);
+        }
+      }
+    });
+    renderMamaTasks("rufta", "tasks-rufta");
+    renderMamaTasks("meron", "tasks-meron");
+    renderMamaTasks("eldana", "tasks-eldana");
+  }
+}
+
+// 1. Live SSE Connection
+if (window.EventSource) {
+  try {
+    const es = new EventSource(`${SYNC_URL}/sse`);
+    es.onmessage = (e) => {
+      try {
+        const wrapper = JSON.parse(e.data);
+        const payload = JSON.parse(wrapper.message);
+        handleSyncMessage(payload);
+      } catch(err){}
+    };
+  } catch(err){}
+}
+
+// 2. Initial & periodic poll with NDJSON parser
+function pollSync() {
+  fetch(`${SYNC_URL}/json?poll=1`)
+    .then(r => r.text())
+    .then(text => {
+      const lines = text.trim().split("\n").filter(Boolean);
+      const events = [];
+      lines.forEach(l => {
+        try {
+          const wrapper = JSON.parse(l);
+          events.push(wrapper);
+        } catch(e){}
+      });
+      events.sort((a,b) => (a.time || 0) - (b.time || 0));
+      events.forEach(ev => {
+        try {
+          const data = JSON.parse(ev.message);
+          handleSyncMessage(data);
+        } catch(e){}
+      });
+    }).catch(() => {});
+}
+pollSync();
+setInterval(pollSync, 4000);
 
 // Initial stamps display
 updateStampsDisplay("rufta", +(localStorage.getItem("rufta_pass_stamps") || 6));
