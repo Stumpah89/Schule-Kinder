@@ -86,12 +86,6 @@ h1 { font-size: 26px; font-weight: 900; }
 .task-time { font-size: 13px; font-weight: 800; color: #1e40af; margin-bottom: 2px; }
 .task-text { font-size: 17px; font-weight: 800; color: #1e293b; line-height: 1.35; }
 
-.reset-week-btn {
-  width: 100%; border: 0; background: #eff6ff; color: #1d4ed8; font: inherit;
-  font-size: 13px; font-weight: 800; padding: 10px; border-radius: 14px; cursor: pointer;
-  margin-top: 14px; text-align: center;
-}
-
 .test-item {
   background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 14px; padding: 12px 14px; margin-bottom: 10px;
 }
@@ -156,8 +150,6 @@ h1 { font-size: 26px; font-weight: 900; }
         </div>
         <button id="day-star-btn" style="border:0;background:transparent;font-size:34px;cursor:pointer;filter:grayscale(1);opacity:.4;transition:all .15s">⭐</button>
       </div>
-
-      <button class="reset-week-btn" id="btn-reset-week">🔄 Neue Woche bei 0 starten</button>
     </div>
   </div>
 
@@ -245,6 +237,14 @@ const KW = getKW();
 document.getElementById("kw-info").innerText = `Kalenderwoche ${KW} · 6. Klasse`;
 const PFX = `rufta_app_kw${KW}_`;
 
+const savedKW = localStorage.getItem("rufta_last_kw");
+if (savedKW && +savedKW !== KW) {
+  Object.keys(localStorage).forEach(k => {
+    if (k.startsWith("rufta_app_kw")) localStorage.removeItem(k);
+  });
+}
+localStorage.setItem("rufta_last_kw", KW);
+
 let currentDayIdx = new Date().getDay();
 let activeDay = currentDayIdx === 0 ? 6 : currentDayIdx - 1;
 
@@ -286,24 +286,47 @@ function renderTasks() {
   btn.style.opacity = star ? "1" : ".4";
   btn.onclick = () => {
     localStorage.setItem(starKey, !star);
+    syncEvent({ action: "star", child: "rufta", day: activeDay, value: !star });
     renderTasks();
   };
 }
 
 function toggleTask(d, i) {
   const k = `${PFX}d${d}_t${i}`;
-  localStorage.setItem(k, !(localStorage.getItem(k) === "true"));
+  const nextVal = !(localStorage.getItem(k) === "true");
+  localStorage.setItem(k, nextVal);
+  syncEvent({ action: "task", child: "rufta", day: d, taskIndex: i, value: nextVal });
   renderTasks();
 }
 
-document.getElementById("btn-reset-week").onclick = () => {
-  if (confirm("Möchtest du die Aufgaben für diese Woche auf 0 zurücksetzen?")) {
-    Object.keys(localStorage).forEach(k => {
-      if (k.startsWith(PFX)) localStorage.removeItem(k);
-    });
-    renderTasks();
-  }
-};
+const SYNC_URL = "https://ntfy.sh/schule_kinder_stumpah89_sync";
+function syncEvent(payload) {
+  fetch(SYNC_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ ...payload, ts: Date.now() })
+  }).catch(() => {});
+}
+
+function checkMamaReset() {
+  fetch(`${SYNC_URL}/json?poll=1`)
+    .then(r => r.json())
+    .then(msg => {
+      try {
+        const data = JSON.parse(msg.message);
+        const lastReset = +(localStorage.getItem("rufta_last_reset_ts") || 0);
+        if (data.action === "reset_week" && (data.target === "all" || data.target === "rufta") && data.ts > lastReset) {
+          localStorage.setItem("rufta_last_reset_ts", data.ts);
+          Object.keys(localStorage).forEach(k => {
+            if (k.startsWith(PFX)) localStorage.removeItem(k);
+          });
+          renderTasks();
+        }
+      } catch(e){}
+    }).catch(() => {});
+}
+setInterval(checkMamaReset, 12000);
+checkMamaReset();
 
 function switchView(viewId, btn) {
   document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
@@ -328,6 +351,7 @@ function renderPass() {
 function toggleStamp(i) {
   stampedCount = stampedCount === i ? i - 1 : i;
   localStorage.setItem("rufta_pass_stamps", stampedCount);
+  syncEvent({ action: "pass_stamp", child: "rufta", stamps: stampedCount });
   renderPass();
 }
 

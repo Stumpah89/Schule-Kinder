@@ -21,7 +21,6 @@ body {
   -webkit-tap-highlight-color: transparent;
 }
 
-/* Header */
 header {
   background: linear-gradient(135deg, #15803d, #22c55e);
   color: #fff;
@@ -39,19 +38,16 @@ h1 { font-size: 26px; font-weight: 900; }
   font-size: 13px; font-weight: 800; padding: 4px 14px; border-radius: 20px; margin-top: 6px;
 }
 
-/* Container */
 .container {
   max-width: 650px;
   margin: 16px auto 0;
   padding: 0 16px;
 }
 
-/* Tab Views */
 .view { display: none; }
 .view.active { display: block; animation: fadeIn .15s ease-out; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
 
-/* Cards & Sections */
 .card {
   background: #fff; border-radius: 22px; padding: 20px 22px;
   box-shadow: 0 6px 20px rgba(0,0,0,.05); border: 2px solid #bbf7d0; margin-bottom: 20px;
@@ -61,7 +57,6 @@ h1 { font-size: 26px; font-weight: 900; }
   display: flex; align-items: center; justify-content: space-between;
 }
 
-/* Day Tabs */
 .days-scroll {
   display: flex; gap: 6px; overflow-x: auto; padding: 4px 2px 14px; margin-bottom: 12px;
 }
@@ -72,7 +67,6 @@ h1 { font-size: 26px; font-weight: 900; }
 }
 .day-btn.on { background: #15803d; color: #fff; border-color: #15803d; }
 
-/* Big Tasks */
 .tasks-list { display: flex; flex-direction: column; gap: 10px; }
 .task-item {
   display: flex; align-items: center; gap: 14px; padding: 14px 16px;
@@ -92,19 +86,17 @@ h1 { font-size: 26px; font-weight: 900; }
 .task-time { font-size: 13px; font-weight: 800; color: #16a34a; margin-bottom: 2px; }
 .task-text { font-size: 17px; font-weight: 800; color: #1e293b; line-height: 1.35; }
 
-/* Week Reset Button */
-.reset-week-btn {
-  width: 100%; border: 0; background: #e0f2fe; color: #0369a1; font: inherit;
-  font-size: 13px; font-weight: 800; padding: 10px; border-radius: 14px; cursor: pointer;
-  margin-top: 14px; text-align: center;
-}
-
-/* 1x1 Blitz Mini Game */
+/* 1x1 Blitz Mini Game with 10 tasks round limit */
 .math-box {
   background: #f0fdf4; border: 2px solid #bbf7d0; border-radius: 18px;
-  padding: 24px 10px; text-align: center; margin-bottom: 18px;
+  padding: 22px 10px; text-align: center; margin-bottom: 18px;
 }
 .math-equation { font-size: 44px; font-weight: 900; color: #15803d; letter-spacing: 2px; }
+.round-info {
+  display: flex; justify-content: space-between; align-items: center;
+  background: #f8fafc; border-radius: 12px; padding: 8px 14px; font-size: 13.5px;
+  font-weight: 800; color: #475569; margin-bottom: 14px; border: 1px solid #e2e8f0;
+}
 .answers-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .ans-btn {
   font: inherit; font-size: 28px; font-weight: 900; border: 2px solid #e2e8f0;
@@ -175,8 +167,6 @@ h1 { font-size: 26px; font-weight: 900; }
         </div>
         <button id="day-star-btn" style="border:0;background:transparent;font-size:34px;cursor:pointer;filter:grayscale(1);opacity:.4;transition:all .15s">⭐</button>
       </div>
-
-      <button class="reset-week-btn" id="btn-reset-week">🔄 Neue Woche bei 0 starten</button>
     </div>
   </div>
 
@@ -185,9 +175,13 @@ h1 { font-size: 26px; font-weight: 900; }
     <div class="card">
       <div class="card-title">
         <span>⚡ 1x1-Blitzrechner</span>
-        <span style="font-size:14px;color:#f59e0b" id="game-stars">⭐ 0 Sterne</span>
+        <span style="font-size:13px;color:#f59e0b;background:#fef3c7;padding:3px 10px;border-radius:20px" id="daily-game-status">⭐ 1 Stern/Tag</span>
       </div>
-      <p style="font-size:14px;color:#64748b;margin-bottom:14px">Löse 10 Aufgaben schnell im Kopf!</p>
+
+      <div class="round-info">
+        <span id="q-progress">Aufgabe 1 / 10</span>
+        <span id="score-progress">Richtig: 0</span>
+      </div>
 
       <div class="math-box">
         <div class="math-equation" id="game-eq">6 × 7 = ?</div>
@@ -262,6 +256,15 @@ const KW = getKW();
 document.getElementById("kw-info").innerText = `Kalenderwoche ${KW} · 3. Klasse`;
 const PFX = `meron_app_kw${KW}_`;
 
+// Auto-reset when calendar week changes
+const savedKW = localStorage.getItem("meron_last_kw");
+if (savedKW && +savedKW !== KW) {
+  Object.keys(localStorage).forEach(k => {
+    if (k.startsWith("meron_app_kw")) localStorage.removeItem(k);
+  });
+}
+localStorage.setItem("meron_last_kw", KW);
+
 let currentDayIdx = new Date().getDay();
 let activeDay = currentDayIdx === 0 ? 6 : currentDayIdx - 1;
 
@@ -303,24 +306,48 @@ function renderTasks() {
   btn.style.opacity = star ? "1" : ".4";
   btn.onclick = () => {
     localStorage.setItem(starKey, !star);
+    syncEvent({ action: "star", child: "meron", day: activeDay, value: !star });
     renderTasks();
   };
 }
 
 function toggleTask(d, i) {
   const k = `${PFX}d${d}_t${i}`;
-  localStorage.setItem(k, !(localStorage.getItem(k) === "true"));
+  const nextVal = !(localStorage.getItem(k) === "true");
+  localStorage.setItem(k, nextVal);
+  syncEvent({ action: "task", child: "meron", day: d, taskIndex: i, value: nextVal });
   renderTasks();
 }
 
-document.getElementById("btn-reset-week").onclick = () => {
-  if (confirm("Möchtest du die Aufgaben für diese Woche auf 0 zurücksetzen?")) {
-    Object.keys(localStorage).forEach(k => {
-      if (k.startsWith(PFX)) localStorage.removeItem(k);
-    });
-    renderTasks();
-  }
-};
+// Cloud Sync Listener (Mama's Reset commands)
+const SYNC_URL = "https://ntfy.sh/schule_kinder_stumpah89_sync";
+function syncEvent(payload) {
+  fetch(SYNC_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ ...payload, ts: Date.now() })
+  }).catch(() => {});
+}
+
+function checkMamaReset() {
+  fetch(`${SYNC_URL}/json?poll=1`)
+    .then(r => r.json())
+    .then(msg => {
+      try {
+        const data = JSON.parse(msg.message);
+        const lastReset = +(localStorage.getItem("meron_last_reset_ts") || 0);
+        if (data.action === "reset_week" && (data.target === "all" || data.target === "meron") && data.ts > lastReset) {
+          localStorage.setItem("meron_last_reset_ts", data.ts);
+          Object.keys(localStorage).forEach(k => {
+            if (k.startsWith(PFX)) localStorage.removeItem(k);
+          });
+          renderTasks();
+        }
+      } catch(e){}
+    }).catch(() => {});
+}
+setInterval(checkMamaReset, 12000);
+checkMamaReset();
 
 // View switching
 function switchView(viewId, btn) {
@@ -328,16 +355,35 @@ function switchView(viewId, btn) {
   document.querySelectorAll(".nav-tab").forEach(b => b.classList.remove("active"));
   document.getElementById(viewId).classList.add("active");
   btn.classList.add("active");
-  if (viewId === 'view-game') nextGameQuestion();
+  if (viewId === 'view-game') startRound();
   if (viewId === 'view-pass') renderPass();
 }
 
-// 1x1 Mini Game
-let gameStars = +(localStorage.getItem("meron_game_stars") || 0);
-document.getElementById("game-stars").innerText = `⭐ ${gameStars} Sterne`;
+// 1x1 Mini Game - ROUND OF 10 WITH DAILY STAR LIMIT (No infinite spam!)
+let questionIndex = 0;
+let roundScore = 0;
 let currA = 0, currB = 0;
 
-function nextGameQuestion() {
+function startRound() {
+  questionIndex = 0;
+  roundScore = 0;
+  const todayKey = "meron_game_star_" + new Date().toISOString().slice(0, 10);
+  const alreadyEarned = localStorage.getItem(todayKey) === "true";
+  document.getElementById("daily-game-status").innerText = alreadyEarned ? "✅ Tages-Stern verdient!" : "⭐ Tages-Stern verfügbar";
+  document.getElementById("daily-game-status").style.background = alreadyEarned ? "#dcfce7" : "#fef3c7";
+  document.getElementById("daily-game-status").style.color = alreadyEarned ? "#166534" : "#b45309";
+  nextQuestion();
+}
+
+function nextQuestion() {
+  if (questionIndex >= 10) {
+    finishRound();
+    return;
+  }
+  questionIndex++;
+  document.getElementById("q-progress").innerText = `Aufgabe ${questionIndex} / 10`;
+  document.getElementById("score-progress").innerText = `Richtig: ${roundScore}`;
+
   currA = Math.floor(Math.random() * 8) + 2;
   currB = Math.floor(Math.random() * 9) + 2;
   const ans = currA * currB;
@@ -360,16 +406,44 @@ function checkAns(btn, selected, correct) {
   document.querySelectorAll(".ans-btn").forEach(b => b.disabled = true);
   if (selected === correct) {
     btn.classList.add("correct");
-    gameStars++;
-    localStorage.setItem("meron_game_stars", gameStars);
-    document.getElementById("game-stars").innerText = `⭐ ${gameStars} Sterne`;
+    roundScore++;
   } else {
     btn.classList.add("wrong");
     document.querySelectorAll(".ans-btn").forEach(b => {
       if (+b.innerText === correct) b.classList.add("correct");
     });
   }
-  setTimeout(nextGameQuestion, 900);
+  document.getElementById("score-progress").innerText = `Richtig: ${roundScore}`;
+  setTimeout(nextQuestion, 800);
+}
+
+function finishRound() {
+  const todayKey = "meron_game_star_" + new Date().toISOString().slice(0, 10);
+  const alreadyEarned = localStorage.getItem(todayKey) === "true";
+
+  let feedback = `Du hast ${roundScore} von 10 Aufgaben richtig gelöst!`;
+  if (roundScore >= 8) {
+    if (!alreadyEarned) {
+      localStorage.setItem(todayKey, "true");
+      stampedCount = Math.min(20, stampedCount + 1);
+      localStorage.setItem("meron_pass_stamps", stampedCount);
+      syncEvent({ action: "pass_stamp", child: "meron", stamps: stampedCount });
+      document.getElementById("daily-game-status").innerText = "✅ Tages-Stern verdient!";
+      feedback += " 🎉 Super Leistung! Du hast dir deinen Tages-Stern für den Belohnungs-Pass verdient ⭐!";
+    } else {
+      feedback += " 👏 Tolle Übung! Deinen Tages-Stern hast du heute bereits gesammelt.";
+    }
+  } else {
+    feedback += " 👍 Gut gekämpft! Bei 8 richtigen Antworten gibt es einen Stern.";
+  }
+
+  document.getElementById("game-eq").innerText = roundScore >= 8 ? "🎉 Klasse gemacht!" : "👍 Weiter üben!";
+  document.getElementById("game-answers").innerHTML = `
+    <div style="grid-column: span 2; font-size:15px; font-weight:700; color:#166534; margin-bottom:10px">${feedback}</div>
+    <button class="ans-btn" style="grid-column: span 2; font-size:18px; background:#22c55e; color:#fff" onclick="startRound()">
+      🔄 Neue Runde spielen
+    </button>
+  `;
 }
 
 // Belohnungspass
@@ -387,6 +461,7 @@ function renderPass() {
 function toggleStamp(i) {
   stampedCount = stampedCount === i ? i - 1 : i;
   localStorage.setItem("meron_pass_stamps", stampedCount);
+  syncEvent({ action: "pass_stamp", child: "meron", stamps: stampedCount });
   renderPass();
 }
 

@@ -21,29 +21,54 @@ body {
 }
 
 header {
-  background: linear-gradient(135deg, #475569 0%, #1e293b 100%);
+  background: linear-gradient(135deg, #334155 0%, #0f172a 100%);
   color: #fff;
-  padding: 28px 20px 34px;
+  padding: 26px 20px 32px;
   box-shadow: 0 4px 20px rgba(0,0,0,.15);
   text-align: center;
 }
 header h1 { font-size: 28px; font-weight: 900; display: flex; align-items: center; justify-content: center; gap: 10px; }
-.header-sub { font-size: 15px; color: #cbd5e1; margin-top: 6px; font-weight: 600; }
+.header-sub { font-size: 14.5px; color: #cbd5e1; margin-top: 6px; font-weight: 600; }
 
 .container {
-  max-width: 900px;
+  max-width: 950px;
   margin: -18px auto 0;
   padding: 0 16px;
 }
 
-/* Alert / Routine banner */
+/* Master Reset Box for Mama */
+.master-control {
+  background: #fff; border-radius: 20px; padding: 18px 22px;
+  box-shadow: 0 6px 24px rgba(0,0,0,.06); border: 2px solid #e2e8f0;
+  margin-bottom: 22px; display: flex; flex-direction: column; gap: 12px;
+}
+.control-top { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+.control-title { font-size: 17px; font-weight: 900; color: #0f172a; display: flex; align-items: center; gap: 8px; }
+.sync-indicator { font-size: 12px; font-weight: 800; color: #16a34a; background: #dcfce7; padding: 3px 10px; border-radius: 20px; display: inline-flex; align-items: center; gap: 5px; }
+.sync-indicator::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: #22c55e; display: inline-block; animation: pulse 1.5s infinite; }
+@keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: .4; transform: scale(1.3); } }
+
+.reset-buttons-row { display: flex; gap: 10px; flex-wrap: wrap; }
+.btn-reset-master {
+  border: 0; background: #0284c7; color: #fff; font: inherit; font-size: 13.5px;
+  font-weight: 800; padding: 10px 18px; border-radius: 14px; cursor: pointer; transition: all .15s;
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.btn-reset-master:hover { background: #0369a1; transform: translateY(-1px); }
+.btn-reset-single {
+  border: 1px solid #cbd5e1; background: #f8fafc; color: #334155; font: inherit; font-size: 12.5px;
+  font-weight: 800; padding: 8px 14px; border-radius: 12px; cursor: pointer; transition: .15s;
+}
+.btn-reset-single:hover { background: #e2e8f0; }
+
+/* Day Banner */
 .alert-card {
   background: #fff; border-radius: 18px; padding: 16px 20px;
-  box-shadow: 0 4px 16px rgba(0,0,0,.05); border-left: 5px solid #3b82f6;
-  margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; gap: 14px;
+  box-shadow: 0 4px 16px rgba(0,0,0,.04); border-left: 5px solid #0284c7;
+  margin-bottom: 22px; display: flex; align-items: center; justify-content: space-between; gap: 14px;
 }
 .alert-text b { font-size: 16px; color: #1e293b; display: block; margin-bottom: 2px; }
-.alert-text span { font-size: 13.5px; color: #64748b; }
+.alert-text span { font-size: 13px; color: #64748b; }
 .date-pill {
   background: #f1f5f9; color: #334155; font-weight: 800; font-size: 13px;
   padding: 6px 14px; border-radius: 20px; white-space: nowrap;
@@ -51,7 +76,7 @@ header h1 { font-size: 28px; font-weight: 900; display: flex; align-items: cente
 
 /* Children Overview Cards Grid */
 .kids-grid {
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: 18px;
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 18px;
   margin-bottom: 28px;
 }
 .kid-box {
@@ -106,16 +131,6 @@ header h1 { font-size: 28px; font-weight: 900; display: flex; align-items: cente
   height: 100%; border-radius: 10px; transition: width .3s ease;
 }
 
-/* Mama action links */
-.kid-actions {
-  display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: auto; padding-top: 8px;
-}
-.btn-action {
-  text-decoration: none; text-align: center; font-size: 12px; font-weight: 800;
-  padding: 8px; border-radius: 10px; background: #f1f5f9; color: #334155; transition: .15s;
-}
-.btn-action:hover { background: #e2e8f0; }
-
 /* Control Tools */
 .tools-panel {
   background: #fff; border-radius: 20px; padding: 22px 24px; border: 1px solid #e2e8f0;
@@ -128,7 +143,7 @@ header h1 { font-size: 28px; font-weight: 900; display: flex; align-items: cente
   padding: 14px 16px; text-decoration: none; color: inherit; display: flex; align-items: center; gap: 12px;
   transition: all .15s;
 }
-.tool-btn:hover { border-color: #3b82f6; transform: translateY(-2px); }
+.tool-btn:hover { border-color: #0284c7; transform: translateY(-2px); }
 .tool-btn b { font-size: 15px; display: block; }
 .tool-btn span { font-size: 12px; color: #64748b; }
 </style>
@@ -137,10 +152,31 @@ header h1 { font-size: 28px; font-weight: 900; display: flex; align-items: cente
 
 <header>
   <h1>👩‍👧‍👦 Mamas Kontrollzentrum</h1>
-  <div class="header-sub">Tages-Check, offene Aufgaben &amp; Fortschritt für Rufta, Meron und Eldana</div>
+  <div class="header-sub">Tages-Check, Aufgaben-Kontrolle &amp; Wochen-Steuerung für alle Kinder</div>
 </header>
 
 <div class="container">
+
+  <!-- Mama Master Reset Bar -->
+  <div class="master-control">
+    <div class="control-top">
+      <div class="control-title">
+        <span>🔄 Wochen-Steuerung (Nur für Mama)</span>
+      </div>
+      <div class="sync-indicator">Live mit Kinder-Tablets synchronisiert</div>
+    </div>
+    <p style="font-size:13.5px;color:#64748b">
+      Klicke hier, um eine neue Woche zu starten. Die Aufgaben auf den Tablets der Kinder werden <b>sofort auf 0 zurückgesetzt</b>:
+    </p>
+    <div class="reset-buttons-row">
+      <button class="btn-reset-master" onclick="sendResetCommand('all')">
+        🔄 Neue Woche für ALLE 3 Kinder bei 0 starten
+      </button>
+      <button class="btn-reset-single" onclick="sendResetCommand('meron')">Nur Meron auf 0</button>
+      <button class="btn-reset-single" onclick="sendResetCommand('eldana')">Nur Eldana auf 0</button>
+      <button class="btn-reset-single" onclick="sendResetCommand('rufta')">Nur Rufta auf 0</button>
+    </div>
+  </div>
 
   <!-- Day Banner -->
   <div class="alert-card">
@@ -175,11 +211,6 @@ header h1 { font-size: 28px; font-weight: 900; display: flex; align-items: cente
         <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;padding:8px 10px;font-size:12px;color:#1e40af">
           📝 <b>Nächste Arbeit:</b> Mathe am 18.11. (Bruchrechnung)
         </div>
-
-        <div class="kid-actions">
-          <a href="rufta.html" class="btn-action">App von Rufta →</a>
-          <a href="✏️%20Lernplan-Editor%20(zum%20Anpassen).html" class="btn-action">Plan bearbeiten</a>
-        </div>
       </div>
     </div>
 
@@ -204,11 +235,6 @@ header h1 { font-size: 28px; font-weight: 900; display: flex; align-items: cente
         <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:8px 10px;font-size:12px;color:#166534">
           🔢 <b>Fokus diese Woche:</b> 6er- und 7er-Reihe im Einmaleins
         </div>
-
-        <div class="kid-actions">
-          <a href="meron.html" class="btn-action">App von Meron →</a>
-          <a href="✏️%20Lernplan-Editor%20(zum%20Anpassen).html" class="btn-action">Plan bearbeiten</a>
-        </div>
       </div>
     </div>
 
@@ -232,11 +258,6 @@ header h1 { font-size: 28px; font-weight: 900; display: flex; align-items: cente
 
         <div style="background:#fff7ed;border:1px solid #fed7aa;border-radius:10px;padding:8px 10px;font-size:12px;color:#c2410c">
           📖 <b>Fokus diese Woche:</b> Täglich 10 Min. laut vorlesen
-        </div>
-
-        <div class="kid-actions">
-          <a href="eldana.html" class="btn-action">App von Eldana →</a>
-          <a href="✏️%20Lernplan-Editor%20(zum%20Anpassen).html" class="btn-action">Plan bearbeiten</a>
         </div>
       </div>
     </div>
@@ -308,7 +329,6 @@ const todayName = dayNames[now.getDay()];
 document.getElementById("banner-day").innerText = `Heute ist ${todayName}`;
 document.getElementById("date-pill").innerText = `${todayName}, ${now.toLocaleDateString("de-DE")}`;
 
-// Sport day reminder
 if (now.getDay() === 2 || now.getDay() === 4) {
   document.getElementById("banner-hint").innerHTML = "🥋 <b>Achtung:</b> Heute ist Taekwondo-Tag! Um 17:40 Uhr mit Hausaufgaben fertig sein.";
 }
@@ -338,19 +358,71 @@ function toggleMamaTask(kid, idx, el, key) {
   el.querySelector(".mama-chk").innerText = isDone ? "✓" : "";
 }
 
-// Read current stamps
-const rStamps = +(localStorage.getItem("rufta_pass_stamps") || 6);
-const mStamps = +(localStorage.getItem("meron_pass_stamps") || 8);
-const eStamps = +(localStorage.getItem("eldana_pass_stamps") || 11);
+// Master Reset broadcast across all devices
+const SYNC_URL = "https://ntfy.sh/schule_kinder_stumpah89_sync";
 
-document.getElementById("rufta-pass-num").innerText = `${rStamps} / 20`;
-document.getElementById("rufta-bar").style.width = `${(rStamps / 20) * 100}%`;
+function sendResetCommand(target) {
+  const targetLabel = target === "all" ? "ALLE drei Kinder" : target.toUpperCase();
+  if (!confirm(`Möchtest du die Aufgaben für ${targetLabel} auf allen Tablets auf 0 zurücksetzen?`)) return;
 
-document.getElementById("meron-pass-num").innerText = `${mStamps} / 20`;
-document.getElementById("meron-bar").style.width = `${(mStamps / 20) * 100}%`;
+  const payload = {
+    action: "reset_week",
+    target: target,
+    ts: Date.now(),
+    by: "mama"
+  };
 
-document.getElementById("eldana-pass-num").innerText = `${eStamps} / 20`;
-document.getElementById("eldana-bar").style.width = `${(eStamps / 20) * 100}%`;
+  fetch(SYNC_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload)
+  }).then(() => {
+    // Also reset Mama's checks for today
+    Object.keys(localStorage).forEach(k => {
+      if (k.startsWith("mama_check_")) localStorage.removeItem(k);
+    });
+    renderMamaTasks("rufta", "tasks-rufta");
+    renderMamaTasks("meron", "tasks-meron");
+    renderMamaTasks("eldana", "tasks-eldana");
+    alert(`✅ Befehl erfolgreich gesendet! Die Wochenpläne für ${targetLabel} wurden auf allen Tablets auf 0 zurückgesetzt.`);
+  }).catch(e => {
+    alert("Hinweis: " + e.message);
+  });
+}
+
+// Realtime listener for child events
+function listenChildEvents() {
+  fetch(`${SYNC_URL}/json?poll=1`)
+    .then(r => r.json())
+    .then(msg => {
+      try {
+        const data = JSON.parse(msg.message);
+        if (data.action === "pass_stamp") {
+          updateStampsDisplay(data.child, data.stamps);
+        }
+      } catch(e){}
+    }).catch(() => {});
+}
+setInterval(listenChildEvents, 10000);
+listenChildEvents();
+
+function updateStampsDisplay(child, count) {
+  if (child === "meron") {
+    document.getElementById("meron-pass-num").innerText = `${count} / 20`;
+    document.getElementById("meron-bar").style.width = `${(count / 20) * 100}%`;
+  } else if (child === "eldana") {
+    document.getElementById("eldana-pass-num").innerText = `${count} / 20`;
+    document.getElementById("eldana-bar").style.width = `${(count / 20) * 100}%`;
+  } else if (child === "rufta") {
+    document.getElementById("rufta-pass-num").innerText = `${count} / 20`;
+    document.getElementById("rufta-bar").style.width = `${(count / 20) * 100}%`;
+  }
+}
+
+// Initial stamps display
+updateStampsDisplay("rufta", +(localStorage.getItem("rufta_pass_stamps") || 6));
+updateStampsDisplay("meron", +(localStorage.getItem("meron_pass_stamps") || 8));
+updateStampsDisplay("eldana", +(localStorage.getItem("eldana_pass_stamps") || 11));
 
 renderMamaTasks("rufta", "tasks-rufta");
 renderMamaTasks("meron", "tasks-meron");
@@ -358,4 +430,3 @@ renderMamaTasks("eldana", "tasks-eldana");
 </script>
 </body>
 </html>
-
