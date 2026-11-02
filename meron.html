@@ -6,7 +6,7 @@
 <title>Merons Lern-App 🦊</title>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Merons App">
+<meta name="apple-mobile-web-app-title" content="Meron">
 <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦊</text></svg>">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦊</text></svg>">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
@@ -17,91 +17,70 @@ body {
   color: #1e293b;
   background: #f0fdf4;
   min-height: 100vh;
-  padding-bottom: 50px;
+  padding-bottom: 80px;
   -webkit-tap-highlight-color: transparent;
 }
 
+/* Header */
 header {
-  background: linear-gradient(135deg, #166534, #22c55e);
+  background: linear-gradient(135deg, #15803d, #22c55e);
   color: #fff;
-  padding: 24px 20px 32px;
-  border-bottom-left-radius: 28px;
-  border-bottom-right-radius: 28px;
+  padding: 22px 18px 26px;
+  border-bottom-left-radius: 26px;
+  border-bottom-right-radius: 26px;
   box-shadow: 0 6px 20px rgba(22,101,52,.2);
   text-align: center;
-  position: relative;
 }
-.home-link {
-  position: absolute; top: 16px; left: 16px; color: #dcfce7;
-  text-decoration: none; font-size: 13px; font-weight: 800;
-  background: rgba(0,0,0,.15); padding: 6px 12px; border-radius: 20px;
-}
-.avatar-large {
-  width: 72px; height: 72px; border-radius: 50%;
-  background: rgba(255,255,255,.25); font-size: 42px;
-  margin: 0 auto 10px; display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 4px 12px rgba(0,0,0,.15);
-}
-header h1 { font-size: 28px; font-weight: 900; letter-spacing: -0.5px; }
-.week-info {
-  margin-top: 6px; font-size: 15px; font-weight: 700; color: #dcfce7;
-  display: inline-block; background: rgba(0,0,0,.15); padding: 4px 14px; border-radius: 20px;
+.header-top { display: flex; align-items: center; justify-content: center; gap: 12px; }
+.avatar { font-size: 40px; }
+h1 { font-size: 26px; font-weight: 900; }
+.week-pill {
+  display: inline-block; background: rgba(0,0,0,.15); color: #dcfce7;
+  font-size: 13px; font-weight: 800; padding: 4px 14px; border-radius: 20px; margin-top: 6px;
 }
 
-.main-content {
-  max-width: 700px;
-  margin: -16px auto 0;
+/* Container */
+.container {
+  max-width: 650px;
+  margin: 16px auto 0;
   padding: 0 16px;
 }
 
-/* Quick Action Tiles */
-.quick-tools {
-  display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 22px;
-}
-.tool-tile {
-  background: #fff; border-radius: 18px; padding: 16px 14px;
-  text-decoration: none; color: inherit; display: flex; align-items: center; gap: 12px;
-  box-shadow: 0 4px 14px rgba(0,0,0,.04); border: 2px solid #bbf7d0;
-  transition: transform .12s;
-}
-.tool-tile:active { transform: scale(0.97); }
-.tool-icon { font-size: 32px; flex: none; }
-.tool-tile b { font-size: 16px; font-weight: 900; display: block; color: #166534; }
-.tool-tile span { font-size: 12px; color: #64748b; font-weight: 600; }
+/* Tab Views */
+.view { display: none; }
+.view.active { display: block; animation: fadeIn .15s ease-out; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
 
-/* Week Reset Bar */
-.reset-bar {
-  background: #fff; border-radius: 16px; padding: 12px 18px; margin-bottom: 20px;
-  display: flex; justify-content: space-between; align-items: center;
-  box-shadow: 0 2px 8px rgba(0,0,0,.04); border: 1px solid #dcfce7;
-}
-.reset-btn {
-  border: 0; background: #e0f2fe; color: #0369a1; font: inherit; font-size: 13px;
-  font-weight: 800; padding: 7px 14px; border-radius: 20px; cursor: pointer;
-}
-
-/* Today Card */
-.today-card {
+/* Cards & Sections */
+.card {
   background: #fff; border-radius: 22px; padding: 20px 22px;
-  box-shadow: 0 6px 20px rgba(0,0,0,.06); border: 3px solid #22c55e;
-  margin-bottom: 24px; position: relative;
+  box-shadow: 0 6px 20px rgba(0,0,0,.05); border: 2px solid #bbf7d0; margin-bottom: 20px;
 }
-.today-badge {
-  background: #22c55e; color: #fff; font-size: 12px; font-weight: 900;
-  padding: 4px 12px; border-radius: 20px; display: inline-block;
-  text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px;
+.card-title {
+  font-size: 20px; font-weight: 900; color: #166534; margin-bottom: 14px;
+  display: flex; align-items: center; justify-content: space-between;
 }
-.today-title { font-size: 22px; font-weight: 900; color: #1e293b; margin-bottom: 14px; }
 
-/* Tasks Checklist with BIG fonts */
+/* Day Tabs */
+.days-scroll {
+  display: flex; gap: 6px; overflow-x: auto; padding: 4px 2px 14px; margin-bottom: 12px;
+}
+.day-btn {
+  font: inherit; font-size: 14px; font-weight: 800; border: 0; border-radius: 20px;
+  padding: 8px 16px; cursor: pointer; background: #fff; color: #475569;
+  box-shadow: 0 2px 6px rgba(0,0,0,.04); flex: none; border: 1px solid #e2e8f0;
+}
+.day-btn.on { background: #15803d; color: #fff; border-color: #15803d; }
+
+/* Big Tasks */
 .tasks-list { display: flex; flex-direction: column; gap: 10px; }
-.task-row {
+.task-item {
   display: flex; align-items: center; gap: 14px; padding: 14px 16px;
   background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 16px;
-  cursor: pointer; transition: all .15s ease; user-select: none;
+  cursor: pointer; transition: all .12s; user-select: none;
 }
-.task-row:active { transform: scale(0.98); }
-.task-row.done {
+.task-item:active { transform: scale(0.98); }
+.task-item.done {
   background: #f0fdf4; border-color: #86efac; text-decoration: line-through; opacity: .7;
 }
 .big-chk {
@@ -109,209 +88,207 @@ header h1 { font-size: 28px; font-weight: 900; letter-spacing: -0.5px; }
   display: flex; align-items: center; justify-content: center; font-size: 20px;
   font-weight: 900; color: #16a34a; background: #fff; flex: none;
 }
-.task-row.done .big-chk {
-  border-color: #16a34a; background: #22c55e; color: #fff;
-}
-.task-info { flex: 1; }
+.task-item.done .big-chk { border-color: #16a34a; background: #22c55e; color: #fff; }
 .task-time { font-size: 13px; font-weight: 800; color: #16a34a; margin-bottom: 2px; }
 .task-text { font-size: 17px; font-weight: 800; color: #1e293b; line-height: 1.35; }
 
-/* Day Navigator */
-.days-nav {
-  display: flex; gap: 6px; overflow-x: auto; padding: 6px 2px 14px; margin-bottom: 14px;
+/* Week Reset Button */
+.reset-week-btn {
+  width: 100%; border: 0; background: #e0f2fe; color: #0369a1; font: inherit;
+  font-size: 13px; font-weight: 800; padding: 10px; border-radius: 14px; cursor: pointer;
+  margin-top: 14px; text-align: center;
 }
-.day-tab {
-  font: inherit; font-size: 14px; font-weight: 800; border: 0; border-radius: 20px;
-  padding: 8px 16px; cursor: pointer; background: #fff; color: #475569;
-  box-shadow: 0 2px 6px rgba(0,0,0,.04); flex: none; border: 1px solid #e2e8f0;
-}
-.day-tab.on { background: #166534; color: #fff; border-color: #166534; }
 
-/* Star Reward section */
-.star-box {
-  background: linear-gradient(135deg, #fffbeb, #fef3c7);
-  border: 2px dashed #f59e0b; border-radius: 20px; padding: 18px 20px;
-  display: flex; align-items: center; justify-content: space-between; margin-top: 18px;
+/* 1x1 Blitz Mini Game */
+.math-box {
+  background: #f0fdf4; border: 2px solid #bbf7d0; border-radius: 18px;
+  padding: 24px 10px; text-align: center; margin-bottom: 18px;
 }
-.star-btn-big {
-  font-size: 38px; cursor: pointer; filter: grayscale(1); opacity: .35;
-  transition: all .2s; border: 0; background: transparent;
+.math-equation { font-size: 44px; font-weight: 900; color: #15803d; letter-spacing: 2px; }
+.answers-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.ans-btn {
+  font: inherit; font-size: 28px; font-weight: 900; border: 2px solid #e2e8f0;
+  border-radius: 16px; padding: 14px; background: #fff; color: #1e293b; cursor: pointer;
 }
-.star-btn-big.earned { filter: none; opacity: 1; transform: scale(1.15); }
+.ans-btn:active { transform: scale(0.96); }
+.ans-btn.correct { background: #22c55e !important; color: #fff !important; border-color: #22c55e !important; }
+.ans-btn.wrong { background: #ef4444 !important; color: #fff !important; border-color: #ef4444 !important; }
+
+/* Stars Stamp Pass */
+.stars-grid-pass {
+  display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-top: 14px;
+}
+.star-stamp {
+  border: 2px dashed #cbd5e1; border-radius: 14px; height: 56px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  cursor: pointer; background: #fafbfe; font-size: 24px; color: #cbd5e1; transition: all .15s;
+}
+.star-stamp.stamped {
+  border: 2px solid #f59e0b; background: #fef3c7; color: #f59e0b; transform: scale(1.05);
+}
+
+/* Bottom App Navigation Bar */
+.bottom-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; height: 68px;
+  background: #fff; border-top: 1px solid #e2e8f0; display: flex;
+  justify-content: space-around; align-items: center; z-index: 100;
+  box-shadow: 0 -4px 16px rgba(0,0,0,.06);
+}
+.nav-tab {
+  border: 0; background: transparent; color: #64748b; font: inherit; font-size: 11px;
+  font-weight: 800; display: flex; flex-direction: column; align-items: center; gap: 4px;
+  cursor: pointer; padding: 6px 12px; border-radius: 12px; transition: all .12s;
+}
+.nav-tab span { font-size: 22px; }
+.nav-tab.active { color: #166534; transform: translateY(-2px); }
+.nav-tab.active span { filter: drop-shadow(0 2px 6px rgba(22,101,52,.3)); }
 </style>
 </head>
 <body>
 
 <header>
-  <a href="index.html" class="home-link">← Alle Kinder</a>
-  <div class="avatar-large">🦊</div>
-  <h1>Hallo Meron!</h1>
-  <div class="week-info" id="week-display">Woche lädt…</div>
+  <div class="header-top">
+    <div class="avatar">🦊</div>
+    <h1>Merons Welt</h1>
+  </div>
+  <div class="week-pill" id="kw-info">3. Klasse · Schwerpunkt Mathe</div>
 </header>
 
-<div class="main-content">
+<div class="container">
 
-  <!-- Quick Access -->
-  <div class="quick-tools">
-    <a href="1x1-Trainer.html" class="tool-tile">
-      <div class="tool-icon">⚡</div>
-      <div>
-        <b>Rechen-Blitz</b>
-        <span>1x1 üben &amp; Sterne</span>
+  <!-- VIEW 1: PLAN -->
+  <div class="view active" id="view-plan">
+    <div class="days-scroll" id="days-nav"></div>
+
+    <div class="card">
+      <div class="card-title">
+        <span id="active-day-heading">Montag</span>
+        <span style="font-size:13px;color:#166534;background:#dcfce7;padding:3px 10px;border-radius:20px" id="today-tag">HEUTE</span>
       </div>
-    </a>
-    <a href="Ranzen-Packliste.html" class="tool-tile">
-      <div class="tool-icon">🎒</div>
-      <div>
-        <b>Ranzen-Check</b>
-        <span>Abends packen</span>
+
+      <div class="tasks-list" id="tasks-list"></div>
+
+      <div style="margin-top:16px;background:#fefce8;border:2px dashed #facc15;border-radius:16px;padding:14px;display:flex;align-items:center;justify-content:space-between">
+        <div>
+          <b style="font-size:15px;color:#854d0e;display:block">Tagesziel geschafft?</b>
+          <span style="font-size:12px;color:#a16207">Klick für deinen Tages-Stern!</span>
+        </div>
+        <button id="day-star-btn" style="border:0;background:transparent;font-size:34px;cursor:pointer;filter:grayscale(1);opacity:.4;transition:all .15s">⭐</button>
       </div>
-    </a>
-    <a href="Belohnungs-Pass-Editor.html" class="tool-tile">
-      <div class="tool-icon">⭐</div>
-      <div>
-        <b>Mein Belohnungs-Pass</b>
-        <span>20 Sterne für Ausflug</span>
-      </div>
-    </a>
-    <a href="Meron/3_Einmaleins-Tabelle_Meron.pdf" target="_blank" class="tool-tile">
-      <div class="tool-icon">🔢</div>
-      <div>
-        <b>1x1 Tabelle</b>
-        <span>Große Übersicht</span>
-      </div>
-    </a>
+
+      <button class="reset-week-btn" id="btn-reset-week">🔄 Neue Woche bei 0 starten</button>
+    </div>
   </div>
 
-  <div class="reset-bar">
-    <span style="font-size:14px;font-weight:800;color:#166534">📅 Deine Aufgaben dieser Woche:</span>
-    <button class="reset-btn" id="btn-new-week" title="Startet bei 0 für eine neue Woche">🔄 Neue Woche bei 0</button>
+  <!-- VIEW 2: 1x1 BLITZRECHNER -->
+  <div class="view" id="view-game">
+    <div class="card">
+      <div class="card-title">
+        <span>⚡ 1x1-Blitzrechner</span>
+        <span style="font-size:14px;color:#f59e0b" id="game-stars">⭐ 0 Sterne</span>
+      </div>
+      <p style="font-size:14px;color:#64748b;margin-bottom:14px">Löse 10 Aufgaben schnell im Kopf!</p>
+
+      <div class="math-box">
+        <div class="math-equation" id="game-eq">6 × 7 = ?</div>
+      </div>
+
+      <div class="answers-grid" id="game-answers"></div>
+    </div>
   </div>
 
-  <!-- Days Navigation Tabs -->
-  <div class="days-nav" id="days-nav"></div>
-
-  <!-- Active Day Card -->
-  <div class="today-card">
-    <div class="today-badge" id="selected-day-badge">Heute</div>
-    <div class="today-title" id="selected-day-title">Montag</div>
-
-    <div class="tasks-list" id="tasks-container"></div>
-
-    <div class="star-box">
-      <div>
-        <b style="font-size:16px;color:#92400e;display:block">Tagesziel geschafft?</b>
-        <span style="font-size:13px;color:#b45309">Klick auf den Stern für deinen Belohnungspass!</span>
+  <!-- VIEW 3: BELOHNUNGSPASS -->
+  <div class="view" id="view-pass">
+    <div class="card">
+      <div class="card-title">
+        <span>⭐ Mein Belohnungs-Pass</span>
+        <span style="font-size:13px;color:#166534;background:#dcfce7;padding:3px 10px;border-radius:20px" id="pass-counter">0 von 20</span>
       </div>
-      <button class="star-btn-big" id="star-btn">⭐</button>
+      <div style="background:#f0fdf4;border:2px solid #bbf7d0;border-radius:14px;padding:12px 14px;margin-bottom:14px">
+        <small style="font-size:11px;color:#166534;font-weight:800;text-transform:uppercase">Mein großes Ziel:</small>
+        <b style="font-size:18px;color:#14532d;display:block">Ausflug in die Trampolinhalle 🤸‍♂️</b>
+      </div>
+
+      <div class="stars-grid-pass" id="pass-grid"></div>
+    </div>
+  </div>
+
+  <!-- VIEW 4: RANZEN -->
+  <div class="view" id="view-pack">
+    <div class="card">
+      <div class="card-title">🎒 Ranzen-Packliste</div>
+      <p style="font-size:13px;color:#64748b;margin-bottom:14px">Jeden Abend um 19:15 Uhr abhaken:</p>
+      
+      <div class="tasks-list" id="pack-list">
+        <div class="task-item" onclick="togglePack(this)"><div class="big-chk"></div><div><b style="font-size:15px;display:block">Federmäppchen vollständig</b><span style="font-size:12px;color:#64748b">Füller, Bleistift gespitzt, Radiergummi</span></div></div>
+        <div class="task-item" onclick="togglePack(this)"><div class="big-chk"></div><div><b style="font-size:15px;display:block">Hausaufgabenheft &amp; Mappe</b><span style="font-size:12px;color:#64748b">Alles für morgen fertig eingepackt</span></div></div>
+        <div class="task-item" onclick="togglePack(this)"><div class="big-chk"></div><div><b style="font-size:15px;display:block">Trinkflasche &amp; Brotdose</b><span style="font-size:12px;color:#64748b">Gespült und bereitgestellt</span></div></div>
+        <div class="task-item" onclick="togglePack(this)"><div class="big-chk"></div><div><b style="font-size:15px;display:block">Taekwondo-Tasche (Di &amp; Do)</b><span style="font-size:12px;color:#64748b">Anzug und Gürtel an der Garderobe</span></div></div>
+      </div>
     </div>
   </div>
 
 </div>
 
+<!-- App Navigation Bar -->
+<div class="bottom-nav">
+  <button class="nav-tab active" onclick="switchView('view-plan', this)"><span>📅</span>Mein Plan</button>
+  <button class="nav-tab" onclick="switchView('view-game', this)"><span>⚡</span>1x1-Blitz</button>
+  <button class="nav-tab" onclick="switchView('view-pass', this)"><span>⭐</span>Mein Pass</button>
+  <button class="nav-tab" onclick="switchView('view-pack', this)"><span>🎒</span>Ranzen</button>
+</div>
+
 <script>
-const DAYS_DATA = [
-  {
-    name: "Montag", icon: "📖",
-    tasks: [
-      { time: "17:00", text: "Ankommen, Snack & kurze Pause 🍎" },
-      { time: "17:15 – 17:45", text: "Hausaufgaben erledigen" },
-      { time: "17:50 – 18:15", text: "Einmaleins + schriftliches Rechnen üben" }
-    ]
-  },
-  {
-    name: "Dienstag", icon: "🥋",
-    tasks: [
-      { time: "17:00", text: "Ankommen & Snack 🍎" },
-      { time: "17:10 – 17:40", text: "Hausaufgaben + 10 Min. Einmaleins" },
-      { time: "18:00 – 19:30", text: "Taekwondo 🥋 (Puffer für Fahrt & Umziehen)" }
-    ]
-  },
-  {
-    name: "Mittwoch", icon: "📖",
-    tasks: [
-      { time: "17:00", text: "Ankommen, Snack & Pause 🍎" },
-      { time: "17:15 – 17:45", text: "Hausaufgaben erledigen" },
-      { time: "17:50 – 18:15", text: "Mathe-Sachaufgaben + 10 Min. Lesen" }
-    ]
-  },
-  {
-    name: "Donnerstag", icon: "🥋",
-    tasks: [
-      { time: "17:00", text: "Ankommen & Snack 🍎" },
-      { time: "17:10 – 17:40", text: "Hausaufgaben + Rufta fragt Einmaleins ab ⭐" },
-      { time: "18:00 – 19:30", text: "Taekwondo 🥋" }
-    ]
-  },
-  {
-    name: "Freitag", icon: "🇬🇧",
-    tasks: [
-      { time: "17:00", text: "Ankommen & Snack 🍎" },
-      { time: "17:10 – 17:40", text: "Mathe-Spiel / Kopfrechnen + Lesen" },
-      { time: "18:00 – 19:30", text: "Englischkurs 🇬🇧" }
-    ]
-  },
-  {
-    name: "Samstag", icon: "🇬🇧",
-    tasks: [
-      { time: "10:00 – 10:50", text: "Mathe-Übungsblatt von Andreas + Diktat üben" },
-      { time: "18:00 – 19:30", text: "Englischkurs 🇬🇧" }
-    ]
-  },
-  {
-    name: "Sonntag", icon: "☀️",
-    tasks: [
-      { time: "20 Min.", text: "Lesen im Lieblingsbuch & Schultasche packen 🎒" }
-    ]
-  }
+const DAYS = [
+  { name: "Montag", icon: "📖", tasks: [{ time: "17:00", text: "Ankommen, Snack & kurze Pause 🍎" }, { time: "17:15 – 17:45", text: "Hausaufgaben erledigen" }, { time: "17:50 – 18:15", text: "Einmaleins + schriftliches Rechnen" }] },
+  { name: "Dienstag", icon: "🥋", tasks: [{ time: "17:00", text: "Ankommen & Snack 🍎" }, { time: "17:10 – 17:40", text: "Hausaufgaben + 10 Min. Einmaleins" }, { time: "18:00 – 19:30", text: "Taekwondo 🥋 (Puffer für Fahrt)" }] },
+  { name: "Mittwoch", icon: "📖", tasks: [{ time: "17:00", text: "Ankommen, Snack & Pause 🍎" }, { time: "17:15 – 17:45", text: "Hausaufgaben erledigen" }, { time: "17:50 – 18:15", text: "Mathe-Sachaufgaben + 10 Min. Lesen" }] },
+  { name: "Donnerstag", icon: "🥋", tasks: [{ time: "17:00", text: "Ankommen & Snack 🍎" }, { time: "17:10 – 17:40", text: "Hausaufgaben + Rufta fragt Einmaleins ab ⭐" }, { time: "18:00 – 19:30", text: "Taekwondo 🥋" }] },
+  { name: "Freitag", icon: "🇬🇧", tasks: [{ time: "17:00", text: "Ankommen & Snack 🍎" }, { time: "17:10 – 17:40", text: "Mathe-Spiel / Kopfrechnen + Lesen" }, { time: "18:00 – 19:30", text: "Englischkurs 🇬🇧" }] },
+  { name: "Samstag", icon: "🇬🇧", tasks: [{ time: "10:00 – 10:50", text: "Mathe-Übungsblatt von Andreas + Diktat" }, { time: "18:00 – 19:30", text: "Englischkurs 🇬🇧" }] },
+  { name: "Sonntag", icon: "☀️", tasks: [{ time: "20 Min.", text: "Lesen im Lieblingsbuch & Ranzen packen 🎒" }] }
 ];
 
-// Current week detection (KW)
 function getKW() {
   const d = new Date();
   const date = new Date(d.getTime());
-  date.setHours(0, 0, 0, 0);
+  date.setHours(0,0,0,0);
   date.setDate(date.getDate() + 3 - (date.getDay() + 6) % 7);
   const week1 = new Date(date.getFullYear(), 0, 4);
   return 1 + Math.round(((date.getTime() - week1.getTime()) / 86400000 - 3 + (week1.getDay() + 6) % 7) / 7);
 }
 
-const currentKW = getKW();
-const STORAGE_PREFIX = `meron_plan_kw${currentKW}_`;
+const KW = getKW();
+document.getElementById("kw-info").innerText = `Kalenderwoche ${KW} · 3. Klasse`;
+const PFX = `meron_app_kw${KW}_`;
 
-document.getElementById("week-display").innerText = `Kalenderwoche ${currentKW} · 3. Klasse`;
-
-// Determine current weekday (0=Sonntag, 1=Montag...)
-let currentDayIndex = new Date().getDay();
-// Map JS Sunday (0) to index 6, Monday (1) to index 0
-let activeDay = currentDayIndex === 0 ? 6 : currentDayIndex - 1;
+let currentDayIdx = new Date().getDay();
+let activeDay = currentDayIdx === 0 ? 6 : currentDayIdx - 1;
 
 function renderNav() {
-  const nav = document.getElementById("days-nav");
-  nav.innerHTML = DAYS_DATA.map((d, i) =>
-    `<button class="day-tab ${i === activeDay ? 'on' : ''}" onclick="selectDay(${i})">${d.icon} ${d.name}</button>`
+  document.getElementById("days-nav").innerHTML = DAYS.map((d, i) =>
+    `<button class="day-btn ${i === activeDay ? 'on' : ''}" onclick="selectDay(${i})">${d.icon} ${d.name}</button>`
   ).join("");
 }
 
 function selectDay(i) {
   activeDay = i;
   renderNav();
-  renderDay();
+  renderTasks();
 }
 
-function renderDay() {
-  const day = DAYS_DATA[activeDay];
-  document.getElementById("selected-day-badge").innerText = (activeDay === (currentDayIndex === 0 ? 6 : currentDayIndex - 1)) ? "HEUTE AKTIV ⭐" : "WOCHENTAG";
-  document.getElementById("selected-day-title").innerText = `${day.icon} ${day.name}`;
+function renderTasks() {
+  const day = DAYS[activeDay];
+  document.getElementById("active-day-heading").innerText = `${day.icon} ${day.name}`;
+  document.getElementById("today-tag").style.display = (activeDay === (currentDayIdx === 0 ? 6 : currentDayIdx - 1)) ? "inline-block" : "none";
 
-  const container = document.getElementById("tasks-container");
-  container.innerHTML = day.tasks.map((t, idx) => {
-    const key = `${STORAGE_PREFIX}day${activeDay}_task${idx}`;
-    const isDone = localStorage.getItem(key) === "true";
+  document.getElementById("tasks-list").innerHTML = day.tasks.map((t, idx) => {
+    const k = `${PFX}d${activeDay}_t${idx}`;
+    const done = localStorage.getItem(k) === "true";
     return `
-      <div class="task-row ${isDone ? 'done' : ''}" onclick="toggleTask(${activeDay}, ${idx})">
-        <div class="big-chk">${isDone ? '✓' : ''}</div>
-        <div class="task-info">
+      <div class="task-item ${done ? 'done' : ''}" onclick="toggleTask(${activeDay}, ${idx})">
+        <div class="big-chk">${done ? '✓' : ''}</div>
+        <div>
           <div class="task-time">${t.time}</div>
           <div class="task-text">${t.text}</div>
         </div>
@@ -319,36 +296,108 @@ function renderDay() {
     `;
   }).join("");
 
-  const starKey = `${STORAGE_PREFIX}day${activeDay}_star`;
-  const starEarned = localStorage.getItem(starKey) === "true";
-  const starBtn = document.getElementById("star-btn");
-  starBtn.className = `star-btn-big ${starEarned ? 'earned' : ''}`;
-  starBtn.onclick = () => {
-    const nextState = !starEarned;
-    localStorage.setItem(starKey, nextState);
-    renderDay();
+  const starKey = `${PFX}d${activeDay}_star`;
+  const star = localStorage.getItem(starKey) === "true";
+  const btn = document.getElementById("day-star-btn");
+  btn.style.filter = star ? "none" : "grayscale(1)";
+  btn.style.opacity = star ? "1" : ".4";
+  btn.onclick = () => {
+    localStorage.setItem(starKey, !star);
+    renderTasks();
   };
 }
 
 function toggleTask(d, i) {
-  const key = `${STORAGE_PREFIX}day${d}_task${i}`;
-  const cur = localStorage.getItem(key) === "true";
-  localStorage.setItem(key, !cur);
-  renderDay();
+  const k = `${PFX}d${d}_t${i}`;
+  localStorage.setItem(k, !(localStorage.getItem(k) === "true"));
+  renderTasks();
 }
 
-document.getElementById("btn-new-week").onclick = () => {
-  if (confirm("Möchtest du alle Haken und Sterne für diese Woche auf 0 zurücksetzen?")) {
+document.getElementById("btn-reset-week").onclick = () => {
+  if (confirm("Möchtest du die Aufgaben für diese Woche auf 0 zurücksetzen?")) {
     Object.keys(localStorage).forEach(k => {
-      if (k.startsWith(STORAGE_PREFIX)) localStorage.removeItem(k);
+      if (k.startsWith(PFX)) localStorage.removeItem(k);
     });
-    renderDay();
+    renderTasks();
   }
 };
 
+// View switching
+function switchView(viewId, btn) {
+  document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
+  document.querySelectorAll(".nav-tab").forEach(b => b.classList.remove("active"));
+  document.getElementById(viewId).classList.add("active");
+  btn.classList.add("active");
+  if (viewId === 'view-game') nextGameQuestion();
+  if (viewId === 'view-pass') renderPass();
+}
+
+// 1x1 Mini Game
+let gameStars = +(localStorage.getItem("meron_game_stars") || 0);
+document.getElementById("game-stars").innerText = `⭐ ${gameStars} Sterne`;
+let currA = 0, currB = 0;
+
+function nextGameQuestion() {
+  currA = Math.floor(Math.random() * 8) + 2;
+  currB = Math.floor(Math.random() * 9) + 2;
+  const ans = currA * currB;
+  document.getElementById("game-eq").innerText = `${currA} × ${currB} = ?`;
+
+  const options = new Set([ans]);
+  while (options.size < 4) {
+    let delta = Math.floor(Math.random() * 9) - 4;
+    if (delta !== 0 && ans + delta > 0) options.add(ans + delta);
+  }
+  const arr = Array.from(options).sort(() => Math.random() - 0.5);
+
+  const container = document.getElementById("game-answers");
+  container.innerHTML = arr.map(opt =>
+    `<button class="ans-btn" onclick="checkAns(this, ${opt}, ${ans})">${opt}</button>`
+  ).join("");
+}
+
+function checkAns(btn, selected, correct) {
+  document.querySelectorAll(".ans-btn").forEach(b => b.disabled = true);
+  if (selected === correct) {
+    btn.classList.add("correct");
+    gameStars++;
+    localStorage.setItem("meron_game_stars", gameStars);
+    document.getElementById("game-stars").innerText = `⭐ ${gameStars} Sterne`;
+  } else {
+    btn.classList.add("wrong");
+    document.querySelectorAll(".ans-btn").forEach(b => {
+      if (+b.innerText === correct) b.classList.add("correct");
+    });
+  }
+  setTimeout(nextGameQuestion, 900);
+}
+
+// Belohnungspass
+let stampedCount = +(localStorage.getItem("meron_pass_stamps") || 8);
+function renderPass() {
+  document.getElementById("pass-counter").innerText = `${stampedCount} von 20 Sternen`;
+  let html = "";
+  for (let i = 1; i <= 20; i++) {
+    const isStamped = i <= stampedCount;
+    html += `<div class="star-stamp ${isStamped ? 'stamped' : ''}" onclick="toggleStamp(${i})">${i === 20 ? '🏆' : '⭐'}</div>`;
+  }
+  document.getElementById("pass-grid").innerHTML = html;
+}
+
+function toggleStamp(i) {
+  stampedCount = stampedCount === i ? i - 1 : i;
+  localStorage.setItem("meron_pass_stamps", stampedCount);
+  renderPass();
+}
+
+function togglePack(el) {
+  el.classList.toggle("done");
+  const chk = el.querySelector(".big-chk");
+  chk.innerText = el.classList.contains("done") ? "✓" : "";
+}
+
 renderNav();
-renderDay();
+renderTasks();
 </script>
 </body>
 </html>
-

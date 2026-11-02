@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mamas Kontrollzentrum 👩‍👧‍👦</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Mama-Zentrale">
+<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>👩‍👧‍👦</text></svg>">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>👩‍👧‍👦</text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Nunito', system-ui, -apple-system, sans-serif;
+  color: #1e293b;
+  background: #f8fafc;
+  min-height: 100vh;
+  padding-bottom: 60px;
+}
+
+header {
+  background: linear-gradient(135deg, #475569 0%, #1e293b 100%);
+  color: #fff;
+  padding: 28px 20px 34px;
+  box-shadow: 0 4px 20px rgba(0,0,0,.15);
+  text-align: center;
+}
+header h1 { font-size: 28px; font-weight: 900; display: flex; align-items: center; justify-content: center; gap: 10px; }
+.header-sub { font-size: 15px; color: #cbd5e1; margin-top: 6px; font-weight: 600; }
+
+.container {
+  max-width: 900px;
+  margin: -18px auto 0;
+  padding: 0 16px;
+}
+
+/* Alert / Routine banner */
+.alert-card {
+  background: #fff; border-radius: 18px; padding: 16px 20px;
+  box-shadow: 0 4px 16px rgba(0,0,0,.05); border-left: 5px solid #3b82f6;
+  margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; gap: 14px;
+}
+.alert-text b { font-size: 16px; color: #1e293b; display: block; margin-bottom: 2px; }
+.alert-text span { font-size: 13.5px; color: #64748b; }
+.date-pill {
+  background: #f1f5f9; color: #334155; font-weight: 800; font-size: 13px;
+  padding: 6px 14px; border-radius: 20px; white-space: nowrap;
+}
+
+/* Children Overview Cards Grid */
+.kids-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: 18px;
+  margin-bottom: 28px;
+}
+.kid-box {
+  background: #fff; border-radius: 20px; border: 2px solid #e2e8f0;
+  overflow: hidden; box-shadow: 0 4px 16px rgba(0,0,0,.04); display: flex; flex-direction: column;
+}
+.kid-top {
+  padding: 14px 18px; color: #fff; display: flex; align-items: center; justify-content: space-between;
+}
+.kid-top.rufta { background: linear-gradient(135deg, #1e40af, #3b82f6); }
+.kid-top.meron { background: linear-gradient(135deg, #15803d, #22c55e); }
+.kid-top.eldana { background: linear-gradient(135deg, #c2410c, #ea580c); }
+
+.kid-name { font-size: 20px; font-weight: 900; display: flex; align-items: center; gap: 8px; }
+.kid-badge { font-size: 12px; font-weight: 800; background: rgba(255,255,255,.2); padding: 3px 10px; border-radius: 20px; }
+
+.kid-content {
+  padding: 16px 18px; flex: 1; display: flex; flex-direction: column; gap: 12px;
+}
+.section-label {
+  font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; color: #64748b;
+}
+
+.today-tasks-mama {
+  display: flex; flex-direction: column; gap: 8px;
+}
+.mama-task {
+  display: flex; align-items: flex-start; gap: 10px; background: #f8fafc;
+  border: 1px solid #e2e8f0; border-radius: 12px; padding: 10px 12px; font-size: 13.5px;
+  cursor: pointer; user-select: none; transition: all .12s;
+}
+.mama-task:hover { background: #f1f5f9; }
+.mama-task.checked {
+  background: #f0fdf4; border-color: #86efac; text-decoration: line-through; opacity: .7;
+}
+.mama-chk {
+  width: 22px; height: 22px; border-radius: 6px; border: 2px solid #94a3b8;
+  display: flex; align-items: center; justify-content: center; font-size: 14px;
+  font-weight: 900; color: #16a34a; background: #fff; flex: none; margin-top: 1px;
+}
+.mama-task.checked .mama-chk { border-color: #16a34a; background: #22c55e; color: #fff; }
+
+/* Pass progress bar */
+.progress-card {
+  background: #fdfefe; border: 1px solid #e2e8f0; border-radius: 12px; padding: 10px 12px;
+}
+.progress-head { display: flex; justify-content: space-between; font-size: 13px; font-weight: 800; margin-bottom: 6px; }
+.bar-track {
+  width: 100%; height: 10px; background: #e2e8f0; border-radius: 10px; overflow: hidden;
+}
+.bar-fill {
+  height: 100%; border-radius: 10px; transition: width .3s ease;
+}
+
+/* Mama action links */
+.kid-actions {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: auto; padding-top: 8px;
+}
+.btn-action {
+  text-decoration: none; text-align: center; font-size: 12px; font-weight: 800;
+  padding: 8px; border-radius: 10px; background: #f1f5f9; color: #334155; transition: .15s;
+}
+.btn-action:hover { background: #e2e8f0; }
+
+/* Control Tools */
+.tools-panel {
+  background: #fff; border-radius: 20px; padding: 22px 24px; border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 16px rgba(0,0,0,.04); margin-bottom: 24px;
+}
+.tools-panel h2 { font-size: 20px; font-weight: 900; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+.tools-row { display: flex; gap: 12px; flex-wrap: wrap; }
+.tool-btn {
+  flex: 1; min-width: 200px; background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 14px;
+  padding: 14px 16px; text-decoration: none; color: inherit; display: flex; align-items: center; gap: 12px;
+  transition: all .15s;
+}
+.tool-btn:hover { border-color: #3b82f6; transform: translateY(-2px); }
+.tool-btn b { font-size: 15px; display: block; }
+.tool-btn span { font-size: 12px; color: #64748b; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>👩‍👧‍👦 Mamas Kontrollzentrum</h1>
+  <div class="header-sub">Tages-Check, offene Aufgaben &amp; Fortschritt für Rufta, Meron und Eldana</div>
+</header>
+
+<div class="container">
+
+  <!-- Day Banner -->
+  <div class="alert-card">
+    <div class="alert-text">
+      <b id="banner-day">Heute auf einen Blick</b>
+      <span id="banner-hint">Hake hier ab, was du bei den Kindern kontrolliert hast:</span>
+    </div>
+    <div class="date-pill" id="date-pill">Montag · KW 45</div>
+  </div>
+
+  <!-- 3 Children Overview -->
+  <div class="kids-grid">
+
+    <!-- Rufta -->
+    <div class="kid-box">
+      <div class="kid-top rufta">
+        <div class="kid-name">🦉 Rufta</div>
+        <div class="kid-badge">6. Klasse</div>
+      </div>
+      <div class="kid-content">
+        <div class="section-label">📋 Aufgaben heute für Rufta:</div>
+        <div class="today-tasks-mama" id="tasks-rufta"></div>
+
+        <div class="progress-card">
+          <div class="progress-head">
+            <span>⭐ Belohnungs-Pass (Kino):</span>
+            <span id="rufta-pass-num">6 / 20</span>
+          </div>
+          <div class="bar-track"><div class="bar-fill" id="rufta-bar" style="width:30%;background:#3b82f6"></div></div>
+        </div>
+
+        <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;padding:8px 10px;font-size:12px;color:#1e40af">
+          📝 <b>Nächste Arbeit:</b> Mathe am 18.11. (Bruchrechnung)
+        </div>
+
+        <div class="kid-actions">
+          <a href="rufta.html" class="btn-action">App von Rufta →</a>
+          <a href="✏️%20Lernplan-Editor%20(zum%20Anpassen).html" class="btn-action">Plan bearbeiten</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Meron -->
+    <div class="kid-box">
+      <div class="kid-top meron">
+        <div class="kid-name">🦊 Meron</div>
+        <div class="kid-badge">3. Klasse</div>
+      </div>
+      <div class="kid-content">
+        <div class="section-label">📋 Aufgaben heute für Meron:</div>
+        <div class="today-tasks-mama" id="tasks-meron"></div>
+
+        <div class="progress-card">
+          <div class="progress-head">
+            <span>⭐ Belohnungs-Pass (Trampolin):</span>
+            <span id="meron-pass-num">8 / 20</span>
+          </div>
+          <div class="bar-track"><div class="bar-fill" id="meron-bar" style="width:40%;background:#22c55e"></div></div>
+        </div>
+
+        <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:8px 10px;font-size:12px;color:#166534">
+          🔢 <b>Fokus diese Woche:</b> 6er- und 7er-Reihe im Einmaleins
+        </div>
+
+        <div class="kid-actions">
+          <a href="meron.html" class="btn-action">App von Meron →</a>
+          <a href="✏️%20Lernplan-Editor%20(zum%20Anpassen).html" class="btn-action">Plan bearbeiten</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Eldana -->
+    <div class="kid-box">
+      <div class="kid-top eldana">
+        <div class="kid-name">🐰 Eldana</div>
+        <div class="kid-badge">2. Klasse</div>
+      </div>
+      <div class="kid-content">
+        <div class="section-label">📋 Aufgaben heute für Eldana:</div>
+        <div class="today-tasks-mama" id="tasks-eldana"></div>
+
+        <div class="progress-card">
+          <div class="progress-head">
+            <span>⭐ Belohnungs-Pass (Tierpark):</span>
+            <span id="eldana-pass-num">11 / 20</span>
+          </div>
+          <div class="bar-track"><div class="bar-fill" id="eldana-bar" style="width:55%;background:#f97316"></div></div>
+        </div>
+
+        <div style="background:#fff7ed;border:1px solid #fed7aa;border-radius:10px;padding:8px 10px;font-size:12px;color:#c2410c">
+          📖 <b>Fokus diese Woche:</b> Täglich 10 Min. laut vorlesen
+        </div>
+
+        <div class="kid-actions">
+          <a href="eldana.html" class="btn-action">App von Eldana →</a>
+          <a href="✏️%20Lernplan-Editor%20(zum%20Anpassen).html" class="btn-action">Plan bearbeiten</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Mama Management Tools -->
+  <div class="tools-panel">
+    <h2>🛠️ Eltern-Verwaltung &amp; Unterlagen</h2>
+    <div class="tools-row">
+      <a href="✏️%20Lernplan-Editor%20(zum%20Anpassen).html" class="tool-btn">
+        <span style="font-size:28px">✏️</span>
+        <div>
+          <b>Lernpläne bearbeiten</b>
+          <span>Aufgaben, Zeiten &amp; Tipps anpassen</span>
+        </div>
+      </a>
+
+      <a href="Klassenarbeiten-Planer.html" class="tool-btn">
+        <span style="font-size:28px">📝</span>
+        <div>
+          <b>Klassenarbeiten eintragen</b>
+          <span>Arbeiten &amp; Tests planen</span>
+        </div>
+      </a>
+
+      <a href="Belohnungs-Pass-Editor.html" class="tool-btn">
+        <span style="font-size:28px">⭐</span>
+        <div>
+          <b>Belohnungs-Pässe</b>
+          <span>Ziele &amp; Regeln anpassen</span>
+        </div>
+      </a>
+
+      <a href="Für%20Mama/Monatsrückblick.pdf" target="_blank" class="tool-btn">
+        <span style="font-size:28px">📊</span>
+        <div>
+          <b>Monatsrückblick (PDF)</b>
+          <span>Fortschritt reflektieren</span>
+        </div>
+      </a>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const TODAY_PLANS = {
+  rufta: [
+    { time: "17:15", title: "Hausaufgaben", done: false },
+    { time: "18:05", title: "Mathe: Brüche & Textaufgaben", done: false },
+    { time: "19:15", title: "Ranzen-Check für morgen", done: false }
+  ],
+  meron: [
+    { time: "17:15", title: "Hausaufgaben erledigen", done: false },
+    { time: "17:50", title: "Einmaleins + schriftlich Rechnen", done: false },
+    { time: "19:15", title: "Ranzen-Check für morgen", done: false }
+  ],
+  eldana: [
+    { time: "17:15", title: "Hausaufgaben erledigen", done: false },
+    { time: "17:45", title: "10 Min. laut vorlesen & schreiben", done: false },
+    { time: "19:15", title: "Ranzen-Check für morgen", done: false }
+  ]
+};
+
+const dayNames = ["Sonntag", "Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag"];
+const now = new Date();
+const todayName = dayNames[now.getDay()];
+document.getElementById("banner-day").innerText = `Heute ist ${todayName}`;
+document.getElementById("date-pill").innerText = `${todayName}, ${now.toLocaleDateString("de-DE")}`;
+
+// Sport day reminder
+if (now.getDay() === 2 || now.getDay() === 4) {
+  document.getElementById("banner-hint").innerHTML = "🥋 <b>Achtung:</b> Heute ist Taekwondo-Tag! Um 17:40 Uhr mit Hausaufgaben fertig sein.";
+}
+
+function renderMamaTasks(kid, containerId) {
+  const container = document.getElementById(containerId);
+  const tasks = TODAY_PLANS[kid];
+  container.innerHTML = tasks.map((t, idx) => {
+    const storageKey = `mama_check_${kid}_${idx}_${now.toISOString().slice(0,10)}`;
+    const isDone = localStorage.getItem(storageKey) === "true";
+    return `
+      <div class="mama-task ${isDone ? 'checked' : ''}" onclick="toggleMamaTask('${kid}', ${idx}, this, '${storageKey}')">
+        <div class="mama-chk">${isDone ? '✓' : ''}</div>
+        <div>
+          <b style="font-size:12px;color:#64748b;display:block">${t.time} Uhr:</b>
+          <span style="font-weight:700">${t.title}</span>
+        </div>
+      </div>
+    `;
+  }).join("");
+}
+
+function toggleMamaTask(kid, idx, el, key) {
+  const isDone = !(localStorage.getItem(key) === "true");
+  localStorage.setItem(key, isDone);
+  el.classList.toggle("checked", isDone);
+  el.querySelector(".mama-chk").innerText = isDone ? "✓" : "";
+}
+
+// Read current stamps
+const rStamps = +(localStorage.getItem("rufta_pass_stamps") || 6);
+const mStamps = +(localStorage.getItem("meron_pass_stamps") || 8);
+const eStamps = +(localStorage.getItem("eldana_pass_stamps") || 11);
+
+document.getElementById("rufta-pass-num").innerText = `${rStamps} / 20`;
+document.getElementById("rufta-bar").style.width = `${(rStamps / 20) * 100}%`;
+
+document.getElementById("meron-pass-num").innerText = `${mStamps} / 20`;
+document.getElementById("meron-bar").style.width = `${(mStamps / 20) * 100}%`;
+
+document.getElementById("eldana-pass-num").innerText = `${eStamps} / 20`;
+document.getElementById("eldana-bar").style.width = `${(eStamps / 20) * 100}%`;
+
+renderMamaTasks("rufta", "tasks-rufta");
+renderMamaTasks("meron", "tasks-meron");
+renderMamaTasks("eldana", "tasks-eldana");
+</script>
+</body>
+</html>
