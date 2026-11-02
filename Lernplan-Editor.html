@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lernplan-Editor – Rufta, Meron & Eldana</title>
+<meta name="description" content="Wochen-Lernpläne bearbeiten, abhaken, sichern und als DIN A4 drucken.">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+@page { size: A4 landscape; margin: 0; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  font-family: 'Nunito', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  color: #2b2d42;
+  background: #e9ecf5;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+/* Toolbar */
+.toolbar {
+  position: sticky; top: 0; z-index: 50;
+  display: flex; gap: 8px; align-items: center; flex-wrap: wrap;
+  padding: 10px 16px; background: #2b2d42; color: #fff; font-size: 13.5px;
+  box-shadow: 0 2px 12px rgba(0,0,0,.22);
+}
+.toolbar b { font-size: 16px; display: inline-flex; align-items: center; gap: 6px; margin-right: 6px; }
+.toolbar button, .toolbar label.file-btn {
+  font: inherit; font-weight: 700; border: 0; border-radius: 20px;
+  padding: 6px 13px; cursor: pointer; background: #454866; color: #fff;
+  transition: all .15s ease; display: inline-flex; align-items: center; gap: 5px;
+  user-select: none;
+}
+.toolbar button:hover, .toolbar label.file-btn:hover {
+  transform: translateY(-1px); filter: brightness(1.15);
+}
+.toolbar button.on {
+  background: var(--c, #4f7fe8);
+  box-shadow: 0 0 0 2px #fff inset;
+}
+.toolbar .sp { flex: 1; }
+.toolbar .btn-print { background: #2fae74; }
+.toolbar .btn-export { background: #3d79b8; }
+.toolbar .btn-import { background: #5a5f82; }
+.toolbar .btn-mode { background: #8d62d9; }
+.toolbar .btn-mode.active-tracking { background: #e07a22; }
+.toolbar .btn-reset { background: #8a3b4a; }
+
+/* Help & Info Bars */
+.info-bar-container { max-width: 1200px; margin: 12px auto 0; padding: 0 16px; display: flex; flex-direction: column; gap: 8px; }
+.help {
+  background: #fff; border-radius: 10px; padding: 10px 16px; font-size: 13px; color: #444; line-height: 1.5;
+  box-shadow: 0 2px 8px rgba(0,0,0,.04); border-left: 4px solid var(--c, #4f7fe8);
+}
+.tracking-banner {
+  background: #fff3cd; border-left: 4px solid #f0ad4e; padding: 8px 16px; border-radius: 8px;
+  font-size: 13px; color: #856404; font-weight: 700; display: none; align-items: center; justify-content: space-between;
+}
+.warn {
+  background: #ffe1e1; color: #a01f2f; border-radius: 8px; padding: 8px 16px;
+  font-size: 13px; font-weight: 700; display: none; border-left: 4px solid #e04a5f;
+}
+
+/* Scaling container for mobile / responsive view */
+.page-viewport {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 14px 12px 40px;
+  overflow-x: auto;
+}
+
+/* DIN A4 Landscape Page */
+.page {
+  width: 297mm;
+  height: 210mm;
+  min-width: 297mm;
+  max-width: 297mm;
+  min-height: 210mm;
+  max-height: 210mm;
+  padding: 8.5mm 10mm;
+  display: flex;
+  flex-direction: column;
+  gap: 3.8mm;
+  background: linear-gradient(160deg, #fffaf3 0%, #f3f6ff 100%);
+  border-radius: 4mm;
+  box-shadow: 0 8px 32px rgba(0,0,0,.18);
+  overflow: hidden;
+  position: relative;
+}
+
+/* Header */
+header {
+  display: flex; align-items: center; gap: 5mm; padding: 3.5mm 6mm; border-radius: 4.5mm; color: #fff;
+  background: linear-gradient(120deg, var(--c), var(--c2)); box-shadow: 0 2mm 5mm rgba(0,0,0,.12);
+}
+.avatar {
+  width: 16mm; height: 16mm; border-radius: 50%; background: rgba(255,255,255,.25);
+  display: flex; align-items: center; justify-content: center; font-size: 9.5mm; flex: none;
+}
+header h1 { font-size: 8.5mm; font-weight: 900; line-height: 1.2; letter-spacing: -0.3px; }
+header p { font-size: 3.4mm; opacity: .95; margin-top: .8mm; font-weight: 600; }
+.badges { margin-left: auto; display: flex; flex-direction: column; gap: 1.5mm; align-items: flex-end; }
+.badge {
+  background: rgba(255,255,255,.22); padding: 1.1mm 3.5mm; border-radius: 10mm;
+  font-size: 3.2mm; font-weight: 700; white-space: nowrap; display: inline-flex; align-items: center; gap: 1.2mm;
+}
+
+/* 7 Days Grid */
+.week {
+  flex: 1; display: grid; grid-template-columns: repeat(7, 1fr); gap: 2.2mm; min-height: 0;
+}
+.day {
+  background: #fff; border-radius: 3.8mm; display: flex; flex-direction: column; overflow: hidden;
+  box-shadow: 0 1mm 3mm rgba(0,0,0,.06); border: 0.3mm solid #e8eaf2; position: relative;
+}
+.day h2 {
+  font-size: 3.5mm; font-weight: 900; text-align: center; padding: 1.8mm 1mm;
+  background: #2b2d42; color: #fff; letter-spacing: 0.2px;
+}
+.day.we h2 { background: #5c5f7a; }
+.items {
+  padding: 1.8mm; display: flex; flex-direction: column; gap: 1.6mm; flex: 1; overflow: hidden;
+}
+.it {
+  border-radius: 2.3mm; padding: 1.6mm 2mm; font-size: 2.95mm; line-height: 1.28;
+  overflow-wrap: anywhere; hyphens: auto; position: relative; transition: all .12s ease;
+}
+.it .t { display: block; font-weight: 900; font-size: 2.85mm; margin-bottom: .3mm; }
+.task { background: var(--soft); border-left: 1.2mm solid var(--c); display: flex; gap: 1.6mm; }
+.task .chk {
+  flex: none; width: 3.8mm; height: 3.8mm; border: 0.5mm solid var(--c); border-radius: 1mm;
+  background: #fff; margin-top: .3mm; display: inline-flex; align-items: center; justify-content: center;
+  font-size: 3mm; font-weight: 900; color: var(--c); user-select: none;
+}
+body.tracking-mode .task .chk {
+  cursor: pointer; transition: transform .1s;
+}
+body.tracking-mode .task .chk:hover { transform: scale(1.18); }
+.it.checked-done {
+  opacity: .55; text-decoration: line-through; background: #eef2f5 !important;
+}
+.it.checked-done .chk {
+  background: var(--c); color: #fff;
+}
+
+.info { background: #fff4d1; color: #7a5b00; }
+.pause { background: #f1f2f6; color: #666; font-style: italic; text-align: center; padding: 1mm; font-size: 2.7mm; }
+.sport { background: #e85d75; color: #fff; margin-top: auto; }
+.eng { background: #8d62d9; color: #fff; margin-top: auto; }
+
+.done {
+  margin-top: auto; border-top: 0.3mm dashed #dcdfe8; padding: 1.4mm 1.8mm;
+  font-size: 2.7mm; color: #888; display: flex; align-items: center; justify-content: space-between;
+}
+.star-btn {
+  font-size: 4.2mm; filter: grayscale(1); opacity: .4; cursor: default; transition: all .15s;
+}
+body.tracking-mode .star-btn { cursor: pointer; }
+body.tracking-mode .star-btn:hover { transform: scale(1.2); }
+.star-btn.star-earned { filter: none; opacity: 1; transform: scale(1.05); }
+
+/* Bottom boxes */
+.bottom { display: grid; grid-template-columns: 2.2fr 1fr; gap: 2.8mm; }
+.box {
+  background: #fff; border-radius: 3.8mm; padding: 2.8mm 4.2mm; border: 0.3mm solid #e8eaf2;
+  box-shadow: 0 1mm 3mm rgba(0,0,0,.05);
+}
+.box h3 { font-size: 3.5mm; color: var(--c); margin-bottom: 1.1mm; font-weight: 900; }
+.box ul { display: grid; grid-template-columns: 1fr 1fr; gap: .6mm 4.5mm; padding-left: 4mm; font-size: 3mm; line-height: 1.33; }
+.box p { font-size: 3mm; line-height: 1.38; }
+
+/* In-Editor Controls */
+[contenteditable] { outline: none; border-radius: 2px; cursor: text; }
+[contenteditable]:hover { background: rgba(255, 230, 120, .35); }
+[contenteditable]:focus { background: rgba(255, 230, 120, .65); }
+.t:empty::before { content: "Uhrzeit…"; opacity: .45; }
+
+.ctl {
+  position: absolute; top: -2.2mm; right: -1mm; display: none; gap: 2px; z-index: 5;
+}
+.it:hover .ctl { display: flex; }
+.ctl button {
+  border: 0; width: 19px; height: 19px; border-radius: 50%; font-size: 11px;
+  cursor: pointer; background: #2b2d42; color: #fff; line-height: 19px; padding: 0;
+  display: inline-flex; align-items: center; justify-content: center;
+}
+.ctl button:hover { transform: scale(1.15); }
+.ctl button.del { background: #d64561; }
+.ctl button.move { background: #4a6382; }
+
+.add {
+  border: .35mm dashed #b9bdd0; background: transparent; border-radius: 2.2mm;
+  padding: 1.2mm; font: inherit; font-size: 2.8mm; font-weight: 700; color: #777; cursor: pointer;
+  transition: all .12s;
+}
+.add:hover { background: #f4f6fb; color: #2b2d42; border-color: #7c82a5; }
+
+.day.over { outline: .9mm solid #e04a5f; }
+
+/* Readable screen font enhancements */
+@media screen {
+  .page {
+    box-shadow: 0 10px 35px rgba(0,0,0,.14);
+  }
+  .it { font-size: 3.3mm; line-height: 1.35; padding: 2mm 2.4mm; }
+  .it .t { font-size: 3.2mm; }
+  .day h2 { font-size: 3.8mm; padding: 2.2mm 1mm; }
+  .box h3 { font-size: 3.9mm; }
+  .box ul, .box p { font-size: 3.3mm; line-height: 1.4; }
+}
+
+/* Tracking mode hides controls */
+body.tracking-mode [contenteditable] { pointer-events: none; }
+body.tracking-mode .ctl, body.tracking-mode .add { display: none !important; }
+
+/* Print Mode */
+@media print {
+  body { background: none; }
+  .toolbar, .info-bar-container, .ctl, .add { display: none !important; }
+  .page-viewport { padding: 0; }
+  .page { margin: 0; box-shadow: none; border-radius: 0; }
+  .t:empty { display: none; }
+  [contenteditable]:hover, [contenteditable]:focus { background: none; }
+  .day.over { outline: none; }
+}
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <a href="mama.html" style="text-decoration:none;background:#0284c7;color:#fff;font-weight:900;font-size:14px;padding:8px 16px;border-radius:20px;display:inline-flex;align-items:center;gap:6px;margin-right:12px;border:2px solid #38bdf8;box-shadow:0 2px 8px rgba(2,132,199,.4)">← Zurück zu Mamas Zentrale</a>
+  <b>✏️ Lernplan-Editor</b>
+  <span id="tabs"></span>
+  <span class="sp"></span>
+  <button id="btn-mode" class="btn-mode" title="Wechseln zwischen Vorlage bearbeiten und digitalem Tages-Check">✓ Tracker-Modus</button>
+  <button id="btn-new-week" style="background:#0284c7;font-weight:800;" title="Startet die aktuelle Woche bei 0 für das gewählte Kind">🔄 Neue Woche bei 0</button>
+  <button id="btn-export" class="btn-export" title="Alle Pläne als JSON-Datei sichern">💾 Exportieren</button>
+  <label class="file-btn btn-import" title="Gespeicherte JSON-Datei laden">
+    📂 Importieren
+    <input type="file" id="file-import" accept=".json" style="display:none">
+  </label>
+  <button id="btn-print" class="btn-print" title="Als DIN A4 Querformat drucken oder als PDF speichern">🖨️ Drucken / PDF</button>
+  <button id="btn-reset" class="btn-reset" title="Aktuellen Plan auf das Original zurücksetzen">↺ Reset</button>
+</div>
+
+<div class="info-bar-container">
+  <div class="help" id="help-text">
+    <b>💡 So geht's:</b> In beliebigen Text klicken &amp; tippen – Änderungen werden sofort im Browser gespeichert.
+    Fahre mit der Maus über einen Block: <b>⇄</b> ändert die Art (Aufgabe → Info → Pause → Sport → Englisch), 
+    <b>▲/▼</b> verschiebt die Reihenfolge, <b>×</b> löscht. Mit <b>+ Aufgabe</b> neue Einheiten ergänzen.
+    Klicke auf <b>✓ Tracker-Modus</b>, um den Plan auf dem Tablet/Laptop interaktiv abzuhaken!
+  </div>
+  <div class="tracking-banner" id="tracking-banner">
+    <span>🌟 <b>Tracker-Modus aktiv:</b> Klicke Aufgaben an, um sie abzuhaken (✓) und Sterne ⭐ für erledigte Tage zu sammeln!</span>
+    <button id="btn-clear-tracking" style="border:0;background:#d9534f;color:#fff;font:inherit;font-size:12px;padding:3px 10px;border-radius:12px;cursor:pointer;font-weight:700">Abhaken zurücksetzen</button>
+  </div>
+  <div class="warn" id="warn">⚠️ An einem Tag ist zu viel Text (rot umrandet) – bitte etwas kürzen, damit beim Drucken auf DIN A4 nichts abgeschnitten wird.</div>
+</div>
+
+<div class="page-viewport">
+  <div id="root"></div>
+</div>
+
+<script>
+const DEFAULT = [
+  {
+    "name": "Rufta",
+    "emoji": "🦉",
+    "color": "#4f7fe8",
+    "color2": "#7aa2ff",
+    "hours": "ca. 6 Std. pro Woche",
+    "sub": "6. Klasse · Schwerpunkt Mathe & Englisch",
+    "week": "",
+    "evening": "Abendessen, Duschen, Gute-Nacht-Lesen. An Sport- und Englischtagen abends kein Lernen mehr.",
+    "plan": [
+      [
+        ["info", "17:00", "Ankommen, Snack & kurze Pause 🍎"],
+        ["task", "17:15 – 18:00", "Hausaufgaben"],
+        ["pause", "", "5 Min. Pause – kurz lüften & trinken"],
+        ["task", "18:05 – 18:45", "Mathe üben: Brüche & Textaufgaben"]
+      ],
+      [
+        ["info", "17:00", "Ankommen & Snack 🍎"],
+        ["task", "17:10 – 17:40", "Hausaufgaben + 10 Min. Englisch-Vokabeln"],
+        ["sport", "18:00 – 19:30", "Taekwondo 🥋 (Puffer für Tasche & Fahrt)"]
+      ],
+      [
+        ["info", "17:00", "Ankommen, Snack & Pause 🍎"],
+        ["task", "17:15 – 18:00", "Hausaufgaben"],
+        ["pause", "", "5 Min. Pause – durchatmen"],
+        ["task", "18:05 – 18:45", "Mathe + Vokabelkarten wiederholen"]
+      ],
+      [
+        ["info", "17:00", "Ankommen & Snack 🍎"],
+        ["task", "17:10 – 17:40", "Hausaufgaben + 10 Min. Kopfrechnen"],
+        ["task", "17:40 – 17:45", "Meron kurz das Einmaleins abfragen ⭐"],
+        ["sport", "18:00 – 19:30", "Taekwondo 🥋"]
+      ],
+      [
+        ["info", "17:00", "Ankommen & Snack 🍎"],
+        ["task", "17:10 – 17:40", "Hausaufgaben / Mathe-Wochenrückblick"],
+        ["eng", "18:00 – 19:30", "Englischkurs 🇬🇧"]
+      ],
+      [
+        ["task", "10:00 – 11:00", "Mathe-Übungsblatt von Andreas + Vokabeln"],
+        ["eng", "18:00 – 19:30", "Englischkurs 🇬🇧"]
+      ],
+      [
+        ["task", "30 Min.", "Woche planen, Schultasche prüfen, Vokabeln"]
+      ]
+    ],
+    "tips": [
+      "Mathe: Fehler aus Hausaufgaben noch einmal ohne Hilfe rechnen",
+      "Vokabeln jeden Tag 10 Min. mit Karteikasten / Anton",
+      "Vor Klassenarbeiten 5–7 Tage vorher täglich +15 Min.",
+      "Donnerstag Meron beim Einmaleins helfen (festigt das eigene Wissen!)"
+    ]
+  },
+  {
+    "name": "Meron",
+    "emoji": "🦊",
+    "color": "#2fae74",
+    "color2": "#5fd39c",
+    "hours": "ca. 4¾ Std. pro Woche",
+    "sub": "3. Klasse · Schwerpunkt Mathe & Einmaleins",
+    "week": "",
+    "evening": "Abendessen, Duschen, Gute-Nacht-Lesen. An Sport- und Englischtagen abends kein Lernen mehr.",
+    "plan": [
+      [
+        ["info", "17:00", "Ankommen, Snack & Pause 🍎"],
+        ["task", "17:15 – 17:45", "Hausaufgaben"],
+        ["task", "17:50 – 18:15", "Einmaleins + schriftliches Rechnen"]
+      ],
+      [
+        ["info", "17:00", "Ankommen & Snack 🍎"],
+        ["task", "17:10 – 17:40", "Hausaufgaben + 10 Min. Einmaleins"],
+        ["sport", "18:00 – 19:30", "Taekwondo 🥋 (Puffer für Fahrt)"]
+      ],
+      [
+        ["info", "17:00", "Ankommen, Snack & Pause 🍎"],
+        ["task", "17:15 – 17:45", "Hausaufgaben"],
+        ["task", "17:50 – 18:15", "Mathe-Sachaufgaben + 10 Min. Lesen"]
+      ],
+      [
+        ["info", "17:00", "Ankommen & Snack 🍎"],
+        ["task", "17:10 – 17:40", "Hausaufgaben + Rufta fragt Einmaleins ab"],
+        ["sport", "18:00 – 19:30", "Taekwondo 🥋"]
+      ],
+      [
+        ["info", "17:00", "Ankommen & Snack 🍎"],
+        ["task", "17:10 – 17:40", "Mathe-Spiel / Kopfrechnen + Lesen"],
+        ["eng", "18:00 – 19:30", "Englischkurs 🇬🇧"]
+      ],
+      [
+        ["task", "10:00 – 10:50", "Mathe-Übungsblatt von Andreas + Diktat üben"],
+        ["eng", "18:00 – 19:30", "Englischkurs 🇬🇧"]
+      ],
+      [
+        ["task", "20 Min.", "Lesen im Lieblingsbuch"]
+      ]
+    ],
+    "tips": [
+      "Einmaleins: Jede Woche eine neue Reihe auswendig können",
+      "Schriftliches Plus und Minus: langsam und sauber untereinander",
+      "Sachaufgaben: erst laut vorlesen, Schlüsselwörter markieren",
+      "Jede erfolgreiche Woche bringt einen Stern im Belohnungspass ⭐"
+    ]
+  },
+  {
+    "name": "Eldana",
+    "emoji": "🐰",
+    "color": "#f07a4a",
+    "color2": "#ffa77f",
+    "hours": "ca. 4 Std. pro Woche",
+    "sub": "2. Klasse · Schwerpunkt Lesen, Schreiben & Mathe bis 100",
+    "week": "",
+    "evening": "Abendessen, Duschen, Gute-Nacht-Lesen. An Sport- und Englischtagen abends kein Lernen mehr.",
+    "plan": [
+      [
+        ["info", "17:00", "Ankommen, Snack & Pause 🍎"],
+        ["task", "17:15 – 17:40", "Hausaufgaben"],
+        ["task", "17:45 – 18:05", "10 Min. laut vorlesen + 10 Min. Schreiben"]
+      ],
+      [
+        ["info", "17:00", "Ankommen & Snack 🍎"],
+        ["task", "17:10 – 17:40", "Hausaufgaben + 10 Min. Plus/Minus bis 100"],
+        ["sport", "18:00 – 19:30", "Taekwondo 🥋 (Puffer für Fahrt)"]
+      ],
+      [
+        ["info", "17:00", "Ankommen, Snack & Pause 🍎"],
+        ["task", "17:15 – 17:40", "Hausaufgaben"],
+        ["task", "17:45 – 18:05", "Rechnen bis 100 + 10 Min. laut vorlesen"]
+      ],
+      [
+        ["info", "17:00", "Ankommen & Snack 🍎"],
+        ["task", "17:10 – 17:40", "Hausaufgaben + 10 Min. Wörter abschreiben"],
+        ["sport", "18:00 – 19:30", "Taekwondo 🥋"]
+      ],
+      [
+        ["info", "17:00", "Ankommen & Snack 🍎"],
+        ["task", "17:10 – 17:40", "Lesen + kleines Rechenspiel / Anton App"],
+        ["eng", "18:00 – 19:30", "Englischkurs 🇬🇧"]
+      ],
+      [
+        ["task", "10:00 – 10:40", "Übungsblatt von Andreas + Vorlesen"],
+        ["eng", "18:00 – 19:30", "Englischkurs 🇬🇧"]
+      ],
+      [
+        ["task", "15 Min.", "Gemeinsam vorlesen mit Mama"]
+      ]
+    ],
+    "tips": [
+      "Jeden Tag 10 Min. laut vorlesen (bringt Punkte im Lesetagebuch!)",
+      "5 Wörter abschreiben, danach mit geschlossenen Augen buchstabieren",
+      "Rechnen mit Gegenständen (Steine, Bausteine, Plättchen)",
+      "Nach 20 Min. kurz bewegen, strecken & ein Glas Wasser trinken"
+    ]
+  }
+];
+
+const DAYS = ["Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag"];
+const ICON = ["📖", "🥋", "📖", "🥋", "🇬🇧", "🇬🇧", "☀️"];
+const TYPES = ["task", "info", "pause", "sport", "eng"];
+const KEY = "lernplan-editor-v2";
+const TRACK_KEY = "lernplan-tracking-v2";
+
+let S = JSON.parse(localStorage.getItem(KEY) || "null") || structuredClone(DEFAULT);
+let cur = +(localStorage.getItem(KEY + "-cur") || 0);
+let trackingState = JSON.parse(localStorage.getItem(TRACK_KEY) || "{}");
+let isTrackingMode = false;
+
+const save = () => localStorage.setItem(KEY, JSON.stringify(S));
+const saveTracking = () => localStorage.setItem(TRACK_KEY, JSON.stringify(trackingState));
+const esc = s => String(s).replace(/[&<>]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
+
+function tabs() {
+  document.getElementById("tabs").innerHTML = S.map((k, i) =>
+    `<button id="tab-${k.name}" class="${i === cur ? 'on' : ''}" data-i="${i}">${k.emoji} ${k.name}</button>`
+  ).join(" ");
+  
+  document.querySelectorAll("#tabs button").forEach(b => b.onclick = () => {
+    cur = +b.dataset.i;
+    localStorage.setItem(KEY + "-cur", cur);
+    render();
+  });
+}
+
+function render() {
+  const k = S[cur];
+  document.body.style.setProperty("--c", k.color);
+  document.body.style.setProperty("--c2", k.color2);
+  document.body.style.setProperty("--soft", k.color + "14");
+  document.title = `Lernplan ${k.name}`;
+
+  const childTrack = trackingState[k.name] || { done: {}, stars: {} };
+
+  let days = "";
+  k.plan.forEach((items, d) => {
+    let body = items.map(([kind, time, text], i) => {
+      const itemKey = `${d}-${i}`;
+      const isDone = !!childTrack.done[itemKey];
+      const t = `<span class="t" contenteditable data-d="${d}" data-i="${i}" data-f="1">${esc(time)}</span>`;
+      const x = `<span contenteditable data-d="${d}" data-i="${i}" data-f="2">${esc(text)}</span>`;
+      
+      const ctl = `<span class="ctl">
+        <button data-act="type" data-d="${d}" data-i="${i}" title="Art ändern">⇄</button>
+        <button class="move" data-act="up" data-d="${d}" data-i="${i}" title="Nach oben">▲</button>
+        <button class="move" data-act="down" data-d="${d}" data-i="${i}" title="Nach unten">▼</button>
+        <button class="del" data-act="del" data-d="${d}" data-i="${i}" title="Löschen">×</button>
+      </span>`;
+
+      if (kind === "task") {
+        return `<div class="it task ${isDone ? 'checked-done' : ''}" data-key="${itemKey}">
+          ${ctl}
+          <span class="chk" data-act="toggle-check" data-d="${d}" data-i="${i}">${isDone ? '✓' : ''}</span>
+          <span>${t}${x}</span>
+        </div>`;
+      }
+      return `<div class="it ${kind} ${isDone ? 'checked-done' : ''}" data-key="${itemKey}">
+        ${ctl}${t}${x}
+      </div>`;
+    }).join("");
+
+    const hasBottom = items.some(x => x[0] === "sport" || x[0] === "eng");
+    body += `<button class="add" data-act="add" data-d="${d}">+ Aufgabe</button>`;
+
+    const dayStarEarned = !!childTrack.stars[d];
+    body += `<div class="done">
+      <span>${d >= 5 ? 'Wochenende' : 'Tagesziel geschafft?'}</span>
+      <span class="star-btn ${dayStarEarned ? 'star-earned' : ''}" data-act="toggle-star" data-d="${d}" title="Klicken für Stern!">⭐</span>
+    </div>`;
+
+    days += `<section class="day${d >= 5 ? ' we' : ''}">
+      <h2>${ICON[d]} ${DAYS[d]}</h2>
+      <div class="items">${body}</div>
+    </section>`;
+  });
+
+  const tips = k.tips.map((t, i) => `<li contenteditable data-tip="${i}">${esc(t)}</li>`).join("");
+
+  document.getElementById("root").innerHTML = `
+    <div class="page">
+      <header>
+        <div class="avatar">${k.emoji}</div>
+        <div>
+          <h1>Lernplan von ${esc(k.name)}</h1>
+          <p contenteditable data-k="sub">${esc(k.sub)}</p>
+        </div>
+        <div class="badges">
+          <span class="badge">⏱ <span contenteditable data-k="hours">${esc(k.hours)}</span></span>
+          <span class="badge">📅 Woche: <span contenteditable data-k="week">${esc(k.week || "")}</span></span>
+        </div>
+      </header>
+      <main class="week">${days}</main>
+      <div class="bottom">
+        <div class="box">
+          <h3>💡 Tipps &amp; Schwerpunkte für ${esc(k.name)}</h3>
+          <ul>${tips}</ul>
+        </div>
+        <div class="box">
+          <h3>🌙 Ab 19:30 Uhr (Feierabend)</h3>
+          <p contenteditable data-k="evening">${esc(k.evening)}</p>
+        </div>
+      </div>
+    </div>
+  `;
+
+  tabs();
+  bind();
+  check();
+}
+
+function bind() {
+  const k = S[cur];
+
+  document.querySelectorAll("[contenteditable]").forEach(el => {
+    el.addEventListener("input", () => {
+      const v = el.innerText.replace(/\n+$/, "");
+      if (el.dataset.f) k.plan[el.dataset.d][el.dataset.i][el.dataset.f] = v;
+      else if (el.dataset.tip) k.tips[el.dataset.tip] = v;
+      else if (el.dataset.k) k[el.dataset.k] = v;
+      save();
+      check();
+    });
+  });
+
+  document.querySelectorAll("[data-act]").forEach(b => {
+    b.onclick = (e) => {
+      const d = +b.dataset.d;
+      const i = +b.dataset.i;
+      const act = b.dataset.act;
+      const items = k.plan[d];
+
+      if (act === "toggle-check") {
+        if (!trackingState[k.name]) trackingState[k.name] = { done: {}, stars: {} };
+        const key = `${d}-${i}`;
+        trackingState[k.name].done[key] = !trackingState[k.name].done[key];
+        saveTracking();
+        render();
+        return;
+      }
+
+      if (act === "toggle-star") {
+        if (!trackingState[k.name]) trackingState[k.name] = { done: {}, stars: {} };
+        trackingState[k.name].stars[d] = !trackingState[k.name].stars[d];
+        saveTracking();
+        render();
+        return;
+      }
+
+      if (act === "add") {
+        const pos = items.findIndex(x => x[0] === "sport" || x[0] === "eng");
+        items.splice(pos < 0 ? items.length : pos, 0, ["task", "", "Neue Aufgabe"]);
+      } else if (act === "del") {
+        if (confirm("Diesen Eintrag löschen?")) items.splice(i, 1);
+      } else if (act === "type") {
+        items[i][0] = TYPES[(TYPES.indexOf(items[i][0]) + 1) % TYPES.length];
+      } else if (act === "up") {
+        if (i > 0) {
+          const temp = items[i];
+          items[i] = items[i - 1];
+          items[i - 1] = temp;
+        }
+      } else if (act === "down") {
+        if (i < items.length - 1) {
+          const temp = items[i];
+          items[i] = items[i + 1];
+          items[i + 1] = temp;
+        }
+      }
+      save();
+      render();
+    };
+  });
+}
+
+function check() {
+  let over = false;
+  document.querySelectorAll(".day").forEach(day => {
+    const it = day.querySelector(".items");
+    const o = it.scrollHeight > it.clientHeight + 2;
+    day.classList.toggle("over", o);
+    over ||= o;
+  });
+  document.getElementById("warn").style.display = over ? "block" : "none";
+}
+
+// Mode toggle
+const btnMode = document.getElementById("btn-mode");
+const banner = document.getElementById("tracking-banner");
+btnMode.onclick = () => {
+  isTrackingMode = !isTrackingMode;
+  document.body.classList.toggle("tracking-mode", isTrackingMode);
+  btnMode.classList.toggle("active-tracking", isTrackingMode);
+  btnMode.innerHTML = isTrackingMode ? "✏️ Bearbeitungs-Modus" : "✓ Tracker-Modus";
+  banner.style.display = isTrackingMode ? "flex" : "none";
+};
+
+document.getElementById("btn-clear-tracking").onclick = () => {
+  if (confirm(`Alle Häkchen und Sterne für ${S[cur].name} dieser Woche zurücksetzen?`)) {
+    if (trackingState[S[cur].name]) {
+      trackingState[S[cur].name] = { done: {}, stars: {} };
+      saveTracking();
+      render();
+    }
+  }
+};
+
+document.getElementById("btn-new-week").onclick = () => {
+  if (confirm(`Neue Woche für ${S[cur].name} bei 0 starten (alle Häkchen & Sterne leeren)?`)) {
+    trackingState[S[cur].name] = { done: {}, stars: {} };
+    saveTracking();
+    render();
+  }
+};
+
+// Export JSON
+document.getElementById("btn-export").onclick = () => {
+  const data = JSON.stringify({ version: 2, timestamp: new Date().toISOString(), plans: S }, null, 2);
+  const blob = new Blob([data], { type: "application/json" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = `Lernplaene_Kinder_Backup_${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  URL.revokeObjectURL(a.href);
+};
+
+// Import JSON
+document.getElementById("file-import").onchange = (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (ev) => {
+    try {
+      const parsed = JSON.parse(ev.target.result);
+      if (parsed.plans && Array.isArray(parsed.plans)) {
+        S = parsed.plans;
+      } else if (Array.isArray(parsed)) {
+        S = parsed;
+      } else {
+        alert("Ungültiges Dateiformat.");
+        return;
+      }
+      save();
+      render();
+      alert("Lernpläne erfolgreich importiert!");
+    } catch (err) {
+      alert("Fehler beim Lesen der Datei: " + err.message);
+    }
+  };
+  reader.readAsText(file);
+};
+
+// Reset
+document.getElementById("btn-reset").onclick = () => {
+  if (confirm(`Plan von ${S[cur].name} wirklich auf das Original zurücksetzen?`)) {
+    S[cur] = structuredClone(DEFAULT[cur]);
+    save();
+    render();
+  }
+};
+
+// Print
+document.getElementById("btn-print").onclick = () => window.print();
+
+document.fonts.ready.then(check);
+render();
+</script>
+</body>
+</html>
