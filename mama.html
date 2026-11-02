@@ -136,6 +136,29 @@ header h1 { font-size: 28px; font-weight: 900; display: flex; align-items: cente
   height: 100%; border-radius: 10px; transition: width .3s ease;
 }
 
+/* Editable Focus & Test Badges */
+.kid-info-section {
+  display: flex; flex-direction: column; gap: 8px; margin-top: 4px;
+}
+.info-badge-box {
+  border-radius: 12px; padding: 10px 12px; font-size: 12.5px;
+  display: flex; flex-direction: column; gap: 4px; transition: all .15s;
+}
+.info-badge-box.rufta { background: #eff6ff; border: 1px solid #bfdbfe; color: #1e40af; }
+.info-badge-box.meron { background: #f0fdf4; border: 1px solid #bbf7d0; color: #166534; }
+.info-badge-box.eldana { background: #fff7ed; border: 1px solid #fed7aa; color: #c2410c; }
+.info-badge-header {
+  display: flex; justify-content: space-between; align-items: center; font-weight: 800; font-size: 11px; text-transform: uppercase; letter-spacing: .4px;
+}
+.btn-edit-badge {
+  border: 0; background: rgba(0,0,0,.07); color: inherit; font: inherit; font-size: 11px;
+  font-weight: 800; padding: 2px 8px; border-radius: 8px; cursor: pointer; transition: background .15s;
+}
+.btn-edit-badge:hover { background: rgba(0,0,0,.15); }
+.info-badge-text {
+  font-weight: 700; font-size: 13px; line-height: 1.35;
+}
+
 /* Management Tools */
 .tools-panel {
   background: #fff; border-radius: 20px; padding: 22px;
@@ -218,8 +241,21 @@ header h1 { font-size: 28px; font-weight: 900; display: flex; align-items: cente
           <div class="bar-track"><div class="bar-fill" id="rufta-bar" style="width:0%;background:#3b82f6"></div></div>
         </div>
 
-        <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;padding:8px 10px;font-size:12px;color:#1e40af">
-          📝 <b>Nächste Arbeit:</b> Mathe am 18.11. (Bruchrechnung)
+        <div class="kid-info-section">
+          <div class="info-badge-box rufta">
+            <div class="info-badge-header">
+              <span>🎯 Fokus diese Woche</span>
+              <button class="btn-edit-badge" onclick="editKidInfo('rufta', 'fokus')">✏️ Ändern</button>
+            </div>
+            <div class="info-badge-text" id="rufta-fokus-text">Mathe: Bruchrechnung &amp; Textaufgaben</div>
+          </div>
+          <div class="info-badge-box rufta">
+            <div class="info-badge-header">
+              <span>📝 Nächste Klassenarbeit</span>
+              <button class="btn-edit-badge" onclick="editKidInfo('rufta', 'arbeit')">✏️ Ändern</button>
+            </div>
+            <div class="info-badge-text" id="rufta-arbeit-text">Mathe am 18.11. (Bruchrechnung)</div>
+          </div>
         </div>
       </div>
     </div>
@@ -242,8 +278,21 @@ header h1 { font-size: 28px; font-weight: 900; display: flex; align-items: cente
           <div class="bar-track"><div class="bar-fill" id="meron-bar" style="width:0%;background:#22c55e"></div></div>
         </div>
 
-        <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:8px 10px;font-size:12px;color:#166534">
-          🔢 <b>Fokus diese Woche:</b> 6er- und 7er-Reihe im Einmaleins
+        <div class="kid-info-section">
+          <div class="info-badge-box meron">
+            <div class="info-badge-header">
+              <span>🎯 Fokus diese Woche</span>
+              <button class="btn-edit-badge" onclick="editKidInfo('meron', 'fokus')">✏️ Ändern</button>
+            </div>
+            <div class="info-badge-text" id="meron-fokus-text">6er- und 7er-Reihe im Einmaleins</div>
+          </div>
+          <div class="info-badge-box meron">
+            <div class="info-badge-header">
+              <span>📝 Nächste Klassenarbeit</span>
+              <button class="btn-edit-badge" onclick="editKidInfo('meron', 'arbeit')">✏️ Ändern</button>
+            </div>
+            <div class="info-badge-text" id="meron-arbeit-text">Mathe am 15.11. (Einmaleins)</div>
+          </div>
         </div>
       </div>
     </div>
@@ -266,8 +315,21 @@ header h1 { font-size: 28px; font-weight: 900; display: flex; align-items: cente
           <div class="bar-track"><div class="bar-fill" id="eldana-bar" style="width:0%;background:#f97316"></div></div>
         </div>
 
-        <div style="background:#fff7ed;border:1px solid #fed7aa;border-radius:10px;padding:8px 10px;font-size:12px;color:#c2410c">
-          📖 <b>Fokus diese Woche:</b> Täglich 10 Min. laut vorlesen
+        <div class="kid-info-section">
+          <div class="info-badge-box eldana">
+            <div class="info-badge-header">
+              <span>🎯 Fokus diese Woche</span>
+              <button class="btn-edit-badge" onclick="editKidInfo('eldana', 'fokus')">✏️ Ändern</button>
+            </div>
+            <div class="info-badge-text" id="eldana-fokus-text">Täglich 10 Min. laut vorlesen &amp; schreiben</div>
+          </div>
+          <div class="info-badge-box eldana">
+            <div class="info-badge-header">
+              <span>📝 Nächste Klassenarbeit</span>
+              <button class="btn-edit-badge" onclick="editKidInfo('eldana', 'arbeit')">✏️ Ändern</button>
+            </div>
+            <div class="info-badge-text" id="eldana-arbeit-text">Mathe am 19.11. (Plus &amp; Minus bis 100)</div>
+          </div>
         </div>
       </div>
     </div>
@@ -374,9 +436,79 @@ if (now.getDay() === 2 || now.getDay() === 4) {
   document.getElementById("banner-hint").innerHTML = "🥋 <b>Achtung:</b> Heute ist Taekwondo-Tag! Um 17:40 Uhr mit Hausaufgaben fertig sein.";
 }
 
+const DEFAULT_INFOS = {
+  rufta: {
+    fokus: "Mathe: Bruchrechnung & Textaufgaben",
+    arbeit: "Mathe am 18.11. (Bruchrechnung)"
+  },
+  meron: {
+    fokus: "6er- und 7er-Reihe im Einmaleins",
+    arbeit: "Mathe am 15.11. (Einmaleins)"
+  },
+  eldana: {
+    fokus: "Täglich 10 Min. laut vorlesen & schreiben",
+    arbeit: "Mathe am 19.11. (Plus & Minus bis 100)"
+  }
+};
+
+function getKidInfo(kid, field) {
+  const k = `info_${field}_${kid}`;
+  return localStorage.getItem(k) || (DEFAULT_INFOS[kid] ? DEFAULT_INFOS[kid][field] : "");
+}
+
+function setKidInfo(kid, field, val) {
+  const k = `info_${field}_${kid}`;
+  localStorage.setItem(k, val);
+  renderAllKidInfos();
+  const payload = { type: "INFO_UPDATE", child: kid, field: field, value: val, ts: Date.now() };
+  if (typeof BroadcastChannel !== "undefined") {
+    try {
+      const bc = new BroadcastChannel("schule_kinder_sync");
+      bc.postMessage(payload);
+      bc.close();
+    } catch(e){}
+  }
+  syncEvent(payload);
+}
+
+function editKidInfo(kid, field) {
+  const current = getKidInfo(kid, field);
+  const title = field === "fokus" ? "Fokus diese Woche" : "Nächste Klassenarbeit";
+  const val = prompt(`${title} für ${kid.toUpperCase()} anpassen:`, current);
+  if (val !== null && val.trim() !== "") {
+    setKidInfo(kid, field, val.trim());
+  }
+}
+
+function renderAllKidInfos() {
+  ["rufta", "meron", "eldana"].forEach(kid => {
+    const elFokus = document.getElementById(`${kid}-fokus-text`);
+    const elArbeit = document.getElementById(`${kid}-arbeit-text`);
+    if (elFokus) elFokus.innerText = getKidInfo(kid, "fokus");
+    if (elArbeit) elArbeit.innerText = getKidInfo(kid, "arbeit");
+  });
+}
+
+function getKidDailyTasks(kid, dIdx) {
+  try {
+    const raw = localStorage.getItem("lernplan-editor-v2");
+    if (raw) {
+      const all = JSON.parse(raw);
+      const kData = all.find(k => k.name && k.name.toLowerCase() === kid);
+      if (kData && Array.isArray(kData.plan) && kData.plan[dIdx]) {
+        return kData.plan[dIdx].filter(([kind]) => kind !== "pause").map(([kind, time, text]) => ({
+          time: time || "",
+          text: text
+        }));
+      }
+    }
+  } catch(e){}
+  return (CHILD_PLANS[kid] && CHILD_PLANS[kid][dIdx]) ? CHILD_PLANS[kid][dIdx] : [];
+}
+
 function renderMamaTasks(kid, containerId) {
   const container = document.getElementById(containerId);
-  const tasks = (CHILD_PLANS[kid] && CHILD_PLANS[kid][todayIdx]) ? CHILD_PLANS[kid][todayIdx] : [];
+  const tasks = getKidDailyTasks(kid, todayIdx);
   container.innerHTML = tasks.map((t, idx) => {
     const storageKey = `mama_task_${kid}_d${todayIdx}_t${idx}`;
     const isDone = localStorage.getItem(storageKey) === "true";
@@ -494,6 +626,20 @@ function updateStampsDisplay(child, count) {
 function handleSyncMessage(data) {
   if (!data) return;
 
+  // Info update (Fokus or Arbeit)
+  if (data.type === "INFO_UPDATE" && data.child && data.field) {
+    localStorage.setItem(`info_${data.field}_${data.child}`, data.value);
+    renderAllKidInfos();
+  }
+
+  // Plan data update from Lernplan-Editor
+  if (data.type === "PLAN_DATA_UPDATE" && data.data) {
+    localStorage.setItem("lernplan-editor-v2", JSON.stringify(data.data));
+    renderMamaTasks("rufta", "tasks-rufta");
+    renderMamaTasks("meron", "tasks-meron");
+    renderMamaTasks("eldana", "tasks-eldana");
+  }
+
   // Star earned or revoked
   if (data.type === "STAR_AWARDED" || data.type === "STAR_REVOKED" || data.action === "pass_stamp") {
     const kid = data.child;
@@ -549,6 +695,7 @@ if (typeof BroadcastChannel !== "undefined") {
 }
 
 window.addEventListener("storage", () => {
+  renderAllKidInfos();
   updateStampsDisplay("rufta", +(localStorage.getItem("rufta_pass_stamps") || 0));
   updateStampsDisplay("meron", +(localStorage.getItem("meron_pass_stamps") || 0));
   updateStampsDisplay("eldana", +(localStorage.getItem("eldana_pass_stamps") || 0));
@@ -604,6 +751,7 @@ updateStampsDisplay("eldana", +(localStorage.getItem("eldana_pass_stamps") || 0)
 renderMamaTasks("rufta", "tasks-rufta");
 renderMamaTasks("meron", "tasks-meron");
 renderMamaTasks("eldana", "tasks-eldana");
+renderAllKidInfos();
 </script>
 </body>
 </html>

@@ -430,7 +430,28 @@ let cur = +(localStorage.getItem(KEY + "-cur") || 0);
 let trackingState = JSON.parse(localStorage.getItem(TRACK_KEY) || "{}");
 let isTrackingMode = false;
 
-const save = () => localStorage.setItem(KEY, JSON.stringify(S));
+const SYNC_URL = "https://ntfy.sh/schule_kinder_stumpah89_sync";
+
+function syncPlanData() {
+  const payload = { type: "PLAN_DATA_UPDATE", data: S, ts: Date.now() };
+  if (typeof BroadcastChannel !== "undefined") {
+    try {
+      const bc = new BroadcastChannel("schule_kinder_sync");
+      bc.postMessage(payload);
+      bc.close();
+    } catch(e){}
+  }
+  fetch(SYNC_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload)
+  }).catch(() => {});
+}
+
+const save = () => {
+  localStorage.setItem(KEY, JSON.stringify(S));
+  syncPlanData();
+};
 const saveTracking = () => localStorage.setItem(TRACK_KEY, JSON.stringify(trackingState));
 const esc = s => String(s).replace(/[&<>]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
 

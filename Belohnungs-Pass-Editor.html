@@ -178,13 +178,13 @@ const DEFAULT_PASSES = [
     color2: "#7aa2ff",
     goal: "Kino-Nachmittag mit Popcorn 🍿",
     rules: [
-      "Jeder komplett erledigte Wochentag = 1 Stern ⭐",
-      "Klassenarbeit 1 Woche im Voraus vorbereitet = 2 Sterne ⭐⭐",
-      "Meron beim Einmaleins abgefragt = 1 Extra-Stern ⭐",
-      "Freiwillige Mathe-Zusatzaufgabe gerechnet = 1 Stern ⭐"
+      "Jeden Tag alle Aufgaben im Tagesplan erledigen = 1 Tages-Stern ⭐",
+      "Tages-Stern schaltet sich automatisch frei, wenn alles geschafft ist 🌟",
+      "Maximal 1 Stern pro Tag – Schritt für Schritt zum Ziel! 🎯",
+      "20 Sterne gesammelt = Kino-Nachmittag wird eingelöst! 🍿"
     ],
     agreement: "Ich halte mich an meinen Lernplan und gehe konzentriert an meine Aufgaben.",
-    stamps: 6
+    stamps: 0
   },
   {
     name: "Meron",
@@ -193,13 +193,13 @@ const DEFAULT_PASSES = [
     color2: "#5fd39c",
     goal: "Gemeinsamer Ausflug / Trampolinhalle 🤸‍♂️",
     rules: [
-      "Wochentag laut Lernplan ohne Trödeln geschafft = 1 Stern ⭐",
-      "Eine neue Einmaleins-Reihe fehlerfrei aufgesagt = 2 Sterne ⭐⭐",
-      "Schriftliches Rechnen ordentlich ins Heft geschrieben = 1 Stern ⭐",
-      "10 Min. laut vorgelesen = 1 Stern ⭐"
+      "Jeden Tag alle Aufgaben im Tagesplan erledigen = 1 Tages-Stern ⭐",
+      "Tages-Stern schaltet sich automatisch frei, wenn alles geschafft ist 🌟",
+      "Maximal 1 Stern pro Tag – Schritt für Schritt zum Ziel! 🎯",
+      "20 Sterne gesammelt = Trampolinhalle wird eingelöst! 🤸‍♂️"
     ],
     agreement: "Ich gebe beim Rechnen mein Bestes und frage nach, wenn ich Hilfe brauche.",
-    stamps: 8
+    stamps: 0
   },
   {
     name: "Eldana",
@@ -208,13 +208,13 @@ const DEFAULT_PASSES = [
     color2: "#ffa77f",
     goal: "Besuch im Tierpark / Eis essen gehen 🍦🐰",
     rules: [
-      "Jeden Tag fleißig Hausaufgaben gemacht = 1 Stern ⭐",
-      "10 Minuten laut vorgelesen (Lesetagebuch) = 1 Stern ⭐",
-      "5 Wörter ohne Fehler abgeschrieben = 1 Stern ⭐",
-      "Nach der Schule direkt den Schulranzen aufgeräumt = 1 Stern ⭐"
+      "Jeden Tag alle Aufgaben im Tagesplan erledigen = 1 Tages-Stern ⭐",
+      "Tages-Stern schaltet sich automatisch frei, wenn alles geschafft ist 🌟",
+      "Maximal 1 Stern pro Tag – Schritt für Schritt zum Ziel! 🎯",
+      "20 Sterne gesammelt = Tierpark & Eis essen wird eingelöst! 🍦"
     ],
     agreement: "Ich lese jeden Tag mit Freude und probiere neue Wörter mutig aus.",
-    stamps: 11
+    stamps: 0
   }
 ];
 
@@ -284,7 +284,7 @@ function render() {
           </div>
           <div class="signatures">
             <div class="sig-box">Unterschrift ${esc(k.name)}</div>
-            <div class="sig-box">Unterschrift Mama / Papa</div>
+            <div class="sig-box">Unterschrift Mama</div>
           </div>
         </div>
 

@@ -167,6 +167,18 @@ h1 { font-size: 26px; font-weight: 900; }
 
   <!-- VIEW 1: PLAN -->
   <div class="view active" id="view-plan">
+    <!-- Fokus & Klassenarbeiten Banner -->
+    <div style="background:#fff;border:2px solid #bbf7d0;border-radius:18px;padding:12px 16px;margin-bottom:14px;box-shadow:0 4px 14px rgba(34,197,94,.06);display:flex;flex-direction:column;gap:6px">
+      <div style="display:flex;align-items:center;gap:8px;font-size:13.5px;color:#14532d">
+        <span style="font-size:18px">🎯</span>
+        <div><b>Fokus diese Woche:</b> <span id="child-fokus-display">6er- und 7er-Reihe im Einmaleins</span></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:#166534">
+        <span style="font-size:18px">📝</span>
+        <div><b>Nächste Klassenarbeit:</b> <span id="child-arbeit-display">Mathe am 15.11. (Einmaleins)</span></div>
+      </div>
+    </div>
+
     <div class="days-scroll" id="days-nav"></div>
 
     <div class="card">
@@ -223,8 +235,12 @@ h1 { font-size: 26px; font-weight: 900; }
 
       <div class="stars-grid-pass" id="pass-grid"></div>
 
-      <div style="margin-top:16px;text-align:center;font-size:12.5px;color:#64748b;background:#f8fafc;padding:10px;border-radius:12px">
-        🔒 <i>Die Sterne werden automatisch eingetragen, wenn du deinen Tagesplan schaffst (max. 1 Stern pro Tag).</i>
+      <div style="margin-top:16px;background:#f0fdf4;border:1.5px solid #bbf7d0;border-radius:14px;padding:14px 16px;font-size:13px;line-height:1.55;color:#14532d;box-shadow:0 2px 8px rgba(0,0,0,.03)">
+        <b style="color:#166534;display:block;margin-bottom:6px;font-size:14px">⭐ Wie sammle ich Sterne?</b>
+        • Erledige jeden Tag alle Aufgaben in deinem Tagesplan.<br>
+        • Sobald alle Haken gesetzt sind, schaltet sich dein Tages-Stern automatisch frei! 🌟<br>
+        • Maximal 1 Stern pro Tag – Schritt für Schritt zum Ziel! 🎯<br>
+        • Bei 20 Sternen ist dein Pass voll und die Belohnung wird eingelöst! 🎉
       </div>
     </div>
   </div>
@@ -255,7 +271,9 @@ h1 { font-size: 26px; font-weight: 900; }
 </div>
 
 <script>
-const DAYS = [
+const KID_NAME = "meron";
+
+const DEFAULT_DAYS = [
   { name: "Montag", icon: "📖", tasks: [{ time: "17:00", text: "Ankommen, Snack & kurze Pause 🍎" }, { time: "17:15 – 17:45", text: "Hausaufgaben erledigen" }, { time: "17:50 – 18:15", text: "Einmaleins + schriftliches Rechnen" }] },
   { name: "Dienstag", icon: "🥋", tasks: [{ time: "17:00", text: "Ankommen & Snack 🍎" }, { time: "17:10 – 17:40", text: "Hausaufgaben + 10 Min. Einmaleins" }, { time: "18:00 – 19:30", text: "Taekwondo 🥋 (Puffer für Fahrt)" }] },
   { name: "Mittwoch", icon: "📖", tasks: [{ time: "17:00", text: "Ankommen, Snack & Pause 🍎" }, { time: "17:15 – 17:45", text: "Hausaufgaben erledigen" }, { time: "17:50 – 18:15", text: "Mathe-Sachaufgaben + 10 Min. Lesen" }] },
@@ -264,6 +282,44 @@ const DAYS = [
   { name: "Samstag", icon: "🇬🇧", tasks: [{ time: "10:00 – 10:50", text: "Mathe-Übungsblatt von Andreas + Diktat" }, { time: "18:00 – 19:30", text: "Englischkurs 🇬🇧" }] },
   { name: "Sonntag", icon: "☀️", tasks: [{ time: "20 Min.", text: "Lesen im Lieblingsbuch & Ranzen packen 🎒" }] }
 ];
+
+function getDays() {
+  try {
+    const raw = localStorage.getItem("lernplan-editor-v2");
+    if (raw) {
+      const allKids = JSON.parse(raw);
+      const myData = Array.isArray(allKids) ? allKids.find(k => k.name && k.name.toLowerCase() === KID_NAME) : null;
+      const plan = myData && Array.isArray(myData.plan) ? myData.plan : (allKids && allKids.meron);
+      if (plan && Array.isArray(plan) && plan.length === 7) {
+        const ICONS = ["📖", "🥋", "📖", "🥋", "🇬🇧", "🇬🇧", "☀️"];
+        const DAY_NAMES = ["Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag"];
+        return plan.map((items, dIdx) => ({
+          name: DAY_NAMES[dIdx],
+          icon: ICONS[dIdx] || "📅",
+          tasks: (items || []).filter(([kind]) => kind !== "pause").map(([kind, time, text]) => ({
+            time: time || "",
+            text: text
+          }))
+        }));
+      }
+    }
+  } catch(e){}
+  return DEFAULT_DAYS;
+}
+
+let DAYS = getDays();
+
+function getKidInfo(field) {
+  const defaults = { fokus: "6er- und 7er-Reihe im Einmaleins", arbeit: "Mathe am 15.11. (Einmaleins)" };
+  return localStorage.getItem(`info_${field}_${KID_NAME}`) || defaults[field] || "";
+}
+
+function renderKidInfo() {
+  const elFokus = document.getElementById("child-fokus-display");
+  const elArbeit = document.getElementById("child-arbeit-display");
+  if (elFokus) elFokus.innerText = getKidInfo("fokus");
+  if (elArbeit) elArbeit.innerText = getKidInfo("arbeit");
+}
 
 function getKW() {
   const d = new Date();
@@ -401,6 +457,20 @@ function handleSyncMessage(data) {
     if (typeof renderPass === "function") renderPass();
   }
 
+  // Mama info update (Fokus / Arbeit)
+  if (data.type === "INFO_UPDATE" && data.child === "meron") {
+    localStorage.setItem(`info_${data.field}_meron`, data.value);
+    renderKidInfo();
+  }
+
+  // Plan data update from Mama's Lernplan-Editor
+  if (data.type === "PLAN_DATA_UPDATE" && data.data) {
+    localStorage.setItem("lernplan-editor-v2", JSON.stringify(data.data));
+    DAYS = getDays();
+    renderNav();
+    renderTasks();
+  }
+
   // Mama task update
   const isTaskUpdate = (data.type === "TASK_UPDATE" || data.action === "task");
   if (isTaskUpdate && data.child === "meron") {
@@ -423,8 +493,11 @@ if (typeof BroadcastChannel !== "undefined") {
 }
 
 window.addEventListener("storage", () => {
-  stampedCount = +(localStorage.getItem("meron_pass_stamps") || 0);
+  DAYS = getDays();
+  renderNav();
   renderTasks();
+  renderKidInfo();
+  stampedCount = +(localStorage.getItem("meron_pass_stamps") || 0);
   if (typeof renderPass === "function") renderPass();
 });
 
@@ -569,6 +642,7 @@ function togglePack(el) {
 
 renderNav();
 renderTasks();
+renderKidInfo();
 </script>
 </body>
 </html>
