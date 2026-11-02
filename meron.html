@@ -302,7 +302,7 @@ function selectDay(i) {
   renderTasks();
 }
 
-let stampedCount = +(localStorage.getItem("meron_pass_stamps") || 8);
+let stampedCount = +(localStorage.getItem("meron_pass_stamps") || 0);
 
 function renderTasks() {
   const day = DAYS[activeDay];
@@ -386,7 +386,10 @@ function handleSyncMessage(data) {
     Object.keys(localStorage).forEach(k => {
       if (k.startsWith(PFX)) localStorage.removeItem(k);
     });
+    stampedCount = 0;
+    localStorage.setItem("meron_pass_stamps", 0);
     renderTasks();
+    if (typeof renderPass === "function") renderPass();
   }
 
   // Mama task update
