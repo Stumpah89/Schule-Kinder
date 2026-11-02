@@ -14,18 +14,18 @@
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body {
   font-family: 'Nunito', system-ui, -apple-system, sans-serif;
-  color: #2b2d42;
-  background: #f4f6fc;
-  line-height: 1.5;
-  padding-bottom: 50px;
+  color: #1e293b;
+  background: #f1f5f9;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 header {
   background: linear-gradient(135deg, #1e2238 0%, #2f3558 100%);
   color: #fff;
-  padding: 35px 20px 45px;
+  padding: 38px 20px 48px;
   text-align: center;
-  position: relative;
   box-shadow: 0 4px 20px rgba(0,0,0,.15);
 }
 header h1 {
@@ -35,188 +35,137 @@ header h1 {
   align-items: center;
   justify-content: center;
   gap: 12px;
-  letter-spacing: -0.5px;
 }
 header p {
   font-size: 16px;
-  color: #c9d2f0;
+  color: #cbd5e1;
   margin-top: 8px;
-  max-width: 650px;
-  margin-left: auto;
-  margin-right: auto;
+  font-weight: 600;
 }
 
 .main-container {
-  max-width: 1200px;
-  margin: -25px auto 0;
+  max-width: 850px;
+  width: 100%;
+  margin: -24px auto 40px;
   padding: 0 18px;
+  flex: 1;
 }
 
-/* Quick Tools Grid */
-.tools-section {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 16px;
-  margin-bottom: 35px;
-}
-.tool-card {
+.portal-card {
   background: #fff;
-  border-radius: 16px;
-  padding: 20px 22px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  text-decoration: none;
-  color: inherit;
-  box-shadow: 0 4px 16px rgba(0,0,0,.06);
-  border: 1px solid #e5e8f2;
-  transition: all .2s ease;
-  position: relative;
-  overflow: hidden;
-}
-.tool-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 10px 24px rgba(0,0,0,.12);
-  border-color: #3b82f6;
-}
-.tool-card.primary {
-  background: linear-gradient(145deg, #ffffff, #eff6ff);
-  border: 2px solid #3b82f6;
-}
-.tool-card .badge {
-  display: inline-block;
-  padding: 3px 10px;
-  border-radius: 20px;
-  font-size: 11px;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin-bottom: 10px;
-  align-self: flex-start;
-}
-.badge-blue { background: #dbeafe; color: #1e40af; }
-.badge-green { background: #d1fae5; color: #065f46; }
-.badge-gold { background: #fef3c7; color: #92400e; }
-.badge-purple { background: #ede9fe; color: #5b21b6; }
-
-.tool-card h3 { font-size: 19px; font-weight: 900; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
-.tool-card p { font-size: 13.5px; color: #64748b; margin-bottom: 16px; }
-.tool-card .action-btn {
-  font-weight: 800;
-  font-size: 13.5px;
-  color: #3b82f6;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  margin-top: auto;
-}
-
-/* Kids Grid */
-.kids-section {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
-  gap: 22px;
-  margin-bottom: 35px;
-}
-.kid-card {
-  background: #fff;
-  border-radius: 18px;
+  border-radius: 26px;
+  padding: 30px 24px;
+  box-shadow: 0 8px 30px rgba(0,0,0,.08);
   border: 1px solid #e2e8f0;
-  overflow: hidden;
-  box-shadow: 0 4px 16px rgba(0,0,0,.05);
+  text-align: center;
+}
+.portal-card h2 {
+  font-size: 24px;
+  font-weight: 900;
+  color: #0f172a;
+  margin-bottom: 6px;
+}
+.portal-card p {
+  font-size: 15px;
+  color: #64748b;
+  margin-bottom: 26px;
+}
+
+.doors-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+}
+.door {
+  text-decoration: none;
+  border-radius: 20px;
+  padding: 24px 18px;
   display: flex;
   flex-direction: column;
-}
-.kid-header {
-  padding: 18px 22px;
-  color: #fff;
-  display: flex;
   align-items: center;
-  gap: 14px;
+  text-align: center;
+  transition: all .2s ease;
+  box-shadow: 0 4px 14px rgba(0,0,0,.04);
 }
-.kid-avatar {
-  width: 50px;
-  height: 50px;
+.door:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 24px rgba(0,0,0,.1);
+}
+.door:active {
+  transform: scale(0.97);
+}
+
+.door-avatar {
+  width: 76px;
+  height: 76px;
   border-radius: 50%;
-  background: rgba(255,255,255,.25);
-  font-size: 28px;
   display: flex;
   align-items: center;
   justify-content: center;
+  font-size: 44px;
+  margin-bottom: 12px;
+  box-shadow: 0 4px 14px rgba(0,0,0,.1);
 }
-.kid-title h2 { font-size: 20px; font-weight: 900; }
-.kid-title span { font-size: 13px; opacity: .9; font-weight: 600; }
-
-.kid-docs {
-  padding: 16px 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  flex: 1;
-}
-.doc-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 14px;
-  border-radius: 10px;
-  background: #f8fafc;
-  border: 1px solid #eef2f6;
-  text-decoration: none;
-  color: inherit;
-  transition: all .15s;
-}
-.doc-item:hover {
-  background: #eef4ff;
-  border-color: #cbd5e1;
-  transform: translateX(3px);
-}
-.doc-left { display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 700; }
-.doc-icon { font-size: 18px; }
-.doc-action { font-size: 12px; font-weight: 800; color: #475569; background: #e2e8f0; padding: 3px 8px; border-radius: 6px; }
-
-/* Tips Section */
-.tips-panel {
-  background: #fff;
-  border-radius: 18px;
-  padding: 24px 28px;
-  border: 1px solid #e2e8f0;
-  box-shadow: 0 4px 16px rgba(0,0,0,.04);
-}
-.tips-panel h2 {
-  font-size: 21px;
+.door b {
+  font-size: 22px;
   font-weight: 900;
-  margin-bottom: 16px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.tips-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 16px;
-}
-.tip-item {
-  background: #fbfcfe;
-  border: 1px solid #e8ecf4;
-  border-radius: 12px;
-  padding: 14px 16px;
-}
-.tip-item b {
   display: block;
-  font-size: 15px;
-  color: #1e293b;
   margin-bottom: 4px;
 }
-.tip-item p {
+.door span {
   font-size: 13px;
-  color: #64748b;
-  line-height: 1.45;
+  font-weight: 700;
 }
+
+/* Specific Child Colors */
+.door-meron {
+  background: linear-gradient(145deg, #ffffff, #f0fdf4);
+  border: 2.5px solid #22c55e;
+  color: #14532d;
+}
+.door-meron .door-avatar { background: #dcfce7; }
+.door-meron span { color: #16a34a; }
+
+.door-eldana {
+  background: linear-gradient(145deg, #ffffff, #fff7ed);
+  border: 2.5px solid #f97316;
+  color: #7c2d12;
+}
+.door-eldana .door-avatar { background: #ffedd5; }
+.door-eldana span { color: #ea580c; }
+
+.door-rufta {
+  background: linear-gradient(145deg, #ffffff, #eff6ff);
+  border: 2.5px solid #3b82f6;
+  color: #1e3a8a;
+}
+.door-rufta .door-avatar { background: #dbeafe; }
+.door-rufta span { color: #2563eb; }
+
+.door-mama {
+  background: linear-gradient(145deg, #ffffff, #f8fafc);
+  border: 2.5px solid #64748b;
+  color: #0f172a;
+}
+.door-mama .door-avatar { background: #e2e8f0; }
+.door-mama span { color: #475569; }
+
+.setup-hint {
+  margin-top: 28px;
+  background: #f8fafc;
+  border: 1px dashed #cbd5e1;
+  border-radius: 16px;
+  padding: 16px 20px;
+  font-size: 13.5px;
+  color: #64748b;
+  line-height: 1.5;
+  text-align: left;
+}
+.setup-hint b { color: #1e293b; }
 
 footer {
   text-align: center;
-  margin-top: 40px;
+  padding: 20px;
   font-size: 13px;
   color: #94a3b8;
 }
@@ -226,260 +175,58 @@ footer {
 
 <header>
   <h1>🎒 Familien-Lernportal</h1>
-  <p>Schulorganisation, Wochenpläne, Belohnungen &amp; Motivation für Rufta, Meron &amp; Eldana</p>
+  <p>Rufta, Meron &amp; Eldana</p>
 </header>
 
 <div class="main-container">
 
-  <!-- Profile Chooser (Direct links for each child's tablet) -->
-  <div style="background:#fff;border-radius:24px;padding:24px;margin-bottom:28px;box-shadow:0 8px 24px rgba(0,0,0,.06);border:2px solid #e2e8f0;text-align:center;">
-    <h2 style="font-size:24px;font-weight:900;color:#1e293b;margin-bottom:6px;">Wer lernt gerade? Wähle dein Profil:</h2>
-    <p style="font-size:15px;color:#64748b;margin-bottom:20px;">Tippe auf deinen Namen für deine persönliche Tablet-App mit deinen Aufgaben &amp; Spielen!</p>
-    
-    <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));gap:16px;">
-      <a href="rufta.html" style="text-decoration:none;background:linear-gradient(135deg, #eff6ff, #dbeafe);border:2px solid #3b82f6;border-radius:20px;padding:20px 16px;display:flex;align-items:center;gap:14px;transition:transform .15s;color:#1e3a8a;">
-        <span style="font-size:46px;">🦉</span>
-        <div style="text-align:left;">
-          <b style="font-size:22px;display:block;">Rufta</b>
-          <span style="font-size:13px;color:#2563eb;font-weight:700;">6. Klasse öffnen →</span>
-        </div>
+  <div class="portal-card">
+    <h2>Wer lernt gerade?</h2>
+    <p>Wähle dein Profil für deine persönliche App:</p>
+
+    <div class="doors-grid">
+      <!-- Meron -->
+      <a href="meron.html" class="door door-meron">
+        <div class="door-avatar">🦊</div>
+        <b>Meron</b>
+        <span>3. Klasse öffnen →</span>
       </a>
 
-      <a href="meron.html" style="text-decoration:none;background:linear-gradient(135deg, #f0fdf4, #dcfce7);border:2px solid #22c55e;border-radius:20px;padding:20px 16px;display:flex;align-items:center;gap:14px;transition:transform .15s;color:#14532d;">
-        <span style="font-size:46px;">🦊</span>
-        <div style="text-align:left;">
-          <b style="font-size:22px;display:block;">Meron</b>
-          <span style="font-size:13px;color:#16a34a;font-weight:700;">3. Klasse öffnen →</span>
-        </div>
+      <!-- Eldana -->
+      <a href="eldana.html" class="door door-eldana">
+        <div class="door-avatar">🐰</div>
+        <b>Eldana</b>
+        <span>2. Klasse öffnen →</span>
       </a>
 
-      <a href="eldana.html" style="text-decoration:none;background:linear-gradient(135deg, #fff7ed, #ffedd5);border:2px solid #f97316;border-radius:20px;padding:20px 16px;display:flex;align-items:center;gap:14px;transition:transform .15s;color:#7c2d12;">
-        <span style="font-size:46px;">🐰</span>
-        <div style="text-align:left;">
-          <b style="font-size:22px;display:block;">Eldana</b>
-          <span style="font-size:13px;color:#ea580c;font-weight:700;">2. Klasse öffnen →</span>
-        </div>
+      <!-- Rufta -->
+      <a href="rufta.html" class="door door-rufta">
+        <div class="door-avatar">🦉</div>
+        <b>Rufta</b>
+        <span>6. Klasse öffnen →</span>
       </a>
 
-      <a href="mama.html" style="text-decoration:none;background:linear-gradient(135deg, #f8fafc, #f1f5f9);border:2px solid #64748b;border-radius:20px;padding:20px 16px;display:flex;align-items:center;gap:14px;transition:transform .15s;color:#0f172a;">
-        <span style="font-size:46px;">👩‍👧‍👦</span>
-        <div style="text-align:left;">
-          <b style="font-size:22px;display:block;">Für Mama</b>
-          <span style="font-size:13px;color:#475569;font-weight:700;">Kontrollzentrum öffnen →</span>
-        </div>
+      <!-- Mama -->
+      <a href="mama.html" class="door door-mama">
+        <div class="door-avatar">👩‍👧‍👦</div>
+        <b>Für Mama</b>
+        <span>Kontrollzentrum →</span>
       </a>
+    </div>
+
+    <div class="setup-hint">
+      💡 <b>Tipp für die Tablets der Kinder:</b><br>
+      Öffne auf Merons Tablet <b>`meron.html`</b>, auf Eldanas Tablet <b>`eldana.html`</b> und auf Ruftas Gerät <b>`rufta.html`</b>. 
+      Tippe dann auf <b>„Teilen“ → „Zum Home-Bildschirm hinzufügen“</b>.<br>
+      So öffnet sich auf jedem Tablet immer direkt die eigene App ohne fremde Seiten!
     </div>
   </div>
 
-  <!-- Interactive Web Tools -->
-  <div class="tools-section">
-    <a href="✏️%20Lernplan-Editor%20(zum%20Anpassen).html" class="tool-card primary">
-      <div>
-        <span class="badge badge-blue">Kernwerkzeug</span>
-        <h3>✏️ Lernplan-Editor</h3>
-        <p>Wochenpläne live bearbeiten, Aufgaben digital abhaken, JSON-Backups erstellen und auf DIN A4 Querformat drucken.</p>
-      </div>
-      <span class="action-btn">Lernpläne öffnen →</span>
-    </a>
-
-    <a href="1x1-Trainer.html" class="tool-card">
-      <div>
-        <span class="badge badge-green">Lernspiel</span>
-        <h3>⚡ Rechen-Blitz</h3>
-        <p>1x1-Blitzrechnen für Meron, Rechnen bis 100 für Eldana und großes 1x1 für Rufta mit Sternen &amp; Konfetti!</p>
-      </div>
-      <span class="action-btn">Jetzt rechnen →</span>
-    </a>
-
-    <a href="Lese-Timer.html" class="tool-card">
-      <div>
-        <span class="badge badge-purple">Tägliches Lesen</span>
-        <h3>📖 Lese-Timer</h3>
-        <p>10-Minuten-Sanduhr mit sanftem Gong, Lesetagebuch &amp; Einträgen für Eldana und Meron.</p>
-      </div>
-      <span class="action-btn">Lesezeit starten →</span>
-    </a>
-
-    <a href="Ranzen-Packliste.html" class="tool-card">
-      <div>
-        <span class="badge badge-gold">Abendroutine</span>
-        <h3>🎒 Ranzen-Packliste</h3>
-        <p>Der 3-Minuten-Check am Vorabend: Mäppchen, Hausaufgaben, Taekwondo-Anzug und Brotdose abhaken.</p>
-      </div>
-      <span class="action-btn">Checkliste öffnen →</span>
-    </a>
-
-    <a href="Belohnungs-Pass-Editor.html" class="tool-card">
-      <div>
-        <span class="badge badge-gold">Motivation</span>
-        <h3>⭐ Belohnungs-Pass</h3>
-        <p>Ziele und Regeln festlegen, Meilenstein-Sterne digital abstempeln und als Belohnungspass drucken.</p>
-      </div>
-      <span class="action-btn">Pass ansehen &amp; stempeln →</span>
-    </a>
-
-    <a href="Urkunden-Generator.html" class="tool-card">
-      <div>
-        <span class="badge badge-purple">Auszeichnung</span>
-        <h3>🏆 Urkunden-Generator</h3>
-        <p>Feierliche Urkunden für das Einmaleins (Meron), Lesetagebuch (Eldana) und Mathe (Rufta) mit Siegel drucken.</p>
-      </div>
-      <span class="action-btn">Urkunde erstellen →</span>
-    </a>
-
-    <a href="Klassenarbeiten-Planer.html" class="tool-card">
-      <div>
-        <span class="badge badge-green">Schulerfolg</span>
-        <h3>📝 Klassenarbeiten-Planer</h3>
-        <p>Anstehende Arbeiten mit 7-Tage-Vorbereitungsplan eintragen, damit kein Stress am Vorabend entsteht.</p>
-      </div>
-      <span class="action-btn">Planer öffnen →</span>
-    </a>
-  </div>
-
-  <!-- Children and Mama Collections -->
-  <div class="kids-section">
-
-    <!-- Rufta -->
-    <div class="kid-card">
-      <div class="kid-header" style="background: linear-gradient(135deg, #4f7fe8, #7aa2ff);">
-        <div class="kid-avatar">🦉</div>
-        <div class="kid-title">
-          <h2>Rufta</h2>
-          <span>6. Klasse · Mathe &amp; Englisch</span>
-        </div>
-      </div>
-      <div class="kid-docs">
-        <a href="Rufta/1_Lernplan_Rufta.pdf" class="doc-item" target="_blank">
-          <div class="doc-left"><span class="doc-icon">📅</span> 1. Lernplan</div>
-          <span class="doc-action">PDF</span>
-        </a>
-        <a href="Rufta/2_Belohnungs-Pass_Rufta.pdf" class="doc-item" target="_blank">
-          <div class="doc-left"><span class="doc-icon">⭐</span> 2. Belohnungs-Pass</div>
-          <span class="doc-action">PDF</span>
-        </a>
-        <a href="Rufta/3_Klassenarbeiten_Rufta.pdf" class="doc-item" target="_blank">
-          <div class="doc-left"><span class="doc-icon">📝</span> 3. Klassenarbeiten</div>
-          <span class="doc-action">PDF</span>
-        </a>
-        <a href="Rufta/4_Vokabel-Karteikarten_Rufta.pdf" class="doc-item" target="_blank">
-          <div class="doc-left"><span class="doc-icon">🗂️</span> 4. Vokabel-Karten</div>
-          <span class="doc-action">PDF</span>
-        </a>
-        <a href="Rufta/5_Ferienplan_Rufta.pdf" class="doc-item" target="_blank">
-          <div class="doc-left"><span class="doc-icon">🏖️</span> 5. Ferienplan</div>
-          <span class="doc-action">PDF</span>
-        </a>
-      </div>
-    </div>
-
-    <!-- Meron -->
-    <div class="kid-card">
-      <div class="kid-header" style="background: linear-gradient(135deg, #2fae74, #5fd39c);">
-        <div class="kid-avatar">🦊</div>
-        <div class="kid-title">
-          <h2>Meron</h2>
-          <span>3. Klasse · Mathe &amp; Einmaleins</span>
-        </div>
-      </div>
-      <div class="kid-docs">
-        <a href="Meron/1_Lernplan_Meron.pdf" class="doc-item" target="_blank">
-          <div class="doc-left"><span class="doc-icon">📅</span> 1. Lernplan</div>
-          <span class="doc-action">PDF</span>
-        </a>
-        <a href="Meron/2_Belohnungs-Pass_Meron.pdf" class="doc-item" target="_blank">
-          <div class="doc-left"><span class="doc-icon">⭐</span> 2. Belohnungs-Pass</div>
-          <span class="doc-action">PDF</span>
-        </a>
-        <a href="Meron/3_Einmaleins-Tabelle_Meron.pdf" class="doc-item" target="_blank">
-          <div class="doc-left"><span class="doc-icon">🔢</span> 3. 1x1-Tabelle</div>
-          <span class="doc-action">PDF</span>
-        </a>
-        <a href="Meron/4_Einmaleins-Urkunde_Meron.pdf" class="doc-item" target="_blank">
-          <div class="doc-left"><span class="doc-icon">🏆</span> 4. 1x1-Urkunde</div>
-          <span class="doc-action">PDF</span>
-        </a>
-        <a href="Meron/5_Ferienplan_Meron.pdf" class="doc-item" target="_blank">
-          <div class="doc-left"><span class="doc-icon">🏖️</span> 5. Ferienplan</div>
-          <span class="doc-action">PDF</span>
-        </a>
-      </div>
-    </div>
-
-    <!-- Eldana -->
-    <div class="kid-card">
-      <div class="kid-header" style="background: linear-gradient(135deg, #f07a4a, #ffa77f);">
-        <div class="kid-avatar">🐰</div>
-        <div class="kid-title">
-          <h2>Eldana</h2>
-          <span>2. Klasse · Lesen, Schreiben &amp; Rechnen</span>
-        </div>
-      </div>
-      <div class="kid-docs">
-        <a href="Eldana/1_Lernplan_Eldana.pdf" class="doc-item" target="_blank">
-          <div class="doc-left"><span class="doc-icon">📅</span> 1. Lernplan</div>
-          <span class="doc-action">PDF</span>
-        </a>
-        <a href="Eldana/2_Belohnungs-Pass_Eldana.pdf" class="doc-item" target="_blank">
-          <div class="doc-left"><span class="doc-icon">⭐</span> 2. Belohnungs-Pass</div>
-          <span class="doc-action">PDF</span>
-        </a>
-        <a href="Eldana/3_Lesetagebuch_Eldana.pdf" class="doc-item" target="_blank">
-          <div class="doc-left"><span class="doc-icon">📖</span> 3. Lesetagebuch</div>
-          <span class="doc-action">PDF</span>
-        </a>
-        <a href="Eldana/4_Lese-Urkunde_Eldana.pdf" class="doc-item" target="_blank">
-          <div class="doc-left"><span class="doc-icon">🏆</span> 4. Lese-Urkunde</div>
-          <span class="doc-action">PDF</span>
-        </a>
-        <a href="Eldana/5_Ferienplan_Eldana.pdf" class="doc-item" target="_blank">
-          <div class="doc-left"><span class="doc-icon">🏖️</span> 5. Ferienplan</div>
-          <span class="doc-action">PDF</span>
-        </a>
-      </div>
-    </div>
-
-  </div>
-
-  <!-- Für Mama & Praxistipps -->
-  <div class="tips-panel">
-    <h2>👩‍👧‍👦 Für Mama &amp; Alltags-Tipps</h2>
-    <div class="tips-grid">
-      <div class="tip-item">
-        <b>💡 Der Laminier-Trick</b>
-        <p>Drucke den Wochenplan und Belohnungspass einmal aus und laminiere ihn ein. Mit abwaschbaren Folienstiften sparst du wöchentliches Drucken!</p>
-      </div>
-      <div class="tip-item">
-        <b>🥋 Pufferzeiten einhalten</b>
-        <p>An Taekwondo- &amp; Englischtagen spätestens 17:40 Uhr die Bücher schließen, damit Umziehen &amp; Weg stressfrei ablaufen.</p>
-      </div>
-      <div class="tip-item">
-        <b>🩹 Der „Bad-Day-Joker“</b>
-        <p>An Tagen mit Erschöpfung oder Krankheit gilt: Nur Hausaufgaben erledigen, alles andere entfällt ohne schlechtes Gewissen.</p>
-      </div>
-      <div class="tip-item">
-        <b>🤝 Geschwister-Tandem</b>
-        <p>Rufta fragt Meron beim Einmaleins ab, Meron liest Eldana 5 Minuten vor. Gemeinsam lernen motiviert doppelt!</p>
-      </div>
-    </div>
-
-    <div style="margin-top: 18px; display: flex; gap: 12px; flex-wrap: wrap;">
-      <a href="Für%20Mama/Monatsrückblick.pdf" target="_blank" class="doc-item" style="flex:1;min-width:220px">
-        <div class="doc-left"><span class="doc-icon">📊</span> Monatsrückblick für Mama</div>
-        <span class="doc-action">PDF öffnen</span>
-      </a>
-      <a href="Für%20Mama/Lern-Apps_und_Tipps.pdf" target="_blank" class="doc-item" style="flex:1;min-width:220px">
-        <div class="doc-left"><span class="doc-icon">📱</span> Lern-Apps &amp; Empfehlungen</div>
-        <span class="doc-action">PDF öffnen</span>
-      </a>
-    </div>
-  </div>
-
-  <footer>
-    Familien-Lernportal · Rufta, Meron &amp; Eldana · Schuljahr 2026/2027
-  </footer>
 </div>
+
+<footer>
+  Familien-Lernportal · Schuljahr 2026/2027
+</footer>
 
 </body>
 </html>
-
