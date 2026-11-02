@@ -105,6 +105,56 @@ body {
 [contenteditable]:hover { background: rgba(255, 230, 120, .35); }
 [contenteditable]:focus { background: rgba(255, 230, 120, .65); }
 
+/* Mobile & Tablet Responsive View */
+@media screen and (max-width: 950px) {
+  .toolbar {
+    padding: 8px 10px; gap: 6px; font-size: 12px;
+  }
+  .toolbar b { font-size: 14px; width: 100%; margin-bottom: 2px; }
+  #tabs {
+    display: flex; gap: 4px; width: 100%; margin-bottom: 4px;
+  }
+  #tabs button {
+    flex: 1; justify-content: center; padding: 7px 8px; font-size: 12px;
+  }
+  .toolbar a, .toolbar button {
+    padding: 6px 10px; font-size: 12px;
+  }
+  .page-viewport {
+    padding: 8px 6px 40px; display: block; overflow-x: hidden;
+  }
+  .page {
+    width: 100% !important; min-width: 0 !important; max-width: 100% !important;
+    height: auto !important; min-height: 0 !important; max-height: none !important;
+    padding: 16px 12px; border-radius: 14px;
+  }
+  .inner-border {
+    padding: 16px 10px; border-radius: 10px; border-width: 1.5px;
+  }
+  .cert-head { margin-top: 0; }
+  .seal-icon { font-size: 38px; margin-bottom: 4px; }
+  .cert-title { font-size: 22px; letter-spacing: 1px; }
+  .cert-subtitle { font-size: 12px; }
+  .cert-body { margin: 10px 0; }
+  .awarded-to { font-size: 12.5px; margin-bottom: 4px; }
+  .recipient-name {
+    font-size: 24px; min-width: 0; width: 90%; padding: 0 0 4px;
+  }
+  .cert-reason {
+    font-size: 13.5px; line-height: 1.5; margin: 10px auto 0;
+  }
+  .cert-footer {
+    flex-direction: column; align-items: center; gap: 14px; padding: 10px 0 0;
+  }
+  .gold-badge {
+    width: 56px; height: 56px;
+  }
+  .gold-badge span { font-size: 10px; }
+  .gold-badge b { font-size: 14px; }
+  .cert-date, .cert-sig { min-width: 0; width: 85%; }
+  .line { margin-top: 12px; font-size: 12px; padding-top: 4px; }
+}
+
 @media print {
   body { background: none; }
   .toolbar, .info-bar { display: none !important; }

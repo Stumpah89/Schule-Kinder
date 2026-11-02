@@ -210,6 +210,98 @@ body.tracking-mode .star-btn:hover { transform: scale(1.2); }
   .box ul, .box p { font-size: 3.3mm; line-height: 1.4; }
 }
 
+/* Mobile & Tablet Responsive View */
+@media screen and (max-width: 950px) {
+  .toolbar {
+    padding: 8px 10px;
+    gap: 6px;
+    font-size: 12px;
+  }
+  .toolbar b { font-size: 14px; width: 100%; margin-bottom: 2px; }
+  #tabs {
+    display: flex; gap: 4px; width: 100%; margin-bottom: 4px;
+  }
+  #tabs button {
+    flex: 1; justify-content: center; padding: 7px 10px; font-size: 13px;
+  }
+  .toolbar a, .toolbar button, .toolbar label.file-btn {
+    padding: 6px 10px; font-size: 12px;
+  }
+  .page-viewport {
+    padding: 8px 6px 40px;
+    display: block;
+    overflow-x: hidden;
+  }
+  .page {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    padding: 12px 10px;
+    border-radius: 14px;
+    gap: 12px;
+    overflow: visible;
+  }
+  header {
+    padding: 10px 12px;
+    border-radius: 12px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .avatar {
+    width: 40px; height: 40px; font-size: 22px;
+  }
+  header h1 { font-size: 19px; }
+  header p { font-size: 12px; }
+  .badges {
+    margin-left: 0; width: 100%; flex-direction: row; flex-wrap: wrap; gap: 6px; align-items: flex-start;
+  }
+  .badge { font-size: 11px; padding: 3px 8px; }
+  .week {
+    display: flex; flex-direction: column; gap: 12px;
+  }
+  .day {
+    border-radius: 12px; overflow: visible;
+  }
+  .day h2 {
+    font-size: 14.5px; padding: 8px 10px;
+  }
+  .items {
+    padding: 8px; gap: 8px; overflow: visible;
+  }
+  .it {
+    font-size: 13.5px; padding: 8px 10px; border-radius: 8px; line-height: 1.4;
+  }
+  .it .t { font-size: 12px; margin-bottom: 2px; }
+  .task .chk {
+    width: 18px; height: 18px; font-size: 12px;
+  }
+  .ctl {
+    display: flex; position: static; margin-left: auto; opacity: .7;
+  }
+  .add {
+    padding: 6px; font-size: 12.5px;
+  }
+  .done {
+    padding: 8px 10px; font-size: 12px;
+  }
+  .star-btn { font-size: 18px; }
+  .bottom {
+    grid-template-columns: 1fr; gap: 10px;
+  }
+  .box {
+    border-radius: 12px; padding: 12px;
+  }
+  .box h3 { font-size: 14px; }
+  .box ul {
+    grid-template-columns: 1fr; font-size: 12.5px; gap: 6px; padding-left: 18px;
+  }
+  .box p { font-size: 12.5px; }
+}
+
 /* Tracking mode hides controls */
 body.tracking-mode [contenteditable] { pointer-events: none; }
 body.tracking-mode .ctl, body.tracking-mode .add { display: none !important; }

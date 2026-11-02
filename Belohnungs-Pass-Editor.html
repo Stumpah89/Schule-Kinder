@@ -137,6 +137,62 @@ h1 { font-size: 8mm; font-weight: 900; color: #2b2d42; line-height: 1.1; }
 [contenteditable]:hover { background: rgba(255, 230, 120, .35); }
 [contenteditable]:focus { background: rgba(255, 230, 120, .65); }
 
+/* Mobile & Tablet Responsive View */
+@media screen and (max-width: 950px) {
+  .toolbar {
+    padding: 8px 10px; gap: 6px; font-size: 12px;
+  }
+  .toolbar b { font-size: 14px; width: 100%; margin-bottom: 2px; }
+  #tabs {
+    display: flex; gap: 4px; width: 100%; margin-bottom: 4px;
+  }
+  #tabs button {
+    flex: 1; justify-content: center; padding: 7px 10px; font-size: 13px;
+  }
+  .toolbar a, .toolbar button {
+    padding: 6px 10px; font-size: 12px;
+  }
+  .page-viewport {
+    padding: 8px 6px 40px; display: block; overflow-x: hidden;
+  }
+  .page {
+    width: 100% !important; min-width: 0 !important; max-width: 100% !important;
+    height: auto !important; min-height: 0 !important; max-height: none !important;
+    padding: 14px 12px; border-radius: 14px; gap: 14px; overflow: visible;
+  }
+  header {
+    flex-direction: column; align-items: flex-start; gap: 10px; padding-bottom: 8px;
+  }
+  .head-left { gap: 10px; }
+  .avatar { width: 44px; height: 44px; font-size: 26px; }
+  h1 { font-size: 20px; }
+  .subtitle { font-size: 12px; }
+  .goal-badge { width: 100%; text-align: left; padding: 8px 12px; border-radius: 10px; }
+  .goal-badge small { font-size: 11px; }
+  .goal-badge strong { font-size: 14px; }
+  .main-content {
+    display: flex; flex-direction: column; gap: 14px;
+  }
+  .left-panel { gap: 12px; }
+  .card { padding: 12px; border-radius: 12px; }
+  .card h3 { font-size: 15px; margin-bottom: 6px; }
+  .card ul { font-size: 13px; line-height: 1.5; padding-left: 18px; }
+  .card p { font-size: 13px; line-height: 1.5; }
+  .signatures { gap: 12px; margin-top: 6px; }
+  .sig-box { font-size: 12px; padding-top: 6px; }
+  .right-panel { padding: 12px; border-radius: 12px; }
+  .stars-header h2 { font-size: 16px; }
+  .stars-counter { font-size: 12px; padding: 4px 10px; }
+  .stars-grid {
+    grid-template-columns: repeat(5, 1fr); gap: 8px;
+  }
+  .star-slot {
+    height: 54px; border-radius: 10px;
+  }
+  .star-slot .num { font-size: 10px; top: 3px; left: 5px; }
+  .star-slot .icon { font-size: 22px; }
+}
+
 @media print {
   body { background: none; }
   .toolbar, .info-bar { display: none !important; }

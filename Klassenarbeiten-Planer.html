@@ -100,6 +100,47 @@ tr:hover td { background: #fafbfe; }
 [contenteditable]:hover { background: rgba(255, 230, 120, .35); }
 [contenteditable]:focus { background: rgba(255, 230, 120, .65); }
 
+/* Mobile & Tablet Responsive View */
+@media screen and (max-width: 850px) {
+  .toolbar {
+    padding: 8px 10px; gap: 6px; font-size: 12px;
+  }
+  .toolbar b { font-size: 14px; width: 100%; margin-bottom: 2px; }
+  #tabs {
+    display: flex; gap: 4px; width: 100%; margin-bottom: 4px;
+  }
+  #tabs button {
+    flex: 1; justify-content: center; padding: 7px 8px; font-size: 12px;
+  }
+  .toolbar a, .toolbar button {
+    padding: 6px 10px; font-size: 12px;
+  }
+  .page-viewport {
+    padding: 8px 6px 40px; display: block; overflow-x: hidden;
+  }
+  .page {
+    width: 100% !important; min-width: 0 !important; max-width: 100% !important;
+    height: auto !important; min-height: 0 !important;
+    padding: 14px 10px; border-radius: 14px; gap: 12px;
+  }
+  header {
+    flex-direction: column; align-items: flex-start; gap: 8px; padding-bottom: 10px;
+  }
+  h1 { font-size: 19px; }
+  .sub { font-size: 12px; }
+  .header-badge { font-size: 11.5px; padding: 3px 8px; }
+  .routine-box {
+    grid-template-columns: 1fr 1fr; gap: 6px; font-size: 11px;
+  }
+  .step { padding: 6px 4px; }
+  .step b { font-size: 11px; }
+  .table-scroll {
+    overflow-x: auto; width: 100%; -webkit-overflow-scrolling: touch;
+  }
+  table { font-size: 12px; min-width: 520px; }
+  th, td { padding: 8px 6px; }
+}
+
 @media print {
   body { background: none; }
   .toolbar, .info-bar, .del-btn, .no-print { display: none !important; }
@@ -156,18 +197,20 @@ tr:hover td { background: #fafbfe; }
       </div>
     </div>
 
-    <table id="works-table">
-      <thead>
-        <tr>
-          <th style="width:18%">Datum</th>
-          <th style="width:20%">Fach</th>
-          <th style="width:34%">Thema &amp; Schwerpunkt</th>
-          <th style="width:18%">Start Lernen</th>
-          <th style="width:10%" class="no-print">Aktion</th>
-        </tr>
-      </thead>
-      <tbody id="table-body"></tbody>
-    </table>
+    <div class="table-scroll">
+      <table id="works-table">
+        <thead>
+          <tr>
+            <th style="width:18%">Datum</th>
+            <th style="width:20%">Fach</th>
+            <th style="width:34%">Thema &amp; Schwerpunkt</th>
+            <th style="width:18%">Start Lernen</th>
+            <th style="width:10%" class="no-print">Aktion</th>
+          </tr>
+        </thead>
+        <tbody id="table-body"></tbody>
+      </table>
+    </div>
   </div>
 </div>
 
