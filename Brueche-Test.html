@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Klassenarbeits-Training: Brüche · 6. Klasse (Schwierige Stufe)</title>
@@ -314,6 +317,14 @@ body {
   .section { page-break-inside: avoid; }
 }
 .print-comp-box { display: none; }
+
+#toast-notice {
+  position: fixed; top: 62px; left: 50%; transform: translateX(-50%);
+  background: #10b981; color: #fff; padding: 10px 22px; border-radius: 30px;
+  font-weight: 800; font-size: 14.5px; box-shadow: 0 6px 20px rgba(0,0,0,.25);
+  z-index: 9999; transition: opacity .3s ease; pointer-events: none; text-align: center;
+}
+
 </style>
 </head>
 <body>
@@ -445,35 +456,28 @@ body {
 
 </div>
 
+
 <script>
-// Math Utility Helpers
+let testCounter = 1;
+let CURRENT_TEST = null;
+let solutionsVisible = false;
+let activeInput = null;
+
+// MATH UTILITIES
 function gcd(a, b) {
   a = Math.abs(a); b = Math.abs(b);
   while (b) { let t = b; b = a % b; a = t; }
-  return a;
+  return a || 1;
 }
 
-function simplify(n, d) {
-  const g = gcd(n, d);
-  return [n / g, d / g];
+function lcm(a, b) {
+  return Math.abs(a * b) / gcd(a, b);
 }
 
-function toMixedString(n, d) {
-  const whole = Math.floor(n / d);
-  const rem = n % d;
-  if (rem === 0) return `${whole}`;
-  const [remS, dS] = simplify(rem, d);
-  if (whole === 0) return `${remS}/${dS}`;
-  return `${whole} ${remS}/${dS}`;
-}
-
-function renderFrac(n, d) {
-  return `<span class="frac"><span class="frac-top">${n}</span><span class="frac-bot">${d}</span></span>`;
-}
-
-function renderMixed(whole, n, d) {
-  if (whole === 0) return renderFrac(n, d);
-  return `<span class="mixed"><span class="mixed-whole">${whole}</span>${renderFrac(n, d)}</span>`;
+function simplify(num, den) {
+  if (den === 0) return [num, den];
+  const g = gcd(num, den);
+  return [num / g, den / g];
 }
 
 function randInt(min, max) {
@@ -484,12 +488,344 @@ function randChoice(arr) {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
-// Global State
-let CURRENT_TEST = null;
-let testCounter = 1;
-let solutionsVisible = false;
+function shuffle(arr) {
+  const copy = [...arr];
+  for (let i = copy.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [copy[i], copy[j]] = [copy[j], copy[i]];
+  }
+  return copy;
+}
 
-// DYNAMIC GENERATOR ENGINE
+function renderFrac(num, den) {
+  return `<span class="frac"><span class="num">${num}</span><span class="den">${den}</span></span>`;
+}
+
+function renderMixed(whole, num, den) {
+  if (whole === 0) return renderFrac(num, den);
+  if (num === 0) return `${whole}`;
+  return `${whole} ${renderFrac(num, den)}`;
+}
+
+function showToast(msg) {
+  let toast = document.getElementById("toast-notice");
+  if (!toast) {
+    toast = document.createElement("div");
+    toast.id = "toast-notice";
+    toast.style.cssText = "position:fixed;top:65px;left:50%;transform:translateX(-50%);background:#10b981;color:#fff;padding:10px 22px;border-radius:30px;font-weight:800;font-size:14px;box-shadow:0 6px 20px rgba(0,0,0,.25);z-index:9999;transition:opacity .3s ease;pointer-events:none;text-align:center;";
+    document.body.appendChild(toast);
+  }
+  toast.innerText = msg;
+  toast.style.opacity = "1";
+  setTimeout(() => { if (toast) toast.style.opacity = "0"; }, 2800);
+}
+
+// 8 DIVERSE REAL-LIFE STORIES FOR TEIL 4
+const STORY_POOL = [
+  {
+    id: "pizza",
+    title: "Geburtstagsfeier – Die Riesen-Pizzen",
+    icon: "🍕",
+    generate: () => {
+      const den = randChoice([6, 8, 10]);
+      const totalPizzas = randChoice([3, 4]);
+      const cut1W = 1;
+      const cut1Rem = randInt(2, den - 2);
+      const cut2Rem = randInt(1, den - cut1Rem);
+      
+      const sumEatenRem = cut1Rem + cut2Rem;
+      const sumEatenW = cut1W + Math.floor(sumEatenRem / den);
+      const sumEatenMod = sumEatenRem % den;
+      
+      const totalEatenNum = cut1W * den + sumEatenRem;
+      const totalCapNum = totalPizzas * den;
+      const leftNum = totalCapNum - totalEatenNum;
+      const leftW = Math.floor(leftNum / den);
+      const leftRem = leftNum % den;
+      
+      const eatenMixed = sumEatenMod === 0 ? `${sumEatenW}` : `${sumEatenW} ${sumEatenMod}/${den}`;
+      const [sEatN, sEatD] = simplify(totalEatenNum, den);
+      
+      const leftMixed = leftRem === 0 ? `${leftW}` : `${leftW} ${leftRem}/${den}`;
+      const [sLeftN, sLeftD] = simplify(leftNum, den);
+      
+      return {
+        unit: "Pizzen",
+        desc: `Rufta feiert ihren Geburtstag mit Freundinnen. Für alle gibt es <b>${totalPizzas} große Familien-Pizzen</b>.<br>
+               Zuerst essen die Mädchen <b>${renderMixed(cut1W, cut1Rem, den)} Pizzen</b> auf, 
+               später am Abend noch einmal <b>${renderFrac(cut2Rem, den)} Pizza</b>.`,
+        q1: "Wie viel Pizza wurde insgesamt gegessen?",
+        q2: "Wie viel Pizza bleibt für den nächsten Tag übrig?",
+        ans1: [eatenMixed, `${totalEatenNum}/${den}`, `${sEatN}/${sEatD}`, sumEatenMod === 0 ? `${sumEatenW}` : `${sumEatenW} ${sEatN}/${sEatD}`],
+        ans2: [leftMixed, `${leftNum}/${den}`, `${sLeftN}/${sLeftD}`, leftRem === 0 ? `${leftW}` : `${leftW} ${sLeftN}/${sLeftD}`],
+        solText: `• <b>Rechnung 1 (Insgesamt gegessen):</b> ${renderMixed(cut1W, cut1Rem, den)} + ${renderFrac(cut2Rem, den)} = <b>${renderMixed(sumEatenW, sumEatenMod, den)} Pizzen</b><br>
+                  • <b>Rechnung 2 (Rest übrig):</b> ${totalPizzas} − ${renderMixed(sumEatenW, sumEatenMod, den)} = <b>${renderMixed(leftW, leftRem, den)} Pizzen</b>`
+      };
+    }
+  },
+  {
+    id: "wood",
+    title: "Werkunterricht – Die Holzleiste",
+    icon: "🪵",
+    generate: () => {
+      const den = randChoice([4, 5, 8, 10]);
+      const totalW = randChoice([3, 4]);
+      const cut1 = randInt(1, den - 1);
+      const cut2W = 1;
+      const cut2Rem = randInt(1, den - 2);
+      
+      const totalCutNum = cut1 + (cut2W * den + cut2Rem);
+      const totalCutW = Math.floor(totalCutNum / den);
+      const totalCutRem = totalCutNum % den;
+      const totalCutMixed = totalCutRem === 0 ? `${totalCutW}` : `${totalCutW} ${totalCutRem}/${den}`;
+      const [sCutN, sCutD] = simplify(totalCutNum, den);
+      
+      const remNum = totalW * den - totalCutNum;
+      const remW = Math.floor(remNum / den);
+      const remR = remNum % den;
+      const remMixed = remR === 0 ? `${remW}` : `${remW} ${remR}/${den}`;
+      const [sRemN, sRemD] = simplify(remNum, den);
+      
+      return {
+        unit: "m",
+        desc: `Rufta hat für ein Werkprojekt eine Holzleiste von <b>${totalW} Metern</b> Länge.<br>
+               Zuerst sägt sie ein Stück von <b>${renderFrac(cut1, den)} m</b> ab, 
+               danach ein weiteres Stück von <b>${renderMixed(cut2W, cut2Rem, den)} m</b>.`,
+        q1: "Wie viel Holz hat sie insgesamt abgesägt?",
+        q2: "Wie lang ist das restliche Stück Holz?",
+        ans1: [totalCutMixed, `${totalCutNum}/${den}`, `${sCutN}/${sCutD}`, totalCutRem === 0 ? `${totalCutW}` : `${totalCutW} ${sCutN}/${sCutD}`],
+        ans2: [remMixed, `${remNum}/${den}`, `${sRemN}/${sRemD}`, remR === 0 ? `${remW}` : `${remW} ${sRemN}/${sRemD}`],
+        solText: `• <b>Rechnung 1 (Insgesamt abgesägt):</b> ${renderFrac(cut1, den)} + ${renderMixed(cut2W, cut2Rem, den)} = <b>${renderMixed(totalCutW, totalCutRem, den)} m</b><br>
+                  • <b>Rechnung 2 (Rest):</b> ${totalW} − ${renderMixed(totalCutW, totalCutRem, den)} = <b>${renderMixed(remW, remR, den)} m</b>`
+      };
+    }
+  },
+  {
+    id: "juice",
+    title: "Schulfest – Der große Saftkrug",
+    icon: "🧃",
+    generate: () => {
+      const den = randChoice([4, 5, 8, 10]);
+      const startW = randChoice([2, 3]);
+      const startRem = randInt(2, den - 1);
+      const startNum = startW * den + startRem;
+      
+      const drink1 = randInt(1, startRem);
+      const after1Num = startNum - drink1;
+      const drink2 = randInt(1, Math.min(den, after1Num - 1));
+      const endNum = after1Num - drink2;
+      
+      const [sAftN, sAftD] = simplify(after1Num, den);
+      const [sEndN, sEndD] = simplify(endNum, den);
+      const endW = Math.floor(endNum / den);
+      const endR = endNum % den;
+      const endMixed = endR === 0 ? `${endW}` : `${endW} ${endR}/${den}`;
+      
+      return {
+        unit: "Liter",
+        desc: `Am Schulfest-Stand steht ein großer Krug mit <b>${renderMixed(startW, startRem, den)} Litern</b> Saftschorle.<br>
+               Zuerst schenkt Rufta sich <b>${renderFrac(drink1, den)} Liter</b> in ihr Glas ein.<br>
+               Wenig später zapft ihr Mitschüler Meron weitere <b>${renderFrac(drink2, den)} Liter</b> ab.`,
+        q1: "Wie viel Saft war nach Ruftas Glas noch im Krug?",
+        q2: "Wie viel Saft bleibt am Ende übrig? (gekürzt!)",
+        ans1: [`${after1Num}/${den}`, `${sAftN}/${sAftD}`, `${Math.floor(after1Num/den)} ${after1Num%den}/${den}`],
+        ans2: [`${sEndN}/${sEndD}`, endMixed, `${endNum}/${den}`, endR === 0 ? `${endW}` : `${endW} ${sEndN}/${sEndD}`],
+        solText: `• <b>Rechnung 1:</b> ${renderMixed(startW, startRem, den)} − ${renderFrac(drink1, den)} = <b>${renderFrac(after1Num, den)} Liter</b><br>
+                  • <b>Rechnung 2:</b> ${renderFrac(after1Num, den)} − ${renderFrac(drink2, den)} = ${renderFrac(endNum, den)} = <b>${renderFrac(sEndN, sEndD)} Liter</b> (gekürzt!)`
+      };
+    }
+  },
+  {
+    id: "baking",
+    title: "Schulküche – Backen für den Basar",
+    icon: "🧁",
+    generate: () => {
+      const den = randChoice([4, 5, 8, 10]);
+      const totalKg = randChoice([2, 3]);
+      const use1Rem = randInt(2, den - 1);
+      const use2W = 1;
+      const use2Rem = randInt(1, den - 2);
+      
+      const totalUseNum = use1Rem + (use2W * den + use2Rem);
+      const totalUseW = Math.floor(totalUseNum / den);
+      const totalUseRem = totalUseNum % den;
+      const totalUseMixed = totalUseRem === 0 ? `${totalUseW}` : `${totalUseW} ${totalUseRem}/${den}`;
+      const [sUseN, sUseD] = simplify(totalUseNum, den);
+      
+      const restNum = totalKg * den - totalUseNum;
+      const restW = Math.floor(restNum / den);
+      const restR = restNum % den;
+      const restMixed = restR === 0 ? `${restW}` : `${restW} ${restR}/${den}`;
+      const [sRestN, sRestD] = simplify(restNum, den);
+      
+      return {
+        unit: "kg",
+        desc: `In der Schulküche steht eine frische <b>${totalKg} kg</b> Vorratspackung Mehl.<br>
+               Für leckere Waffeln verbraucht Rufta <b>${renderFrac(use1Rem, den)} kg</b>, 
+               für die Muffins benötigt die Kochgruppe weitere <b>${renderMixed(use2W, use2Rem, den)} kg</b>.`,
+        q1: "Wie viel kg Mehl wurden insgesamt verbraucht?",
+        q2: "Wie viel kg Mehl ist noch im Beutel?",
+        ans1: [totalUseMixed, `${totalUseNum}/${den}`, `${sUseN}/${sUseD}`],
+        ans2: [restMixed, `${restNum}/${den}`, `${sRestN}/${sRestD}`],
+        solText: `• <b>Rechnung 1 (Verbrauch):</b> ${renderFrac(use1Rem, den)} + ${renderMixed(use2W, use2Rem, den)} = <b>${renderMixed(totalUseW, totalUseRem, den)} kg</b><br>
+                  • <b>Rechnung 2 (Rest):</b> ${totalKg} − ${renderMixed(totalUseW, totalUseRem, den)} = <b>${renderMixed(restW, restR, den)} kg</b>`
+      };
+    }
+  },
+  {
+    id: "sports",
+    title: "Sportunterricht – Der Ausdauerlauf",
+    icon: "🏃‍♀️",
+    generate: () => {
+      const den = randChoice([4, 5, 8]);
+      const r1W = randChoice([1, 2]);
+      const r1Rem = randInt(1, den - 1);
+      const r2W = randChoice([1, 2]);
+      const r2Rem = randInt(1, den - 1);
+      
+      const sumNum = (r1W * den + r1Rem) + (r2W * den + r2Rem);
+      const sumW = Math.floor(sumNum / den);
+      const sumR = sumNum % den;
+      const sumMixed = sumR === 0 ? `${sumW}` : `${sumW} ${sumR}/${den}`;
+      const [sSumN, sSumD] = simplify(sumNum, den);
+      
+      let diffNum = Math.abs((r1W * den + r1Rem) - (r2W * den + r2Rem));
+      if (diffNum === 0) diffNum = 1;
+      const diffW = Math.floor(diffNum / den);
+      const diffR = diffNum % den;
+      const diffMixed = diffR === 0 ? `${diffW}` : (diffW === 0 ? `${diffR}/${den}` : `${diffW} ${diffR}/${den}`);
+      const [sDiffN, sDiffD] = simplify(diffNum, den);
+      
+      return {
+        unit: "Runden",
+        desc: `Auf der 400-Meter-Bahn beim Sportfest laufen Rufta und ihre Schwester Semhar Ausdauerrunden.<br>
+               Rufta schafft <b>${renderMixed(r1W, r1Rem, den)} Runden</b>, 
+               Semhar läuft <b>${renderMixed(r2W, r2Rem, den)} Runden</b>.`,
+        q1: "Wie viele Runden sind beide zusammen gelaufen?",
+        q2: "Wie groß ist der Unterschied zwischen beiden Laufstrecken?",
+        ans1: [sumMixed, `${sumNum}/${den}`, `${sSumN}/${sSumD}`],
+        ans2: [diffMixed, `${diffNum}/${den}`, `${sDiffN}/${sDiffD}`],
+        solText: `• <b>Rechnung 1 (Zusammen):</b> ${renderMixed(r1W, r1Rem, den)} + ${renderMixed(r2W, r2Rem, den)} = <b>${renderMixed(sumW, sumR, den)} Runden</b><br>
+                  • <b>Rechnung 2 (Unterschied):</b> Differenz = <b>${diffMixed} Runden</b>`
+      };
+    }
+  },
+  {
+    id: "choc",
+    title: "Pause – Schokolade mit Freundinnen teilen",
+    icon: "🍫",
+    generate: () => {
+      const den = randChoice([8, 10, 12]);
+      const totalBars = randChoice([2, 3]);
+      const eat1 = randInt(2, den - 2);
+      const eat2W = 1;
+      const eat2Rem = randInt(1, den - 2);
+      
+      const totalEatNum = eat1 + (eat2W * den + eat2Rem);
+      const totalEatW = Math.floor(totalEatNum / den);
+      const totalEatRem = totalEatNum % den;
+      const totalEatMixed = totalEatRem === 0 ? `${totalEatW}` : `${totalEatW} ${totalEatRem}/${den}`;
+      const [sEatN, sEatD] = simplify(totalEatNum, den);
+      
+      const restNum = totalBars * den - totalEatNum;
+      const restW = Math.floor(restNum / den);
+      const restR = restNum % den;
+      const restMixed = restR === 0 ? `${restW}` : `${restW} ${restR}/${den}`;
+      const [sRestN, sRestD] = simplify(restNum, den);
+      
+      return {
+        unit: "Tafeln",
+        desc: `Rufta hat von Oma <b>${totalBars} Tafeln Schokolade</b> bekommen (jede Tafel hat ${den} Rippchen).<br>
+               In der 1. Pause teilt sie mit ihrer Klasse <b>${renderFrac(eat1, den)} Tafeln</b>, 
+               in der 2. Pause noch einmal <b>${renderMixed(eat2W, eat2Rem, den)} Tafeln</b>.`,
+        q1: "Wie viel Schokolade wurde insgesamt gegessen?",
+        q2: "Wie viel Schokolade ist noch für zu Hause übrig?",
+        ans1: [totalEatMixed, `${totalEatNum}/${den}`, `${sEatN}/${sEatD}`],
+        ans2: [restMixed, `${restNum}/${den}`, `${sRestN}/${sRestD}`],
+        solText: `• <b>Rechnung 1 (Gegessen):</b> ${renderFrac(eat1, den)} + ${renderMixed(eat2W, eat2Rem, den)} = <b>${renderMixed(totalEatW, totalEatRem, den)} Tafeln</b><br>
+                  • <b>Rechnung 2 (Rest):</b> ${totalBars} − ${renderMixed(totalEatW, totalEatRem, den)} = <b>${renderMixed(restW, restR, den)} Tafeln</b>`
+      };
+    }
+  },
+  {
+    id: "bike",
+    title: "Wochenend-Ausflug – Die Fahrradtour zum See",
+    icon: "🚲",
+    generate: () => {
+      const den = randChoice([4, 5, 10]);
+      const totalDist = randChoice([4, 5]);
+      const leg1W = 1;
+      const leg1Rem = randInt(1, den - 1);
+      const leg2W = 1;
+      const leg2Rem = randInt(1, den - 1);
+      
+      const sumRiddenNum = (leg1W * den + leg1Rem) + (leg2W * den + leg2Rem);
+      const sumW = Math.floor(sumRiddenNum / den);
+      const sumR = sumRiddenNum % den;
+      const sumMixed = sumR === 0 ? `${sumW}` : `${sumW} ${sumR}/${den}`;
+      const [sSumN, sSumD] = simplify(sumRiddenNum, den);
+      
+      const remDistNum = totalDist * den - sumRiddenNum;
+      const remW = Math.floor(remDistNum / den);
+      const remR = remDistNum % den;
+      const remMixed = remR === 0 ? `${remW}` : (remW === 0 ? `${remR}/${den}` : `${remW} ${remR}/${den}`);
+      const [sRemN, sRemD] = simplify(remDistNum, den);
+      
+      return {
+        unit: "km",
+        desc: `Rufta plant am Samstag eine <b>${totalDist} km lange Radtour</b> an den Badesee.<br>
+               Bis zur ersten Raststätte fährt sie <b>${renderMixed(leg1W, leg1Rem, den)} km</b>, 
+               danach radelt sie weitere <b>${renderMixed(leg2W, leg2Rem, den)} km</b> bis zu einem Aussichtsturm.`,
+        q1: "Wie viele Kilometer hat sie bereits zurückgelegt?",
+        q2: "Wie weit ist es vom Aussichtsturm noch bis zum See?",
+        ans1: [sumMixed, `${sumRiddenNum}/${den}`, `${sSumN}/${sSumD}`],
+        ans2: [remMixed, `${remDistNum}/${den}`, `${sRemN}/${sRemD}`],
+        solText: `• <b>Rechnung 1 (Gefahren):</b> ${renderMixed(leg1W, leg1Rem, den)} + ${renderMixed(leg2W, leg2Rem, den)} = <b>${renderMixed(sumW, sumR, den)} km</b><br>
+                  • <b>Rechnung 2 (Reststrecke):</b> ${totalDist} − ${renderMixed(sumW, sumR, den)} = <b>${remMixed} km</b>`
+      };
+    }
+  },
+  {
+    id: "ribbon",
+    title: "Geschenke basteln – Die Schleifenband-Rolle",
+    icon: "🎀",
+    generate: () => {
+      const den = randChoice([4, 8, 10]);
+      const totalRoll = randChoice([4, 5]);
+      const cut1W = 1;
+      const cut1Rem = randInt(1, den - 1);
+      const cut2W = 1;
+      const cut2Rem = randInt(1, den - 1);
+      
+      const totalCutNum = (cut1W * den + cut1Rem) + (cut2W * den + cut2Rem);
+      const totalCutW = Math.floor(totalCutNum / den);
+      const totalCutRem = totalCutNum % den;
+      const totalCutMixed = totalCutRem === 0 ? `${totalCutW}` : `${totalCutW} ${totalCutRem}/${den}`;
+      const [sCutN, sCutD] = simplify(totalCutNum, den);
+      
+      const restNum = totalRoll * den - totalCutNum;
+      const restW = Math.floor(restNum / den);
+      const restR = restNum % den;
+      const restMixed = restR === 0 ? `${restW}` : `${restW} ${restR}/${den}`;
+      const [sRestN, sRestD] = simplify(restNum, den);
+      
+      return {
+        unit: "m",
+        desc: `Zum Einpacken von Geburtstagsgeschenken hat Rufta eine Rolle mit <b>${totalRoll} Metern</b> Glitzerband.<br>
+               Für ein großes Paket schneidet sie <b>${renderMixed(cut1W, cut1Rem, den)} m</b> ab, 
+               für eine Grußkarte nochmals <b>${renderMixed(cut2W, cut2Rem, den)} m</b>.`,
+        q1: "Wie viel Band hat sie insgesamt verbraucht?",
+        q2: "Wie viel Geschenkband bleibt noch auf der Rolle?",
+        ans1: [totalCutMixed, `${totalCutNum}/${den}`, `${sCutN}/${sCutD}`],
+        ans2: [restMixed, `${restNum}/${den}`, `${sRestN}/${sRestD}`],
+        solText: `• <b>Rechnung 1 (Verbraucht):</b> ${renderMixed(cut1W, cut1Rem, den)} + ${renderMixed(cut2W, cut2Rem, den)} = <b>${renderMixed(totalCutW, totalCutRem, den)} m</b><br>
+                  • <b>Rechnung 2 (Rest):</b> ${totalRoll} − ${renderMixed(totalCutW, totalCutRem, den)} = <b>${renderMixed(restW, restR, den)} m</b>`
+      };
+    }
+  }
+];
+
+// MAIN DYNAMIC GENERATOR
 function generateNewTest() {
   solutionsVisible = false;
   document.getElementById("eval-box").classList.remove("visible");
@@ -500,7 +836,12 @@ function generateNewTest() {
   }
   document.getElementById("student-score-display").innerText = "___ / 30";
   document.getElementById("mobile-score-display").innerText = "0/30";
-  document.getElementById("test-version-label").innerText = `Test #${testCounter++}`;
+  document.getElementById("test-version-label").innerText = `Test #${testCounter}`;
+
+  if (testCounter > 1) {
+    showToast(`✨ Neuer Test #${testCounter} mit frischen Aufgaben geladen!`);
+  }
+  testCounter++;
 
   const T = {
     answers: {},
@@ -521,9 +862,8 @@ function generateNewTest() {
     </div>
   `;
 
-  // 1a) Zahlenstrahl von 0 bis 1 mit anspruchsvollem Nenner (6, 8, 9, 10, 12)
+  // 1a) Zahlenstrahl 0 bis 1 mit wechselndem Nenner (6, 8, 9, 10, 12)
   const den1 = randChoice([6, 8, 9, 10, 12]);
-  // 3 distinct points
   const pList1 = [];
   while (pList1.length < 3) {
     const r = randInt(1, den1 - 1);
@@ -532,43 +872,37 @@ function generateNewTest() {
   pList1.sort((a,b) => a - b);
   const [valA, valB, valC] = pList1;
 
-  // Render SVG 1a
   const svgWidth = 640;
   const marginX = 50;
   const axisLength = 500;
   const stepX = axisLength / den1;
 
-  let ticksSvg1 = "";
-  // 0 tick
-  ticksSvg1 += `<line x1="${marginX}" y1="26" x2="${marginX}" y2="58" stroke="#1e293b" stroke-width="2.5" />`;
+  let ticksSvg1 = `<line x1="${marginX}" y1="26" x2="${marginX}" y2="58" stroke="#1e293b" stroke-width="2.5" />`;
   ticksSvg1 += `<text x="${marginX}" y="76" font-size="16" font-weight="900" text-anchor="middle" fill="#0f172a">0</text>`;
 
-  // Intermediate ticks
   for (let i = 1; i < den1; i++) {
     const curX = marginX + i * stepX;
-    if (i === valA) {
-      ticksSvg1 += `<line x1="${curX}" y1="30" x2="${curX}" y2="54" stroke="#2563eb" stroke-width="2.5" />`;
-      ticksSvg1 += `<circle cx="${curX}" cy="42" r="5.5" fill="#2563eb" />`;
-      ticksSvg1 += `<text x="${curX}" y="20" font-size="16" font-weight="900" text-anchor="middle" fill="#2563eb">A</text>`;
-    } else if (i === valB) {
-      ticksSvg1 += `<line x1="${curX}" y1="30" x2="${curX}" y2="54" stroke="#2563eb" stroke-width="2.5" />`;
-      ticksSvg1 += `<circle cx="${curX}" cy="42" r="5.5" fill="#2563eb" />`;
-      ticksSvg1 += `<text x="${curX}" y="20" font-size="16" font-weight="900" text-anchor="middle" fill="#2563eb">B</text>`;
-    } else if (i === valC) {
-      ticksSvg1 += `<line x1="${curX}" y1="30" x2="${curX}" y2="54" stroke="#2563eb" stroke-width="2.5" />`;
-      ticksSvg1 += `<circle cx="${curX}" cy="42" r="5.5" fill="#2563eb" />`;
-      ticksSvg1 += `<text x="${curX}" y="20" font-size="16" font-weight="900" text-anchor="middle" fill="#2563eb">C</text>`;
-    } else {
-      ticksSvg1 += `<line x1="${curX}" y1="35" x2="${curX}" y2="49" stroke="#64748b" stroke-width="1.8" />`;
-    }
+    ticksSvg1 += `<line x1="${curX}" y1="33" x2="${curX}" y2="51" stroke="#475569" stroke-width="1.8" />`;
   }
+  const endX1 = marginX + axisLength;
+  ticksSvg1 += `<line x1="${endX1}" y1="26" x2="${endX1}" y2="58" stroke="#1e293b" stroke-width="2.5" />`;
+  ticksSvg1 += `<text x="${endX1}" y="76" font-size="16" font-weight="900" text-anchor="middle" fill="#0f172a">1</text>`;
 
-  // 1 tick
-  const endX = marginX + axisLength;
-  ticksSvg1 += `<line x1="${endX}" y1="26" x2="${endX}" y2="58" stroke="#1e293b" stroke-width="2.5" />`;
-  ticksSvg1 += `<text x="${endX}" y="76" font-size="16" font-weight="900" text-anchor="middle" fill="#0f172a">1</text>`;
+  const pts1 = [
+    { name: "A", val: valA, x: marginX + valA * stepX },
+    { name: "B", val: valB, x: marginX + valB * stepX },
+    { name: "C", val: valC, x: marginX + valC * stepX }
+  ];
 
-  // Solutions 1a
+  let markersSvg1 = "";
+  pts1.forEach(p => {
+    markersSvg1 += `
+      <circle cx="${p.x}" cy="42" r="7" fill="#2563eb" stroke="#fff" stroke-width="2" />
+      <rect x="${p.x - 14}" y="6" width="28" height="20" rx="5" fill="#1e40af" />
+      <text x="${p.x}" y="20" font-size="13" font-weight="900" text-anchor="middle" fill="#fff">${p.name}</text>
+    `;
+  });
+
   const [sAn, sAd] = simplify(valA, den1);
   const [sBn, sBd] = simplify(valB, den1);
   const [sCn, sCd] = simplify(valC, den1);
@@ -576,7 +910,9 @@ function generateNewTest() {
   T.answers["inp-1a-A"] = [`${valA}/${den1}`, `${sAn}/${sAd}`];
   T.answers["inp-1a-B"] = [`${valB}/${den1}`, `${sBn}/${sBd}`];
   T.answers["inp-1a-C"] = [`${valC}/${den1}`, `${sCn}/${sCd}`];
-  T.points["inp-1a-A"] = 1; T.points["inp-1a-B"] = 1; T.points["inp-1a-C"] = 1;
+  T.points["inp-1a-A"] = 1;
+  T.points["inp-1a-B"] = 1;
+  T.points["inp-1a-C"] = 1;
 
   html += `
     <div class="task-box">
@@ -585,13 +921,15 @@ function generateNewTest() {
         <span class="task-pts">3 Punkte</span>
       </div>
       <div class="task-desc">
-        Finde zuerst heraus, in wie viele gleich große Teile die Strecke von 0 bis 1 unterteilt ist (= Nenner!). Bestimme dann die Brüche bei <b>A</b>, <b>B</b> und <b>C</b>:
+        Finde zuerst heraus, in wie viele gleich große Teile die Strecke von 0 bis 1 unterteilt ist (= Nenner!). 
+        Bestimme dann die Brüche bei <b>A</b>, <b>B</b> und <b>C</b>:
       </div>
-      <div class="number-line-scroll">
-        <svg class="number-line-svg" width="640" height="85" viewBox="0 0 640 85">
-          <line x1="20" y1="42" x2="620" y2="42" stroke="#1e293b" stroke-width="2.5" />
-          <polygon points="625,42 610,37 610,47" fill="#1e293b" />
+      <div class="number-line-container">
+        <svg class="number-line-svg" viewBox="0 0 ${svgWidth} 90">
+          <line x1="${marginX - 20}" y1="42" x2="${endX1 + 35}" y2="42" stroke="#1e293b" stroke-width="3" />
+          <polygon points="${endX1 + 38},42 ${endX1 + 24},36 ${endX1 + 24},48" fill="#1e293b" />
           ${ticksSvg1}
+          ${markersSvg1}
         </svg>
       </div>
       <div style="display:flex;gap:14px;flex-wrap:wrap;margin-top:10px;">
@@ -611,54 +949,65 @@ function generateNewTest() {
       <div class="sol-box" id="sol-1a">
         <div class="sol-title">💡 Erklärung &amp; Lösung zu Aufgabe 1:</div>
         Die Strecke ist in genau <b>${den1} Abschnitte</b> unterteilt (1 Schritt = ${renderFrac(1, den1)}).<br>
-        • <b>A</b> = <b>${renderFrac(valA, den1)}</b> ${sAn !== valA ? `(oder gekürzt ${renderFrac(sAn, sAd)})` : ""}<br>
-        • <b>B</b> = <b>${renderFrac(valB, den1)}</b> ${sBn !== valB ? `(oder gekürzt ${renderFrac(sBn, sBd)})` : ""}<br>
-        • <b>C</b> = <b>${renderFrac(valC, den1)}</b> ${sCn !== valC ? `(oder gekürzt ${renderFrac(sCn, sCd)})` : ""}
+        • <b>A</b> = ${renderFrac(valA, den1)} ${sAd !== den1 ? `(oder gekürzt ${renderFrac(sAn, sAd)})` : ''}<br>
+        • <b>B</b> = ${renderFrac(valB, den1)} ${sBd !== den1 ? `(oder gekürzt ${renderFrac(sBn, sBd)})` : ''}<br>
+        • <b>C</b> = ${renderFrac(valC, den1)} ${sCd !== den1 ? `(oder gekürzt ${renderFrac(sCn, sCd)})` : ''}
       </div>
     </div>
   `;
 
-  // 1b) Zahlenstrahl von 0 bis 2 (über 1 Ganzes hinaus, Fünftel oder Sechstel oder Siebtel)
-  const den2 = randChoice([5, 6, 7, 8]);
-  const valD = randInt(2, den2 - 1);
-  const valE = randInt(den2 + 1, den2 + den2 - 2);
-  const stepX2 = 250 / den2;
+  // 1b) Zahlenstrahl von 0 bis 2 (Nenner 4, 5, 6, 8, 10)
+  const den2 = randChoice([4, 5, 6, 8, 10]);
+  const valD = randInt(1, den2 - 1);
+  const valE_rem = randInt(1, den2 - 1);
+  const valE = den2 + valE_rem;
 
-  let ticksSvg2 = "";
-  // 0 tick
-  ticksSvg2 += `<line x1="50" y1="26" x2="50" y2="58" stroke="#1e293b" stroke-width="2.5" />`;
-  ticksSvg2 += `<text x="50" y="76" font-size="16" font-weight="900" text-anchor="middle" fill="#0f172a">0</text>`;
+  const totalSteps2 = den2 * 2;
+  const stepX2 = axisLength / totalSteps2;
 
-  for (let i = 1; i <= den2 * 2; i++) {
-    const curX = 50 + i * stepX2;
-    if (i === den2) {
-      // 1
-      ticksSvg2 += `<line x1="${curX}" y1="26" x2="${curX}" y2="58" stroke="#1e293b" stroke-width="2.5" />`;
+  let ticksSvg2 = `<line x1="${marginX}" y1="26" x2="${marginX}" y2="58" stroke="#1e293b" stroke-width="2.5" />`;
+  ticksSvg2 += `<text x="${marginX}" y="76" font-size="16" font-weight="900" text-anchor="middle" fill="#0f172a">0</text>`;
+
+  const midX2 = marginX + den2 * stepX2;
+  const endX2 = marginX + totalSteps2 * stepX2;
+
+  for (let i = 1; i < totalSteps2; i++) {
+    const curX = marginX + i * stepX2;
+    const isWhole = (i === den2);
+    const tickH1 = isWhole ? 26 : 33;
+    const tickH2 = isWhole ? 58 : 51;
+    const strokeW = isWhole ? 2.5 : 1.8;
+    ticksSvg2 += `<line x1="${curX}" y1="${tickH1}" x2="${curX}" y2="${tickH2}" stroke="#475569" stroke-width="${strokeW}" />`;
+    if (isWhole) {
       ticksSvg2 += `<text x="${curX}" y="76" font-size="16" font-weight="900" text-anchor="middle" fill="#0f172a">1</text>`;
-    } else if (i === den2 * 2) {
-      // 2
-      ticksSvg2 += `<line x1="${curX}" y1="26" x2="${curX}" y2="58" stroke="#1e293b" stroke-width="2.5" />`;
-      ticksSvg2 += `<text x="${curX}" y="76" font-size="16" font-weight="900" text-anchor="middle" fill="#0f172a">2</text>`;
-    } else if (i === valD) {
-      ticksSvg2 += `<line x1="${curX}" y1="30" x2="${curX}" y2="54" stroke="#7c3aed" stroke-width="2.5" />`;
-      ticksSvg2 += `<circle cx="${curX}" cy="42" r="5.5" fill="#7c3aed" />`;
-      ticksSvg2 += `<text x="${curX}" y="20" font-size="16" font-weight="900" text-anchor="middle" fill="#7c3aed">D</text>`;
-    } else if (i === valE) {
-      ticksSvg2 += `<line x1="${curX}" y1="30" x2="${curX}" y2="54" stroke="#7c3aed" stroke-width="2.5" />`;
-      ticksSvg2 += `<circle cx="${curX}" cy="42" r="5.5" fill="#7c3aed" />`;
-      ticksSvg2 += `<text x="${curX}" y="20" font-size="16" font-weight="900" text-anchor="middle" fill="#7c3aed">E</text>`;
-    } else {
-      ticksSvg2 += `<line x1="${curX}" y1="35" x2="${curX}" y2="49" stroke="#64748b" stroke-width="1.8" />`;
     }
   }
+  ticksSvg2 += `<line x1="${endX2}" y1="26" x2="${endX2}" y2="58" stroke="#1e293b" stroke-width="2.5" />`;
+  ticksSvg2 += `<text x="${endX2}" y="76" font-size="16" font-weight="900" text-anchor="middle" fill="#0f172a">2</text>`;
 
-  const mixedE = toMixedString(valE, den2);
+  const xD = marginX + valD * stepX2;
+  const xE = marginX + valE * stepX2;
+
+  let markersSvg2 = `
+    <circle cx="${xD}" cy="42" r="7" fill="#2563eb" stroke="#fff" stroke-width="2" />
+    <rect x="${xD - 14}" y="6" width="28" height="20" rx="5" fill="#1e40af" />
+    <text x="${xD}" y="20" font-size="13" font-weight="900" text-anchor="middle" fill="#fff">D</text>
+
+    <circle cx="${xE}" cy="42" r="7" fill="#d97706" stroke="#fff" stroke-width="2" />
+    <rect x="${xE - 14}" y="6" width="28" height="20" rx="5" fill="#b45309" />
+    <text x="${xE}" y="20" font-size="13" font-weight="900" text-anchor="middle" fill="#fff">E</text>
+  `;
+
   const [sDn, sDd] = simplify(valD, den2);
   const [sEn, sEd] = simplify(valE, den2);
+  const [sRemN, sRemD] = simplify(valE_rem, den2);
+  const mixedE = `1 ${valE_rem}/${den2}`;
+  const mixedESimp = `1 ${sRemN}/${sRemD}`;
 
   T.answers["inp-1b-D"] = [`${valD}/${den2}`, `${sDn}/${sDd}`];
-  T.answers["inp-1b-E"] = [mixedE, `${valE}/${den2}`, `${sEn}/${sEd}`, `1 ${valE - den2}/${den2}`];
-  T.points["inp-1b-D"] = 1.5; T.points["inp-1b-E"] = 1.5;
+  T.answers["inp-1b-E"] = [mixedE, `${valE}/${den2}`, `${sEn}/${sEd}`, mixedESimp];
+  T.points["inp-1b-D"] = 1.5;
+  T.points["inp-1b-E"] = 1.5;
 
   html += `
     <div class="task-box">
@@ -667,16 +1016,18 @@ function generateNewTest() {
         <span class="task-pts">3 Punkte</span>
       </div>
       <div class="task-desc">
-        Dieser Zahlenstrahl reicht von 0 bis 2. Lies die Punkte <b>D</b> und <b>E</b> ab (bei E gerne als gemischte Zahl, z. B. 1 2/5):
+        Dieser Zahlenstrahl reicht von 0 bis 2. Lies die Punkte <b>D</b> und <b>E</b> ab 
+        (bei E gerne als gemischte Zahl, z. B. <code>1 2/5</code>):
       </div>
-      <div class="number-line-scroll">
-        <svg class="number-line-svg" width="640" height="85" viewBox="0 0 640 85">
-          <line x1="20" y1="42" x2="620" y2="42" stroke="#1e293b" stroke-width="2.5" />
-          <polygon points="625,42 610,37 610,47" fill="#1e293b" />
+      <div class="number-line-container">
+        <svg class="number-line-svg" viewBox="0 0 ${svgWidth} 90">
+          <line x1="${marginX - 20}" y1="42" x2="${endX2 + 35}" y2="42" stroke="#1e293b" stroke-width="3" />
+          <polygon points="${endX2 + 38},42 ${endX2 + 24},36 ${endX2 + 24},48" fill="#1e293b" />
           ${ticksSvg2}
+          ${markersSvg2}
         </svg>
       </div>
-      <div style="display:flex;gap:16px;flex-wrap:wrap;margin-top:10px;">
+      <div style="display:flex;gap:14px;flex-wrap:wrap;margin-top:10px;">
         <div style="display:flex;align-items:center;gap:6px">
           <b>D =</b>
           <input type="text" class="calc-input math-focus-in" id="inp-1b-D" placeholder="" style="width:110px">
@@ -689,15 +1040,16 @@ function generateNewTest() {
       <div class="sol-box" id="sol-1b">
         <div class="sol-title">💡 Erklärung &amp; Lösung zu Aufgabe 2:</div>
         Jedes Ganze ist in <b>${den2} Teile</b> eingeteilt.<br>
-        • <b>D</b> liegt bei ${valD} Teilen: <b>${renderFrac(valD, den2)}</b><br>
-        • <b>E</b> liegt bei ${valE} Teilen (also ${valE - den2} Teile nach der 1): <b>${mixedE}</b> (oder ${renderFrac(valE, den2)})
+        • <b>D</b> liegt bei ${valD} Teilen: <b>${renderFrac(valD, den2)}</b> ${sDd !== den2 ? `(= ${renderFrac(sDn, sDd)})` : ''}<br>
+        • <b>E</b> liegt bei 1 Ganzem + ${valE_rem} Teilen: <b>${mixedE}</b> (oder als unechter Bruch: <b>${renderFrac(valE, den2)}</b>)
       </div>
     </div>
   `;
 
-  // 1c) Position bestimmen: "An welchem Strich nach der 0 liegt der Bruch X?"
-  const den3 = randChoice([8, 10, 12]);
-  const num3 = randInt(3, den3 - 2);
+  // 1c) Einteilung & Position bestimmen (2 Punkte)
+  const den3 = randChoice([8, 10, 12, 14, 16]);
+  const num3 = randInt(2, den3 - 2);
+
   T.answers["inp-1c"] = [`${num3}`];
   T.points["inp-1c"] = 2;
 
@@ -712,48 +1064,66 @@ function generateNewTest() {
         Am wievielten Strich nach der 0 liegt der Bruch <b>${renderFrac(num3, den3)}</b>?
       </div>
       <div style="display:flex;align-items:center;gap:8px;margin-top:8px">
-        <span>Am</span>
+        <span>Antwort: Am</span>
         <input type="text" class="calc-input math-focus-in" id="inp-1c" placeholder="" style="width:80px">
         <span>. Strich nach der 0.</span>
       </div>
       <div class="sol-box" id="sol-1c">
         <div class="sol-title">💡 Lösung zu Aufgabe 3:</div>
-        Da der Zahlenstrahl in ${den3} Teile geteilt ist, liegt der Zähler direkt am Strich: Am <b>${num3}. Strich</b>!
+        Da 1 Schritt = ${renderFrac(1, den3)} entspricht, liegt ${renderFrac(num3, den3)} genau am <b>${num3}. Strich</b> nach der 0.
       </div>
     </div>
   </div>
   `;
 
   // ==========================================
-  // TEIL 2: BRÜCHE VERGLEICHEN & ERWEITERN (8 Punkte)
+  // TEIL 2: VERGLEICHEN & ERWEITERN (8 Punkte)
   // ==========================================
   html += `
   <div class="section">
     <div class="section-title">
-      <span>Teil 2: Brüche vergleichen und ordnen (Schwer)</span>
+      <span>Teil 2: Brüche vergleichen, erweitern &amp; ordnen</span>
       <span class="section-pts">8 Punkte</span>
     </div>
   `;
 
-  // 2a: Verschiedene Nenner durch Erweitern (z.B. 3/4 vs 5/6, oder 5/8 vs 7/12, oder 2/3 vs 8/12)
-  const comparePairs = [
-    { n1: 3, d1: 4, n2: 5, d2: 6 }, // 9/12 vs 10/12 (<)
-    { n1: 5, d1: 8, n2: 7, d2: 12 }, // 15/24 vs 14/24 (>)
-    { n1: 2, d1: 3, n2: 8, d2: 12 }, // 8/12 vs 8/12 (=)
-    { n1: 4, d1: 5, n2: 7, d2: 10 }, // 8/10 vs 7/10 (>)
-    { n1: 5, d1: 6, n2: 11, d2: 12 }, // 10/12 vs 11/12 (<)
-    { n1: 3, d1: 8, n2: 6, d2: 16 } // 6/16 vs 6/16 (=)
+  // Aufgabe 4: Verschiedene Nenner (Hauptnenner)
+  const compPoolDiff = [
+    { n1: 3, d1: 4, n2: 5, d2: 6 },
+    { n1: 2, d1: 3, n2: 5, d2: 8 },
+    { n1: 3, d1: 5, n2: 7, d2: 10 },
+    { n1: 4, d1: 9, n2: 1, d2: 2 },
+    { n1: 5, d1: 8, n2: 7, d2: 12 },
+    { n1: 3, d1: 4, n2: 7, d2: 10 },
+    { n1: 5, d1: 6, n2: 7, d2: 9 },
+    { n1: 2, d1: 5, n2: 3, d2: 8 },
+    { n1: 3, d1: 8, n2: 5, d2: 12 },
+    { n1: 5, d1: 6, n2: 8, d2: 10 }
   ];
-  const pair1 = randChoice(comparePairs);
-  let pair2 = randChoice(comparePairs);
-  while (pair2 === pair1) pair2 = randChoice(comparePairs);
+  const pair4 = shuffle(compPoolDiff).slice(0, 2);
+  const p4_1 = pair4[0];
+  const p4_2 = pair4[1];
 
-  const compVal1 = (pair1.n1 * pair1.d2 < pair1.n2 * pair1.d1) ? "<" : (pair1.n1 * pair1.d2 > pair1.n2 * pair1.d1 ? ">" : "=");
-  const compVal2 = (pair2.n1 * pair2.d2 < pair2.n2 * pair2.d1) ? "<" : (pair2.n1 * pair2.d2 > pair2.n2 * pair2.d1 ? ">" : "=");
+  function getCompVal(p) {
+    const val1 = p.n1 / p.d1;
+    const val2 = p.n2 / p.d2;
+    if (Math.abs(val1 - val2) < 0.0001) return "=";
+    return val1 < val2 ? "<" : ">";
+  }
+  const compVal1 = getCompVal(p4_1);
+  const compVal2 = getCompVal(p4_2);
 
   T.answers["inp-2a-1"] = [compVal1];
   T.answers["inp-2a-2"] = [compVal2];
-  T.points["inp-2a-1"] = 1; T.points["inp-2a-2"] = 1;
+  T.points["inp-2a-1"] = 1;
+  T.points["inp-2a-2"] = 1;
+
+  const hn1 = lcm(p4_1.d1, p4_1.d2);
+  const hn2 = lcm(p4_2.d1, p4_2.d2);
+  const expN1_1 = p4_1.n1 * (hn1 / p4_1.d1);
+  const expN1_2 = p4_1.n2 * (hn1 / p4_1.d2);
+  const expN2_1 = p4_2.n1 * (hn2 / p4_2.d1);
+  const expN2_2 = p4_2.n2 * (hn2 / p4_2.d2);
 
   html += `
     <div class="task-box">
@@ -762,59 +1132,64 @@ function generateNewTest() {
         <span class="task-pts">2 Punkte</span>
       </div>
       <div class="task-desc">
-        Tippe &lt;, = oder &gt; an. <i>Tipp: Erweitere beide Brüche auf denselben Nenner, um sie zu vergleichen!</i>
+        Tippe <b>&lt;</b>, <b>=</b> oder <b>&gt;</b> an. <i>Tipp: Erweitere beide Brüche auf denselben Nenner, um sie zu vergleichen!</i>
       </div>
       <div class="compare-grid">
         <div class="compare-card">
-          <div class="compare-expression">
-            ${renderFrac(pair1.n1, pair1.d1)}
-            <span class="print-comp-box"></span>
-            ${renderFrac(pair1.n2, pair1.d2)}
-          </div>
+          <span>a) ${renderFrac(p4_1.n1, p4_1.d1)}</span>
           <div class="touch-comp-group" data-target="inp-2a-1">
             <button type="button" class="touch-comp-btn" data-val="<">&lt;</button>
             <button type="button" class="touch-comp-btn" data-val="=">=</button>
             <button type="button" class="touch-comp-btn" data-val=">">&gt;</button>
           </div>
+          <span class="print-comp-box"></span>
           <input type="hidden" id="inp-2a-1" value="">
+          <span>${renderFrac(p4_1.n2, p4_1.d2)}</span>
         </div>
-
         <div class="compare-card">
-          <div class="compare-expression">
-            ${renderFrac(pair2.n1, pair2.d1)}
-            <span class="print-comp-box"></span>
-            ${renderFrac(pair2.n2, pair2.d2)}
-          </div>
+          <span>b) ${renderFrac(p4_2.n1, p4_2.d1)}</span>
           <div class="touch-comp-group" data-target="inp-2a-2">
             <button type="button" class="touch-comp-btn" data-val="<">&lt;</button>
             <button type="button" class="touch-comp-btn" data-val="=">=</button>
             <button type="button" class="touch-comp-btn" data-val=">">&gt;</button>
           </div>
+          <span class="print-comp-box"></span>
           <input type="hidden" id="inp-2a-2" value="">
+          <span>${renderFrac(p4_2.n2, p4_2.d2)}</span>
         </div>
       </div>
       <div class="sol-box" id="sol-2a">
-        <div class="sol-title">💡 Lösung zu Aufgabe 4:</div>
-        • ${renderFrac(pair1.n1, pair1.d1)} <b>${compVal1}</b> ${renderFrac(pair1.n2, pair1.d2)} (Kreuzweise erweitert: ${pair1.n1}·${pair1.d2} = ${pair1.n1 * pair1.d2} vs. ${pair1.n2}·${pair1.d1} = ${pair1.n2 * pair1.d1})<br>
-        • ${renderFrac(pair2.n1, pair2.d1)} <b>${compVal2}</b> ${renderFrac(pair2.n2, pair2.d2)} (Erweitert: ${pair2.n1 * pair2.d2} vs. ${pair2.n2 * pair2.d1})
+        <div class="sol-title">💡 Erklärung &amp; Lösung zu Aufgabe 4:</div>
+        • <b>a)</b> Hauptnenner ist ${hn1}: ${renderFrac(p4_1.n1, p4_1.d1)} = ${renderFrac(expN1_1, hn1)} und ${renderFrac(p4_1.n2, p4_1.d2)} = ${renderFrac(expN1_2, hn1)}. 
+        Da ${expN1_1} ${compVal1} ${expN1_2}, gilt: <b>${renderFrac(p4_1.n1, p4_1.d1)} ${compVal1} ${renderFrac(p4_1.n2, p4_1.d2)}</b><br>
+        • <b>b)</b> Hauptnenner ist ${hn2}: ${renderFrac(p4_2.n1, p4_2.d1)} = ${renderFrac(expN2_1, hn2)} und ${renderFrac(p4_2.n2, p4_2.d2)} = ${renderFrac(expN2_2, hn2)}. 
+        Da ${expN2_1} ${compVal2} ${expN2_2}, gilt: <b>${renderFrac(p4_2.n1, p4_2.d1)} ${compVal2} ${renderFrac(p4_2.n2, p4_2.d2)}</b>
       </div>
     </div>
   `;
 
-  // 2b: Gleicher Zähler ("Kuchenregel") mit knappen Nennern (z.B. 4/7 vs 4/9 oder 5/11 vs 5/8)
-  const cakeNum1 = randChoice([3, 4, 5, 7]);
-  const cakeDen1_a = randChoice([7, 8, 9]);
-  const cakeDen1_b = randChoice([11, 12, 13]);
-  const compValCake1 = cakeDen1_a < cakeDen1_b ? ">" : "<";
+  // Aufgabe 5: Gleicher Zähler (Kuchenregel)
+  const cakePool = [
+    { num: 4, d1: 7, d2: 9 },
+    { num: 3, d1: 5, d2: 8 },
+    { num: 5, d1: 6, d2: 7 },
+    { num: 2, d1: 3, d2: 5 },
+    { num: 7, d1: 10, d2: 12 },
+    { num: 3, d1: 4, d2: 6 },
+    { num: 5, d1: 9, d2: 8 },
+    { num: 6, d1: 11, d2: 7 }
+  ];
+  const cakeChoice = shuffle(cakePool).slice(0, 2);
+  const c1 = cakeChoice[0];
+  const c2 = cakeChoice[1];
 
-  const cakeNum2 = randChoice([2, 5, 6]);
-  const cakeDen2_a = randChoice([13, 14, 15]);
-  const cakeDen2_b = randChoice([7, 9, 10]);
-  const compValCake2 = cakeDen2_a < cakeDen2_b ? ">" : "<";
+  const compValCake1 = c1.d1 < c1.d2 ? ">" : "<";
+  const compValCake2 = c2.d1 < c2.d2 ? ">" : "<";
 
   T.answers["inp-2b-1"] = [compValCake1];
   T.answers["inp-2b-2"] = [compValCake2];
-  T.points["inp-2b-1"] = 1; T.points["inp-2b-2"] = 1;
+  T.points["inp-2b-1"] = 1;
+  T.points["inp-2b-2"] = 1;
 
   html += `
     <div class="task-box">
@@ -823,67 +1198,66 @@ function generateNewTest() {
         <span class="task-pts">2 Punkte</span>
       </div>
       <div class="task-desc">
-        Wenn die Zähler gleich sind: Welcher Bruch ist größer?
+        Wenn die Zähler gleich sind: Welcher Bruch ist größer? (Je mehr Stücke ein Kuchen hat, desto kleiner sind sie!)
       </div>
       <div class="compare-grid">
         <div class="compare-card">
-          <div class="compare-expression">
-            ${renderFrac(cakeNum1, cakeDen1_a)}
-            <span class="print-comp-box"></span>
-            ${renderFrac(cakeNum1, cakeDen1_b)}
-          </div>
+          <span>a) ${renderFrac(c1.num, c1.d1)}</span>
           <div class="touch-comp-group" data-target="inp-2b-1">
             <button type="button" class="touch-comp-btn" data-val="<">&lt;</button>
             <button type="button" class="touch-comp-btn" data-val="=">=</button>
             <button type="button" class="touch-comp-btn" data-val=">">&gt;</button>
           </div>
+          <span class="print-comp-box"></span>
           <input type="hidden" id="inp-2b-1" value="">
+          <span>${renderFrac(c1.num, c1.d2)}</span>
         </div>
-
         <div class="compare-card">
-          <div class="compare-expression">
-            ${renderFrac(cakeNum2, cakeDen2_a)}
-            <span class="print-comp-box"></span>
-            ${renderFrac(cakeNum2, cakeDen2_b)}
-          </div>
+          <span>b) ${renderFrac(c2.num, c2.d1)}</span>
           <div class="touch-comp-group" data-target="inp-2b-2">
             <button type="button" class="touch-comp-btn" data-val="<">&lt;</button>
             <button type="button" class="touch-comp-btn" data-val="=">=</button>
             <button type="button" class="touch-comp-btn" data-val=">">&gt;</button>
           </div>
+          <span class="print-comp-box"></span>
           <input type="hidden" id="inp-2b-2" value="">
+          <span>${renderFrac(c2.num, c2.d2)}</span>
         </div>
       </div>
       <div class="sol-box" id="sol-2b">
         <div class="sol-title">💡 Lösung zu Aufgabe 5:</div>
-        • ${renderFrac(cakeNum1, cakeDen1_a)} <b>${compValCake1}</b> ${renderFrac(cakeNum1, cakeDen1_b)} (Wer durch weniger teilt, hat größere Stücke!)<br>
-        • ${renderFrac(cakeNum2, cakeDen2_a)} <b>${compValCake2}</b> ${renderFrac(cakeNum2, cakeDen2_b)}
+        • <b>a)</b> Gleicher Zähler (${c1.num}): ${c1.d1} Teile sind ${c1.d1 < c1.d2 ? 'größer' : 'kleiner'} als ${c1.d2} Teile → <b>${renderFrac(c1.num, c1.d1)} ${compValCake1} ${renderFrac(c1.num, c1.d2)}</b><br>
+        • <b>b)</b> Gleicher Zähler (${c2.num}): ${c2.d1} Teile sind ${c2.d1 < c2.d2 ? 'größer' : 'kleiner'} als ${c2.d2} Teile → <b>${renderFrac(c2.num, c2.d1)} ${compValCake2} ${renderFrac(c2.num, c2.d2)}</b>
       </div>
     </div>
   `;
 
-  // 2c: Gemischte Zahlen mit unechten Brüchen vergleichen
-  // E.g. 2 3/5 vs 14/5 (13/5 < 14/5)
-  const mixDen = randChoice([4, 5, 6, 7]);
-  const mixW = randInt(2, 3);
-  const mixRem = randInt(1, mixDen - 1);
-  const mixNum = mixW * mixDen + mixRem; // equal
-  // variant 1: compared with mixNum + 1 or - 1
-  const offset = randChoice([-1, 0, 1]);
-  const compValMix1 = offset > 0 ? "<" : (offset < 0 ? ">" : "=");
-  const compImproper = mixNum + offset;
+  // Aufgabe 6: Gemischte Zahl vs Unechter Bruch
+  const mixCompPool = [
+    { w: 2, num: 1, den: 4, unN: 9, unD: 4 },
+    { w: 1, num: 3, den: 5, unN: 9, unD: 5 },
+    { w: 3, num: 1, den: 2, unN: 6, unD: 2 },
+    { w: 2, num: 2, den: 3, unN: 7, unD: 3 },
+    { w: 1, num: 5, den: 8, unN: 13, unD: 8 },
+    { w: 2, num: 3, den: 4, unN: 12, unD: 4 },
+    { w: 1, num: 2, den: 6, unN: 8, unD: 6 }
+  ];
+  const mixChoice = shuffle(mixCompPool).slice(0, 2);
+  const m1 = mixChoice[0];
+  const m2 = mixChoice[1];
+
+  function getMixCompVal(m) {
+    const val1 = m.w + (m.num / m.den);
+    const val2 = m.unN / m.unD;
+    if (Math.abs(val1 - val2) < 0.0001) return "=";
+    return val1 < val2 ? "<" : ">";
+  }
+  const compValMix1 = getMixCompVal(m1);
+  const compValMix2 = getMixCompVal(m2);
 
   T.answers["inp-2c-1"] = [compValMix1];
-  T.points["inp-2c-1"] = 1;
-
-  // 2c-2: Unechte Brüche vs Ganze (z.B. 17/4 vs 4 -> 17/4 > 16/4)
-  const intDen = randChoice([3, 4, 5]);
-  const intW = randInt(3, 4);
-  const intOffset = randChoice([-1, 1]);
-  const intNum = intW * intDen + intOffset;
-  const compValMix2 = intOffset > 0 ? ">" : "<";
-
   T.answers["inp-2c-2"] = [compValMix2];
+  T.points["inp-2c-1"] = 1;
   T.points["inp-2c-2"] = 1;
 
   html += `
@@ -897,49 +1271,44 @@ function generateNewTest() {
       </div>
       <div class="compare-grid">
         <div class="compare-card">
-          <div class="compare-expression">
-            ${renderMixed(mixW, mixRem, mixDen)}
-            <span class="print-comp-box"></span>
-            ${renderFrac(compImproper, mixDen)}
-          </div>
+          <span>a) ${renderMixed(m1.w, m1.num, m1.den)}</span>
           <div class="touch-comp-group" data-target="inp-2c-1">
             <button type="button" class="touch-comp-btn" data-val="<">&lt;</button>
             <button type="button" class="touch-comp-btn" data-val="=">=</button>
             <button type="button" class="touch-comp-btn" data-val=">">&gt;</button>
           </div>
+          <span class="print-comp-box"></span>
           <input type="hidden" id="inp-2c-1" value="">
+          <span>${renderFrac(m1.unN, m1.unD)}</span>
         </div>
-
         <div class="compare-card">
-          <div class="compare-expression">
-            ${renderFrac(intNum, intDen)}
-            <span class="print-comp-box"></span>
-            <span style="font-size:22px;font-weight:900">${intW}</span>
-          </div>
+          <span>b) ${renderMixed(m2.w, m2.num, m2.den)}</span>
           <div class="touch-comp-group" data-target="inp-2c-2">
             <button type="button" class="touch-comp-btn" data-val="<">&lt;</button>
             <button type="button" class="touch-comp-btn" data-val="=">=</button>
             <button type="button" class="touch-comp-btn" data-val=">">&gt;</button>
           </div>
+          <span class="print-comp-box"></span>
           <input type="hidden" id="inp-2c-2" value="">
+          <span>${renderFrac(m2.unN, m2.unD)}</span>
         </div>
       </div>
       <div class="sol-box" id="sol-2c">
         <div class="sol-title">💡 Lösung zu Aufgabe 6:</div>
-        • ${mixW} ${renderFrac(mixRem, mixDen)} = ${renderFrac(mixNum, mixDen)} <b>${compValMix1}</b> ${renderFrac(compImproper, mixDen)}<br>
-        • ${renderFrac(intNum, intDen)} <b>${compValMix2}</b> ${intW} (denn ${intW} Ganze = ${renderFrac(intW * intDen, intDen)})
+        • <b>a)</b> ${renderMixed(m1.w, m1.num, m1.den)} = ${renderFrac(m1.w * m1.den + m1.num, m1.den)} → <b>${renderMixed(m1.w, m1.num, m1.den)} ${compValMix1} ${renderFrac(m1.unN, m1.unD)}</b><br>
+        • <b>b)</b> ${renderMixed(m2.w, m2.num, m2.den)} = ${renderFrac(m2.w * m2.den + m2.num, m2.den)} → <b>${renderMixed(m2.w, m2.num, m2.den)} ${compValMix2} ${renderFrac(m2.unN, m2.unD)}</b>
       </div>
     </div>
   `;
 
-  // 2d: 5 Brüche der Größe nach ordnen
-  const sortDen = randChoice([13, 14, 15, 17]);
+  // Aufgabe 7: 5 Brüche ordnen
+  const sortDen = randChoice([6, 7, 8, 9, 10, 12]);
   const sortNums = [];
   while (sortNums.length < 5) {
     const r = randInt(1, sortDen);
     if (!sortNums.includes(r)) sortNums.push(r);
   }
-  const unsortedNums = [...sortNums].sort(() => Math.random() - 0.5);
+  const unsortedNums = shuffle(sortNums);
   const sortedNums = [...sortNums].sort((a,b) => a - b);
 
   sortedNums.forEach((n, idx) => {
@@ -977,7 +1346,7 @@ function generateNewTest() {
   `;
 
   // ==========================================
-  // TEIL 3: ADDITION & SUBTRAKTION (10 Punkte)
+  // TEIL 3: RECHNEN MIT GLEICHNAMIGEN BRÜCHEN (10 Punkte)
   // ==========================================
   html += `
   <div class="section">
@@ -987,22 +1356,25 @@ function generateNewTest() {
     </div>
   `;
 
-  // 3a: Addition mit KÜRZEN (z.B. 5/12 + 1/12 = 6/12 = 1/2)
-  const addSimplPool = [
-    { n1: 5, n2: 1, d: 12, resN: 6, resD: 12, simpN: 1, simpD: 2 },
-    { n1: 3, n2: 5, d: 16, resN: 8, resD: 16, simpN: 1, simpD: 2 },
-    { n1: 7, n2: 2, d: 18, resN: 9, resD: 18, simpN: 1, simpD: 2 },
-    { n1: 3, n2: 3, d: 10, resN: 6, resD: 10, simpN: 3, simpD: 5 },
-    { n1: 7, n2: 5, d: 16, resN: 12, resD: 16, simpN: 3, simpD: 4 },
-    { n1: 2, n2: 4, d: 9, resN: 6, resD: 9, simpN: 2, simpD: 3 }
+  // Aufgabe 8: Addition mit Pflicht zum Kürzen
+  const addSimplifyPool = [
+    { n1: 1, n2: 2, den: 6, resN: 3, resD: 6, simpN: 1, simpD: 2 },
+    { n1: 3, n2: 1, den: 8, resN: 4, resD: 8, simpN: 1, simpD: 2 },
+    { n1: 5, n2: 1, den: 12, resN: 6, resD: 12, simpN: 1, simpD: 2 },
+    { n1: 1, n2: 3, den: 10, resN: 4, resD: 10, simpN: 2, simpD: 5 },
+    { n1: 7, n2: 5, den: 18, resN: 12, resD: 18, simpN: 2, simpD: 3 },
+    { n1: 2, n2: 7, den: 15, resN: 9, resD: 15, simpN: 3, simpD: 5 },
+    { n1: 5, n2: 2, den: 14, resN: 7, resD: 14, simpN: 1, simpD: 2 },
+    { n1: 1, n2: 5, den: 16, resN: 6, resD: 16, simpN: 3, simpD: 8 }
   ];
-  const p3a1 = randChoice(addSimplPool);
-  let p3a2 = randChoice(addSimplPool);
-  while (p3a2 === p3a1) p3a2 = randChoice(addSimplPool);
+  const p3a = shuffle(addSimplifyPool).slice(0, 2);
+  const p3a1 = p3a[0];
+  const p3a2 = p3a[1];
 
   T.answers["inp-3a-1"] = [`${p3a1.simpN}/${p3a1.simpD}`, `${p3a1.resN}/${p3a1.resD}`];
   T.answers["inp-3a-2"] = [`${p3a2.simpN}/${p3a2.simpD}`, `${p3a2.resN}/${p3a2.resD}`];
-  T.points["inp-3a-1"] = 1; T.points["inp-3a-2"] = 1;
+  T.points["inp-3a-1"] = 1;
+  T.points["inp-3a-2"] = 1;
 
   html += `
     <div class="task-box">
@@ -1015,38 +1387,41 @@ function generateNewTest() {
       </div>
       <div class="calc-grid">
         <div class="calc-card">
-          <span>a) ${renderFrac(p3a1.n1, p3a1.d)} + ${renderFrac(p3a1.n2, p3a1.d)} = </span>
+          <span>a) ${renderFrac(p3a1.n1, p3a1.den)} + ${renderFrac(p3a1.n2, p3a1.den)} =</span>
           <input type="text" class="calc-input math-focus-in" id="inp-3a-1" placeholder="">
         </div>
         <div class="calc-card">
-          <span>b) ${renderFrac(p3a2.n1, p3a2.d)} + ${renderFrac(p3a2.n2, p3a2.d)} = </span>
+          <span>b) ${renderFrac(p3a2.n1, p3a2.den)} + ${renderFrac(p3a2.n2, p3a2.den)} =</span>
           <input type="text" class="calc-input math-focus-in" id="inp-3a-2" placeholder="">
         </div>
       </div>
       <div class="sol-box" id="sol-3a">
         <div class="sol-title">💡 Lösung zu Aufgabe 8:</div>
-        • a) ${renderFrac(p3a1.n1, p3a1.d)} + ${renderFrac(p3a1.n2, p3a1.d)} = ${renderFrac(p3a1.resN, p3a1.d)} = <b>${renderFrac(p3a1.simpN, p3a1.simpD)}</b><br>
-        • b) ${renderFrac(p3a2.n1, p3a2.d)} + ${renderFrac(p3a2.n2, p3a2.d)} = ${renderFrac(p3a2.resN, p3a2.d)} = <b>${renderFrac(p3a2.simpN, p3a2.simpD)}</b>
+        • <b>a)</b> ${renderFrac(p3a1.n1, p3a1.den)} + ${renderFrac(p3a1.n2, p3a1.den)} = ${renderFrac(p3a1.resN, p3a1.resD)} = <b>${renderFrac(p3a1.simpN, p3a1.simpD)}</b><br>
+        • <b>b)</b> ${renderFrac(p3a2.n1, p3a2.den)} + ${renderFrac(p3a2.n2, p3a2.den)} = ${renderFrac(p3a2.resN, p3a2.resD)} = <b>${renderFrac(p3a2.simpN, p3a2.simpD)}</b>
       </div>
     </div>
   `;
 
-  // 3b: Subtraktion mit KÜRZEN (z.B. 11/14 - 3/14 = 8/14 = 4/7)
-  const subSimplPool = [
-    { n1: 11, n2: 3, d: 16, resN: 8, resD: 16, simpN: 1, simpD: 2 },
-    { n1: 13, n2: 4, d: 15, resN: 9, resD: 15, simpN: 3, simpD: 5 },
-    { n1: 9, n2: 3, d: 14, resN: 6, resD: 14, simpN: 3, simpD: 7 },
-    { n1: 11, n2: 5, d: 18, resN: 6, resD: 18, simpN: 1, simpD: 3 },
-    { n1: 17, n2: 7, d: 20, resN: 10, resD: 20, simpN: 1, simpD: 2 },
-    { n1: 13, n2: 5, d: 12, resN: 8, resD: 12, simpN: 2, simpD: 3 }
+  // Aufgabe 9: Subtraktion mit Pflicht zum Kürzen
+  const subSimplifyPool = [
+    { n1: 5, n2: 2, den: 6, resN: 3, resD: 6, simpN: 1, simpD: 2 },
+    { n1: 7, n2: 3, den: 8, resN: 4, resD: 8, simpN: 1, simpD: 2 },
+    { n1: 9, n2: 3, den: 12, resN: 6, resD: 12, simpN: 1, simpD: 2 },
+    { n1: 7, n2: 2, den: 10, resN: 5, resD: 10, simpN: 1, simpD: 2 },
+    { n1: 11, n2: 2, den: 15, resN: 9, resD: 15, simpN: 3, simpD: 5 },
+    { n1: 13, n2: 5, den: 16, resN: 8, resD: 16, simpN: 1, simpD: 2 },
+    { n1: 8, n2: 2, den: 18, resN: 6, resD: 18, simpN: 1, simpD: 3 },
+    { n1: 11, n2: 5, den: 12, resN: 6, resD: 12, simpN: 1, simpD: 2 }
   ];
-  const p3b1 = randChoice(subSimplPool);
-  let p3b2 = randChoice(subSimplPool);
-  while (p3b2 === p3b1) p3b2 = randChoice(subSimplPool);
+  const p3b = shuffle(subSimplifyPool).slice(0, 2);
+  const p3b1 = p3b[0];
+  const p3b2 = p3b[1];
 
   T.answers["inp-3b-1"] = [`${p3b1.simpN}/${p3b1.simpD}`, `${p3b1.resN}/${p3b1.resD}`];
   T.answers["inp-3b-2"] = [`${p3b2.simpN}/${p3b2.simpD}`, `${p3b2.resN}/${p3b2.resD}`];
-  T.points["inp-3b-1"] = 1; T.points["inp-3b-2"] = 1;
+  T.points["inp-3b-1"] = 1;
+  T.points["inp-3b-2"] = 1;
 
   html += `
     <div class="task-box">
@@ -1059,38 +1434,44 @@ function generateNewTest() {
       </div>
       <div class="calc-grid">
         <div class="calc-card">
-          <span>a) ${renderFrac(p3b1.n1, p3b1.d)} − ${renderFrac(p3b1.n2, p3b1.d)} = </span>
+          <span>a) ${renderFrac(p3b1.n1, p3b1.den)} − ${renderFrac(p3b1.n2, p3b1.den)} =</span>
           <input type="text" class="calc-input math-focus-in" id="inp-3b-1" placeholder="">
         </div>
         <div class="calc-card">
-          <span>b) ${renderFrac(p3b2.n1, p3b2.d)} − ${renderFrac(p3b2.n2, p3b2.d)} = </span>
+          <span>b) ${renderFrac(p3b2.n1, p3b2.den)} − ${renderFrac(p3b2.n2, p3b2.den)} =</span>
           <input type="text" class="calc-input math-focus-in" id="inp-3b-2" placeholder="">
         </div>
       </div>
       <div class="sol-box" id="sol-3b">
         <div class="sol-title">💡 Lösung zu Aufgabe 9:</div>
-        • a) ${renderFrac(p3b1.n1, p3b1.d)} − ${renderFrac(p3b1.n2, p3b1.d)} = ${renderFrac(p3b1.resN, p3b1.d)} = <b>${renderFrac(p3b1.simpN, p3b1.simpD)}</b><br>
-        • b) ${renderFrac(p3b2.n1, p3b2.d)} − ${renderFrac(p3b2.n2, p3b2.d)} = ${renderFrac(p3b2.resN, p3b2.d)} = <b>${renderFrac(p3b2.simpN, p3b2.simpD)}</b>
+        • <b>a)</b> ${renderFrac(p3b1.n1, p3b1.den)} − ${renderFrac(p3b1.n2, p3b1.den)} = ${renderFrac(p3b1.resN, p3b1.resD)} = <b>${renderFrac(p3b1.simpN, p3b1.simpD)}</b><br>
+        • <b>b)</b> ${renderFrac(p3b2.n1, p3b2.den)} − ${renderFrac(p3b2.n2, p3b2.den)} = ${renderFrac(p3b2.resN, p3b2.resD)} = <b>${renderFrac(p3b2.simpN, p3b2.simpD)}</b>
       </div>
     </div>
   `;
 
-  // 3c: Addition mit Ergebnis > 1 als gemischte Zahl
+  // Aufgabe 10: Addition über 1 Ganzes hinaus (Gemischte Zahl)
   const den3c = randChoice([5, 6, 7, 8, 9]);
-  const n3c1 = randInt(den3c - 3, den3c - 1);
-  const n3c2 = randInt(2, den3c - 1);
-  const sum3c = n3c1 + n3c2;
-  const mix3c = toMixedString(sum3c, den3c);
+  const n3c_1 = randInt(Math.floor(den3c / 2), den3c - 1);
+  const n3c_2 = randInt(Math.floor(den3c / 2), den3c - 1);
+  const sum3c = n3c_1 + n3c_2;
+  const rem3c = sum3c % den3c;
+  const mix3c = `1 ${rem3c}/${den3c}`;
+  const [s3cN, s3cD] = simplify(rem3c, den3c);
 
-  const den3c_b = randChoice([6, 8, 10]);
-  const n3c_b1 = randInt(den3c_b - 2, den3c_b - 1);
-  const n3c_b2 = randInt(3, den3c_b - 1);
-  const sum3c_b = n3c_b1 + n3c_b2;
-  const mix3c_b = toMixedString(sum3c_b, den3c_b);
+  const den3c_b = randChoice([4, 5, 8, 10]);
+  const w3c_b1 = 1;
+  const n3c_b1 = randInt(2, den3c_b - 2);
+  const n3c_b2 = randInt(Math.floor(den3c_b / 2), den3c_b - 1);
+  const sumNum3c_b = (w3c_b1 * den3c_b + n3c_b1) + n3c_b2;
+  const w3c_resB = Math.floor(sumNum3c_b / den3c_b);
+  const rem3c_b = sumNum3c_b % den3c_b;
+  const mix3c_b = rem3c_b === 0 ? `${w3c_resB}` : `${w3c_resB} ${rem3c_b}/${den3c_b}`;
 
-  T.answers["inp-3c-1"] = [mix3c, `${sum3c}/${den3c}`];
-  T.answers["inp-3c-2"] = [mix3c_b, `${sum3c_b}/${den3c_b}`];
-  T.points["inp-3c-1"] = 1; T.points["inp-3c-2"] = 1;
+  T.answers["inp-3c-1"] = [mix3c, `${sum3c}/${den3c}`, rem3c !== 0 ? `1 ${s3cN}/${s3cD}` : '1'];
+  T.answers["inp-3c-2"] = [mix3c_b, `${sumNum3c_b}/${den3c_b}`];
+  T.points["inp-3c-1"] = 1;
+  T.points["inp-3c-2"] = 1;
 
   html += `
     <div class="task-box">
@@ -1099,49 +1480,52 @@ function generateNewTest() {
         <span class="task-pts">2 Punkte</span>
       </div>
       <div class="task-desc">
-        Schreibe das Ergebnis als <b>gemischte Zahl</b> (z. B. 1 3/5):
+        Schreibe das Ergebnis als <b>gemischte Zahl</b> (z. B. <code>1 3/5</code>):
       </div>
       <div class="calc-grid">
         <div class="calc-card">
-          <span>a) ${renderFrac(n3c1, den3c)} + ${renderFrac(n3c2, den3c)} = </span>
+          <span>a) ${renderFrac(n3c_1, den3c)} + ${renderFrac(n3c_2, den3c)} =</span>
           <input type="text" class="calc-input math-focus-in" id="inp-3c-1" placeholder="">
         </div>
         <div class="calc-card">
-          <span>b) ${renderFrac(n3c_b1, den3c_b)} + ${renderFrac(n3c_b2, den3c_b)} = </span>
+          <span>b) ${renderMixed(w3c_b1, n3c_b1, den3c_b)} + ${renderFrac(n3c_b2, den3c_b)} =</span>
           <input type="text" class="calc-input math-focus-in" id="inp-3c-2" placeholder="">
         </div>
       </div>
       <div class="sol-box" id="sol-3c">
         <div class="sol-title">💡 Lösung zu Aufgabe 10:</div>
-        • a) ${renderFrac(n3c1, den3c)} + ${renderFrac(n3c2, den3c)} = ${renderFrac(sum3c, den3c)} = <b>${mix3c}</b><br>
-        • b) ${renderFrac(n3c_b1, den3c_b)} + ${renderFrac(n3c_b2, den3c_b)} = ${renderFrac(sum3c_b, den3c_b)} = <b>${mix3c_b}</b>
+        • <b>a)</b> ${renderFrac(n3c_1, den3c)} + ${renderFrac(n3c_2, den3c)} = ${renderFrac(sum3c, den3c)} = <b>${mix3c}</b><br>
+        • <b>b)</b> ${renderMixed(w3c_b1, n3c_b1, den3c_b)} + ${renderFrac(n3c_b2, den3c_b)} = <b>${mix3c_b}</b>
       </div>
     </div>
   `;
 
-  // 3d: Subtraktion MIT Übertrag / Entbündeln (Klasse 6 Königsdisziplin!)
-  // e.g. 3 1/5 - 1 4/5 = 2 6/5 - 1 4/5 = 1 2/5
-  const den3d_1 = randChoice([5, 6, 7, 8]);
-  const rem3d_1 = randInt(1, den3d_1 - 3);
-  const rem3d_2 = randInt(rem3d_1 + 1, den3d_1 - 1);
-  const w3d_1 = randInt(3, 5);
-  const w3d_2 = randInt(1, w3d_1 - 1);
+  // Aufgabe 11: Subtraktion mit Übertrag / Entbündeln
+  const den3d_1 = randChoice([5, 7, 8, 9]);
+  const whole1_1 = randChoice([2, 3]);
+  const num1_1 = 1;
+  const num2_1 = randInt(2, den3d_1 - 1);
+  const resW_1 = whole1_1 - 1;
+  const resRem_1 = (den3d_1 + num1_1) - num2_1;
+  const mixAns3d_1 = `${resW_1} ${resRem_1}/${den3d_1}`;
 
-  const resW_1 = (w3d_1 - 1) - w3d_2;
-  const resRem_1 = den3d_1 + rem3d_1 - rem3d_2;
-  const mixAns3d_1 = toMixedString(resW_1 * den3d_1 + resRem_1, den3d_1);
+  const subDen = randChoice([5, 6, 8, 9]);
+  const subWhole1 = randChoice([3, 4]);
+  const subRem1 = randInt(1, 2);
+  const subWhole2 = 1;
+  const subRem2 = randInt(subRem1 + 2, subDen - 1);
 
-  // Second problem: Whole minus fraction, e.g. 3 - 2/5 = 2 3/5
-  const wholeVal = randInt(2, 4);
-  const subDen = randChoice([5, 7, 8, 9]);
-  const subNum = randInt(2, subDen - 1);
-  const resWhole = wholeVal - 1;
-  const resNumSub = subDen - subNum;
+  const startTotNum = subWhole1 * subDen + subRem1;
+  const minusTotNum = subWhole2 * subDen + subRem2;
+  const resTotNum = startTotNum - minusTotNum;
+  const resWhole = Math.floor(resTotNum / subDen);
+  const resNumSub = resTotNum % subDen;
   const mixAns3d_2 = `${resWhole} ${resNumSub}/${subDen}`;
 
   T.answers["inp-3d-1"] = [mixAns3d_1, `${resW_1 * den3d_1 + resRem_1}/${den3d_1}`];
-  T.answers["inp-3d-2"] = [mixAns3d_2, `${resWhole * subDen + resNumSub}/${subDen}`];
-  T.points["inp-3d-1"] = 1; T.points["inp-3d-2"] = 1;
+  T.answers["inp-3d-2"] = [mixAns3d_2, `${resTotNum}/${subDen}`];
+  T.points["inp-3d-1"] = 1;
+  T.points["inp-3d-2"] = 1;
 
   html += `
     <div class="task-box">
@@ -1154,39 +1538,39 @@ function generateNewTest() {
       </div>
       <div class="calc-grid">
         <div class="calc-card">
-          <span>a) ${renderMixed(w3d_1, rem3d_1, den3d_1)} − ${renderMixed(w3d_2, rem3d_2, den3d_1)} = </span>
+          <span>a) ${whole1_1} − ${renderFrac(num2_1, den3d_1)} =</span>
           <input type="text" class="calc-input math-focus-in" id="inp-3d-1" placeholder="">
         </div>
         <div class="calc-card">
-          <span>b) ${wholeVal} − ${renderFrac(subNum, subDen)} = </span>
+          <span>b) ${renderMixed(subWhole1, subRem1, subDen)} − ${renderMixed(subWhole2, subRem2, subDen)} =</span>
           <input type="text" class="calc-input math-focus-in" id="inp-3d-2" placeholder="">
         </div>
       </div>
       <div class="sol-box" id="sol-3d">
         <div class="sol-title">💡 Erklärung &amp; Lösung zu Aufgabe 11:</div>
-        • a) Da ${rem3d_1} kleiner als ${rem3d_2} ist, borgen wir 1 Ganzes aus:<br>
-          ${w3d_1} ${renderFrac(rem3d_1, den3d_1)} = ${w3d_1 - 1} ${renderFrac(den3d_1 + rem3d_1, den3d_1)}<br>
-          ${w3d_1 - 1} ${renderFrac(den3d_1 + rem3d_1, den3d_1)} − ${w3d_2} ${renderFrac(rem3d_2, den3d_1)} = <b>${mixAns3d_1}</b><br>
-        • b) Wandle 1 Ganzes um: ${wholeVal} = ${wholeVal - 1} ${renderFrac(subDen, subDen)}<br>
-          ${wholeVal - 1} ${renderFrac(subDen, subDen)} − ${renderFrac(subNum, subDen)} = <b>${mixAns3d_2}</b>
+        • <b>a)</b> Entbündle ${whole1_1} zu ${whole1_1 - 1} ${renderFrac(den3d_1, den3d_1)}: <br>
+          ${whole1_1 - 1} ${renderFrac(den3d_1, den3d_1)} − ${renderFrac(num2_1, den3d_1)} = <b>${mixAns3d_1}</b><br>
+        • <b>b)</b> Da ${subRem1} &lt; ${subRem2}, entbündeln wir: ${renderMixed(subWhole1, subRem1, subDen)} = ${renderMixed(subWhole1 - 1, subDen + subRem1, subDen)}.<br>
+          ${renderMixed(subWhole1 - 1, subDen + subRem1, subDen)} − ${renderMixed(subWhole2, subRem2, subDen)} = <b>${mixAns3d_2}</b>
       </div>
     </div>
   `;
 
-  // 3e: Lückenaufgaben (Welche Zahl gehört in die Lücke?)
-  const den3e = randChoice([11, 13, 14, 15]);
-  const num3e_total = randInt(7, den3e - 1);
-  const num3e_start = randInt(2, num3e_total - 2);
-  const num3e_gap = num3e_total - num3e_start;
+  // Aufgabe 12: Lückenaufgaben & Kettenrechnungen
+  const den3e = randChoice([7, 8, 9, 10, 11]);
+  const num3e_start = randInt(1, Math.floor(den3e / 2));
+  const num3e_end = randInt(num3e_start + 2, den3e - 1);
+  const num3e_gap = num3e_end - num3e_start;
 
-  // Gap 2: 1 - Box = frac
-  const den3e_2 = randChoice([7, 8, 9, 10]);
-  const num3e_target = randInt(2, den3e_2 - 2);
-  const num3e_gap2 = den3e_2 - num3e_target;
+  const den3e_2 = randChoice([6, 8, 9, 10]);
+  const num3e_start2 = randInt(Math.floor(den3e_2 / 2) + 1, den3e_2 - 1);
+  const num3e_end2 = randInt(1, num3e_start2 - 2);
+  const num3e_gap2 = num3e_start2 - num3e_end2;
 
   T.answers["inp-3e-1"] = [`${num3e_gap}/${den3e}`];
   T.answers["inp-3e-2"] = [`${num3e_gap2}/${den3e_2}`];
-  T.points["inp-3e-1"] = 1; T.points["inp-3e-2"] = 1;
+  T.points["inp-3e-1"] = 1;
+  T.points["inp-3e-2"] = 1;
 
   html += `
     <div class="task-box">
@@ -1199,135 +1583,109 @@ function generateNewTest() {
       </div>
       <div class="calc-grid">
         <div class="calc-card">
-          <span>a) ${renderFrac(num3e_start, den3e)} + <b>[ ? ]</b> = ${renderFrac(num3e_total, den3e)}</span>
+          <span>a) ${renderFrac(num3e_start, den3e)} + <b>?</b> = ${renderFrac(num3e_end, den3e)}</span>
           <input type="text" class="calc-input math-focus-in" id="inp-3e-1" placeholder="">
         </div>
         <div class="calc-card">
-          <span>b) 1 − <b>[ ? ]</b> = ${renderFrac(num3e_target, den3e_2)}</span>
+          <span>b) ${renderFrac(num3e_start2, den3e_2)} − <b>?</b> = ${renderFrac(num3e_end2, den3e_2)}</span>
           <input type="text" class="calc-input math-focus-in" id="inp-3e-2" placeholder="">
         </div>
       </div>
       <div class="sol-box" id="sol-3e">
         <div class="sol-title">💡 Lösung zu Aufgabe 12:</div>
-        • a) ${renderFrac(num3e_total, den3e)} − ${renderFrac(num3e_start, den3e)} = <b>${renderFrac(num3e_gap, den3e)}</b><br>
-        • b) ${renderFrac(den3e_2, den3e_2)} − ${renderFrac(num3e_target, den3e_2)} = <b>${renderFrac(num3e_gap2, den3e_2)}</b>
+        • <b>a)</b> ? = ${renderFrac(num3e_end, den3e)} − ${renderFrac(num3e_start, den3e)} = <b>${renderFrac(num3e_gap, den3e)}</b><br>
+        • <b>b)</b> ? = ${renderFrac(num3e_start2, den3e_2)} − ${renderFrac(num3e_end2, den3e_2)} = <b>${renderFrac(num3e_gap2, den3e_2)}</b>
       </div>
     </div>
   </div>
   `;
 
   // ==========================================
-  // TEIL 4: SACHAUFGABEN (4 Punkte)
+  // TEIL 4: LEBENSNAHE SACHAUFGABEN (4 Punkte)
+  // Aus 8 verschiedenen Geschichten werden 2 zufällige gewählt!
   // ==========================================
+  const selectedStories = shuffle(STORY_POOL).slice(0, 2);
+  const s1 = selectedStories[0];
+  const s2 = selectedStories[1];
+  const g1 = s1.generate();
+  const g2 = s2.generate();
+
+  T.answers["inp-4a-1"] = g1.ans1;
+  T.answers["inp-4a-2"] = g1.ans2;
+  T.points["inp-4a-1"] = 1;
+  T.points["inp-4a-2"] = 1;
+
+  T.answers["inp-4b-1"] = g2.ans1;
+  T.answers["inp-4b-2"] = g2.ans2;
+  T.points["inp-4b-1"] = 1;
+  T.points["inp-4b-2"] = 1;
+
   html += `
   <div class="section">
     <div class="section-title">
-      <span>Teil 4: Zweischrittige Text- &amp; Sachaufgaben</span>
+      <span>Teil 4: Zweischrittige Sachaufgaben (Schwere Stufe)</span>
       <span class="section-pts">4 Punkte</span>
     </div>
-  `;
 
-  // Story Task 1: Holzleiste / Basteln (2 Punkte)
-  const denS1 = randChoice([5, 8, 10]);
-  const totalW = randInt(3, 4);
-  const cut1 = randInt(1, denS1 - 3);
-  const cut2_w = 1;
-  const cut2_rem = randInt(1, denS1 - 2);
-
-  // Total cut
-  const totalCutW = cut2_w;
-  const totalCutRem = cut1 + cut2_rem;
-  const totalCutMixed = toMixedString(totalCutW * denS1 + totalCutRem, denS1);
-
-  // Remaining wood: totalW - totalCut
-  const remWoodVal = (totalW * denS1) - (totalCutW * denS1 + totalCutRem);
-  const remWoodMixed = toMixedString(remWoodVal, denS1);
-
-  T.answers["inp-4a-1"] = [totalCutMixed, `${totalCutW * denS1 + totalCutRem}/${denS1}`];
-  T.answers["inp-4a-2"] = [remWoodMixed, `${remWoodVal}/${denS1}`];
-  T.points["inp-4a-1"] = 1; T.points["inp-4a-2"] = 1;
-
-  html += `
+    <!-- Sachaufgabe 1 -->
     <div class="task-box">
       <div class="task-header">
-        <span class="task-num">Aufgabe 13: Werkunterricht – Die Holzleiste</span>
+        <span class="task-num">Aufgabe 13: ${s1.icon} ${s1.title}</span>
         <span class="task-pts">2 Punkte</span>
       </div>
       <div class="task-desc">
-        Rufta hat für ein Bastelprojekt eine Holzleiste von <b>${totalW} Metern</b> Länge.<br>
-        Zuerst sägt sie ein Stück von <b>${renderFrac(cut1, denS1)} m</b> ab. Danach sägt sie noch ein zweites Stück von <b>${renderMixed(cut2_w, cut2_rem, denS1)} m</b> ab.<br>
-        <b>Frage 1:</b> Wie viele Meter Holz hat Rufta insgesamt abgesägt? (Als gemischte Zahl)<br>
-        <b>Frage 2:</b> Wie lang ist das verbleibende Reststück der Holzleiste?
+        ${g1.desc}
       </div>
-      <div style="display:flex;flex-direction:column;gap:10px;margin-top:10px">
+      <div class="calc-grid">
         <div class="calc-card">
-          <span>Insgesamt abgesägt:</span>
+          <span>a) ${g1.q1}</span>
           <div style="display:flex;align-items:center;gap:6px">
             <input type="text" class="calc-input math-focus-in" id="inp-4a-1" placeholder="" style="width:120px">
-            <span>m</span>
+            <span>${g1.unit}</span>
           </div>
         </div>
         <div class="calc-card">
-          <span>Länge des Reststücks:</span>
+          <span>b) ${g1.q2}</span>
           <div style="display:flex;align-items:center;gap:6px">
             <input type="text" class="calc-input math-focus-in" id="inp-4a-2" placeholder="" style="width:120px">
-            <span>m</span>
+            <span>${g1.unit}</span>
           </div>
         </div>
       </div>
       <div class="sol-box" id="sol-4a">
         <div class="sol-title">💡 Erklärung &amp; Lösung zu Aufgabe 13:</div>
-        • <b>Rechnung 1:</b> ${renderFrac(cut1, denS1)} + ${renderMixed(cut2_w, cut2_rem, denS1)} = <b>${totalCutMixed} Meter</b><br>
-        • <b>Rechnung 2:</b> ${totalW} m − ${totalCutMixed} m = ${totalW - 1} ${renderFrac(denS1, denS1)} m − ${totalCutMixed} m = <b>${remWoodMixed} Meter</b> Rest.
+        ${g1.solText}
       </div>
     </div>
-  `;
 
-  // Story Task 2: Saftflasche / Schulfest (2 Punkte)
-  const denS2 = randChoice([6, 8, 10, 12]);
-  const startCap = randInt(denS2 - 2, denS2 - 1);
-  const drink1 = randInt(2, startCap - 2);
-  const after1 = startCap - drink1;
-  const drink2 = randInt(1, after1 - 1);
-  const finalRem = after1 - drink2;
-  const [fSimpN, fSimpD] = simplify(finalRem, denS2);
-
-  T.answers["inp-4b-1"] = [`${after1}/${denS2}`, `${simplify(after1, denS2)[0]}/${simplify(after1, denS2)[1]}`];
-  T.answers["inp-4b-2"] = [`${fSimpN}/${fSimpD}`, `${finalRem}/${denS2}`];
-  T.points["inp-4b-1"] = 1; T.points["inp-4b-2"] = 1;
-
-  html += `
+    <!-- Sachaufgabe 2 -->
     <div class="task-box">
       <div class="task-header">
-        <span class="task-num">Aufgabe 14: Der Saftkrug beim Schulfest</span>
+        <span class="task-num">Aufgabe 14: ${s2.icon} ${s2.title}</span>
         <span class="task-pts">2 Punkte</span>
       </div>
       <div class="task-desc">
-        In einem Krug befinden sich <b>${renderFrac(startCap, denS2)} Liter</b> Apfelsaft.<br>
-        Zuerst schenkt Rufta sich <b>${renderFrac(drink1, denS2)} Liter</b> ein. Später nimmt Meron noch <b>${renderFrac(drink2, denS2)} Liter</b>.<br>
-        <b>Frage 1:</b> Wie viel Liter Saft sind nach Ruftas Glas noch im Krug?<br>
-        <b>Frage 2:</b> Wie viel Liter Saft bleiben am Ende übrig? (Achtung: Vollständig kürzen!)
+        ${g2.desc}
       </div>
-      <div style="display:flex;flex-direction:column;gap:10px;margin-top:10px">
+      <div class="calc-grid">
         <div class="calc-card">
-          <span>Nach Ruftas Glas:</span>
+          <span>a) ${g2.q1}</span>
           <div style="display:flex;align-items:center;gap:6px">
-            <input type="text" class="calc-input math-focus-in" id="inp-4b-1" placeholder="" style="width:110px">
-            <span>Liter</span>
+            <input type="text" class="calc-input math-focus-in" id="inp-4b-1" placeholder="" style="width:120px">
+            <span>${g2.unit}</span>
           </div>
         </div>
         <div class="calc-card">
-          <span>Am Ende übrig (gekürzt!):</span>
+          <span>b) ${g2.q2}</span>
           <div style="display:flex;align-items:center;gap:6px">
-            <input type="text" class="calc-input math-focus-in" id="inp-4b-2" placeholder="" style="width:110px">
-            <span>Liter</span>
+            <input type="text" class="calc-input math-focus-in" id="inp-4b-2" placeholder="" style="width:120px">
+            <span>${g2.unit}</span>
           </div>
         </div>
       </div>
       <div class="sol-box" id="sol-4b">
         <div class="sol-title">💡 Erklärung &amp; Lösung zu Aufgabe 14:</div>
-        • <b>Rechnung 1:</b> ${renderFrac(startCap, denS2)} − ${renderFrac(drink1, denS2)} = <b>${renderFrac(after1, denS2)} Liter</b><br>
-        • <b>Rechnung 2:</b> ${renderFrac(after1, denS2)} − ${renderFrac(drink2, denS2)} = ${renderFrac(finalRem, denS2)} = <b>${renderFrac(fSimpN, fSimpD)} Liter</b>
+        ${g2.solText}
       </div>
     </div>
   </div>
@@ -1345,7 +1703,7 @@ function generateNewTest() {
       btn.addEventListener("click", () => {
         group.querySelectorAll(".touch-comp-btn").forEach(b => b.classList.remove("active"));
         btn.classList.add("active");
-        hiddenInput.value = btn.dataset.val;
+        if (hiddenInput) hiddenInput.value = btn.dataset.val;
       });
     });
   });
@@ -1355,11 +1713,11 @@ function generateNewTest() {
   document.querySelectorAll(".math-focus-in").forEach(input => {
     input.addEventListener("focus", () => {
       activeInput = input;
-      if (window.innerWidth <= 680) kbBar.classList.add("visible");
+      if (window.innerWidth <= 680 && kbBar) kbBar.classList.add("visible");
     });
     input.addEventListener("blur", () => {
       setTimeout(() => {
-        if (document.activeElement !== activeInput) kbBar.classList.remove("visible");
+        if (document.activeElement !== activeInput && kbBar) kbBar.classList.remove("visible");
       }, 200);
     });
   });
@@ -1368,7 +1726,6 @@ function generateNewTest() {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-let activeInput = null;
 function insertChar(char) {
   if (!activeInput) return;
   activeInput.value += char;
@@ -1413,7 +1770,6 @@ function checkAnswers() {
   document.getElementById("student-score-display").innerText = `${earnedPoints} / ${totalPoints}`;
   document.getElementById("mobile-score-display").innerText = `${earnedPoints}/${totalPoints}`;
 
-  // Evaluate Grade
   const evalBox = document.getElementById("eval-box");
   const evalScoreText = document.getElementById("eval-score-text");
   const evalGradeBadge = document.getElementById("eval-grade-badge");
@@ -1506,6 +1862,7 @@ function resetInputsOnly() {
 // Confetti Effect
 function triggerConfetti() {
   const canvas = document.getElementById("confetti-canvas");
+  if (!canvas) return;
   const ctx = canvas.getContext("2d");
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
@@ -1552,7 +1909,7 @@ function triggerConfetti() {
 
 // Initialize on Load
 generateNewTest();
-</script>
 
+</script>
 </body>
 </html>
