@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Mathe-Test: Brüche · 6. Klasse (Rufta)</title>
+<title>Klassenarbeits-Training: Brüche · 6. Klasse (Schwierige Stufe)</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 @page { size: A4 portrait; margin: 10mm 8mm; }
@@ -13,12 +13,12 @@ body {
   color: #1e293b;
   background: #f1f5f9;
   line-height: 1.5;
-  padding-bottom: 90px;
+  padding-bottom: 95px;
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
 }
 
-/* Screen Navigation Toolbar */
+/* Toolbar */
 .toolbar {
   position: sticky; top: 0; z-index: 50;
   background: #1e3a8a; color: #fff;
@@ -35,6 +35,11 @@ body {
 }
 .btn-back:hover { background: #2563eb; }
 .toolbar-title { font-size: 15.5px; font-weight: 900; }
+.test-version-tag {
+  font-size: 11.5px; font-weight: 800; background: rgba(255,255,255,.2);
+  padding: 3px 10px; border-radius: 12px; margin-left: 6px;
+}
+
 .toolbar-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 .btn-action {
   font: inherit; font-size: 13px; font-weight: 800;
@@ -43,14 +48,16 @@ body {
   transition: all .15s; touch-action: manipulation;
 }
 .btn-action:active { transform: scale(0.96); }
+.btn-new { background: #8b5cf6; color: #fff; }
+.btn-new:hover { background: #7c3aed; }
 .btn-print { background: #10b981; color: #fff; }
 .btn-print:hover { background: #059669; }
 .btn-check { background: #f59e0b; color: #fff; }
 .btn-check:hover { background: #d97706; }
-.btn-solution { background: #6366f1; color: #fff; }
-.btn-solution:hover { background: #4f46e5; }
-.btn-reset { background: #ef4444; color: #fff; }
-.btn-reset:hover { background: #dc2626; }
+.btn-solution { background: #0284c7; color: #fff; }
+.btn-solution:hover { background: #0369a1; }
+.btn-reset { background: #64748b; color: #fff; }
+.btn-reset:hover { background: #475569; }
 
 /* Sticky Mobile Bottom Bar */
 .mobile-bottom-bar {
@@ -80,7 +87,7 @@ body {
 }
 .btn-kb:active { background: #2563eb; }
 
-/* Test Document Page */
+/* Test Page Container */
 .test-container {
   max-width: 860px;
   margin: 16px auto 30px;
@@ -170,7 +177,7 @@ body {
 .number-line-scroll::-webkit-scrollbar { height: 6px; }
 .number-line-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
 .number-line-svg {
-  min-width: 580px;
+  min-width: 600px;
   height: 85px;
   display: block;
   margin: 0 auto;
@@ -193,7 +200,7 @@ body {
   display: flex; gap: 6px;
 }
 .touch-comp-btn {
-  width: 38px; height: 38px; border-radius: 10px;
+  width: 40px; height: 40px; border-radius: 10px;
   border: 1.5px solid #94a3b8; background: #fff; color: #1e293b;
   font-size: 17px; font-weight: 900; cursor: pointer;
   display: flex; align-items: center; justify-content: center;
@@ -205,7 +212,7 @@ body {
   box-shadow: 0 2px 8px rgba(37,99,235,.35);
 }
 
-/* Math Calculation Input */
+/* Math Calculation Input Cards */
 .calc-grid {
   display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px;
   margin: 10px 0;
@@ -217,43 +224,11 @@ body {
 }
 .calc-input {
   font: inherit; font-size: 16px; font-weight: 800;
-  width: 100px; height: 42px; text-align: center;
+  width: 110px; height: 42px; text-align: center;
   border: 2px solid #94a3b8; border-radius: 10px; background: #fff;
   color: #0f172a; transition: border .15s;
 }
 .calc-input:focus { border-color: #2563eb; outline: none; background: #eff6ff; }
-
-/* Interactive Ordering Chips (Aufgabe 7) */
-.order-chips-wrap {
-  display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px;
-}
-.order-chip {
-  background: #eff6ff; border: 1.5px solid #93c5fd; color: #1e40af;
-  font-weight: 900; font-size: 15px; padding: 6px 14px; border-radius: 12px;
-  cursor: pointer; transition: all .15s; touch-action: manipulation;
-}
-.order-chip:active { transform: scale(0.95); }
-.order-chip.used { opacity: 0.35; pointer-events: none; text-decoration: line-through; }
-.order-slots-row {
-  display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
-  font-weight: 900; font-size: 16px; color: #2563eb;
-}
-.order-slot-input {
-  width: 72px; height: 40px; text-align: center; font-size: 15px; font-weight: 900;
-  border: 2px solid #94a3b8; border-radius: 10px; background: #fff; color: #0f172a;
-}
-.order-slot-input:focus { border-color: #2563eb; outline: none; }
-
-/* Quick Fraction Helper Chips for Task 1 */
-.chip-row {
-  display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-top: 8px;
-}
-.quick-chip {
-  background: #f1f5f9; border: 1px solid #cbd5e1; border-radius: 8px;
-  padding: 4px 10px; font-size: 13px; font-weight: 800; color: #334155;
-  cursor: pointer; transition: all .12s; touch-action: manipulation;
-}
-.quick-chip:active { background: #2563eb; color: #fff; }
 
 /* Feedback & Solutions */
 .sol-box {
@@ -313,7 +288,7 @@ body {
   body { padding-bottom: 80px; }
   .test-container { padding: 16px 14px; margin: 8px; border-radius: 14px; }
   .toolbar { padding: 8px 12px; }
-  .toolbar-actions .btn-action { display: none; } /* Handled by bottom bar */
+  .toolbar-actions .btn-action { display: none; }
   .student-bar { grid-template-columns: 1fr 1fr; gap: 8px; }
   .calc-grid, .compare-grid { grid-template-columns: 1fr; }
   .calc-card { padding: 10px 12px; }
@@ -329,14 +304,13 @@ body {
   .test-container {
     max-width: 100%; margin: 0; padding: 0; border: none; box-shadow: none; border-radius: 0;
   }
-  .sol-box, .eval-box, .chip-row, .order-chips-wrap, #btn-reset-order { display: none !important; }
+  .sol-box, .eval-box { display: none !important; }
   .touch-comp-group { display: none !important; }
   .print-comp-box {
     display: inline-block !important; width: 36px; height: 32px;
     border: 1.5px solid #0f172a; border-radius: 6px;
   }
   .calc-input { border: 1.5px solid #0f172a; background: none; }
-  .order-slot-input { border: 1.5px solid #0f172a; background: none; }
   .section { page-break-inside: avoid; }
 }
 .print-comp-box { display: none; }
@@ -350,32 +324,36 @@ body {
 <div class="toolbar">
   <div class="toolbar-left">
     <a href="rufta.html" class="btn-back">← Zu Ruftas Welt</a>
-    <span class="toolbar-title">📐 Brüche-Test (6. Klasse)</span>
+    <span class="toolbar-title">📐 Klassenarbeits-Training: Brüche</span>
+    <span class="test-version-tag" id="test-version-label">Test #1</span>
   </div>
   <div class="toolbar-actions">
+    <button class="btn-action btn-new" onclick="generateNewTest()">🔄 Neuer Test mit neuen Aufgaben</button>
     <button class="btn-action btn-print" onclick="window.print()">🖨️ Drucken / PDF</button>
     <button class="btn-action btn-check" onclick="checkAnswers()">✓ Test auswerten</button>
     <button class="btn-action btn-solution" onclick="toggleSolutions()">💡 Lösungen</button>
-    <button class="btn-action btn-reset" onclick="resetTest()">↺ Zurücksetzen</button>
+    <button class="btn-action btn-reset" onclick="resetInputsOnly()">↺ Felder leeren</button>
   </div>
 </div>
 
 <!-- Sticky Bottom Bar for Mobile Phones -->
 <div class="mobile-bottom-bar">
-  <div class="mobile-score-pill" id="mobile-score-display">0 / 28 Pkt.</div>
-  <button class="btn-action btn-check" onclick="checkAnswers()" style="flex:1;font-size:14.5px;padding:10px 14px;border-radius:12px">
-    ✓ Jetzt auswerten
+  <button class="btn-action btn-new" onclick="generateNewTest()" style="padding:10px 12px;font-size:13px;border-radius:12px">
+    🔄 Neu
   </button>
-  <button class="btn-action btn-solution" onclick="toggleSolutions()" style="padding:10px 14px;border-radius:12px">
+  <button class="btn-action btn-check" onclick="checkAnswers()" style="flex:1;font-size:14px;padding:10px 12px;border-radius:12px">
+    ✓ Auswerten (<span id="mobile-score-display">0/30</span>)
+  </button>
+  <button class="btn-action btn-solution" onclick="toggleSolutions()" style="padding:10px 12px;font-size:13px;border-radius:12px">
     💡 Lösungen
   </button>
 </div>
 
-<!-- Virtual Keyboard Helper Bar (active on input focus) -->
+<!-- Virtual Keyboard Helper Bar -->
 <div class="mobile-keyboard-bar" id="mobile-keyboard-bar">
   <button class="btn-kb" onclick="insertChar('/')">/ (Bruchstrich)</button>
   <button class="btn-kb" onclick="insertChar(' ')">Leerzeichen</button>
-  <button class="btn-kb" onclick="document.activeElement.blur()" style="background:#475569">Fertig ✕</button>
+  <button class="btn-kb" onclick="document.activeElement.blur()" style="background:#475569">✕ Schließen</button>
 </div>
 
 <div class="test-container">
@@ -384,10 +362,10 @@ body {
   <div class="test-header">
     <div class="test-badge-row">
       <div class="test-badge">🦉 Mathe 6. Klasse · Gymnasium / Realschule</div>
-      <div class="test-max-points">Gesamt: 28 Punkte · ca. 40 Min.</div>
+      <div class="test-max-points">Gesamt: 30 Punkte · ca. 45 Min.</div>
     </div>
     <h1 class="test-title">Klassenarbeit: Die Welt der Brüche</h1>
-    <div class="test-sub">Zahlenstrahl · Brüche vergleichen · Addition &amp; Subtraktion gleichnamiger Brüche</div>
+    <div class="test-sub">Zahlenstrahl · Vergleichen &amp; Erweitern · Addition &amp; Subtraktion mit Übertrag · Sachaufgaben</div>
 
     <div class="student-bar">
       <div>
@@ -404,639 +382,20 @@ body {
       </div>
       <div>
         <label>Punkte:</label>
-        <span id="student-score-display">___ / 28</span>
+        <span id="student-score-display">___ / 30</span>
       </div>
     </div>
   </div>
 
-  <!-- TEIL 1: ZAHLENSTRAHL -->
-  <div class="section">
-    <div class="section-title">
-      <span>Teil 1: Brüche am Zahlenstrahl</span>
-      <span class="section-pts">8 Punkte</span>
-    </div>
-
-    <!-- Aufgabe 1a -->
-    <div class="task-box">
-      <div class="task-header">
-        <span class="task-num">Aufgabe 1: Brüche ablesen (Achtel)</span>
-        <span class="task-pts">3 Punkte</span>
-      </div>
-      <div class="task-desc">
-        Die Strecke von 0 bis 1 ist in 8 Abschnitte unterteilt. Welche Brüche liegen bei <b>A</b>, <b>B</b> und <b>C</b>?
-        <i>Tipp: Auf dem Handy kannst du die Zahlen tippen oder unten direkt antippen!</i>
-      </div>
-
-      <div class="number-line-scroll">
-        <svg class="number-line-svg" width="640" height="85" viewBox="0 0 640 85">
-          <line x1="30" y1="42" x2="610" y2="42" stroke="#1e293b" stroke-width="2.5" />
-          <polygon points="615,42 600,37 600,47" fill="#1e293b" />
-
-          <!-- 0 -->
-          <line x1="50" y1="28" x2="50" y2="56" stroke="#1e293b" stroke-width="2.5" />
-          <text x="50" y="74" font-size="16" font-weight="900" text-anchor="middle" fill="#0f172a">0</text>
-
-          <!-- 1/8 -->
-          <line x1="112" y1="35" x2="112" y2="49" stroke="#64748b" stroke-width="1.8" />
-          <!-- 2/8 (A) -->
-          <line x1="175" y1="32" x2="175" y2="52" stroke="#2563eb" stroke-width="2.5" />
-          <circle cx="175" cy="42" r="5" fill="#2563eb" />
-          <text x="175" y="22" font-size="15" font-weight="900" text-anchor="middle" fill="#2563eb">A</text>
-
-          <!-- 3/8 -->
-          <line x1="237" y1="35" x2="237" y2="49" stroke="#64748b" stroke-width="1.8" />
-          <!-- 4/8 -->
-          <line x1="300" y1="33" x2="300" y2="51" stroke="#64748b" stroke-width="2" />
-          <!-- 5/8 (B) -->
-          <line x1="362" y1="32" x2="362" y2="52" stroke="#2563eb" stroke-width="2.5" />
-          <circle cx="362" cy="42" r="5" fill="#2563eb" />
-          <text x="362" y="22" font-size="15" font-weight="900" text-anchor="middle" fill="#2563eb">B</text>
-
-          <!-- 6/8 -->
-          <line x1="425" y1="35" x2="425" y2="49" stroke="#64748b" stroke-width="1.8" />
-          <!-- 7/8 (C) -->
-          <line x1="487" y1="32" x2="487" y2="52" stroke="#2563eb" stroke-width="2.5" />
-          <circle cx="487" cy="42" r="5" fill="#2563eb" />
-          <text x="487" y="22" font-size="15" font-weight="900" text-anchor="middle" fill="#2563eb">C</text>
-
-          <!-- 1 (8/8) -->
-          <line x1="550" y1="28" x2="550" y2="56" stroke="#1e293b" stroke-width="2.5" />
-          <text x="550" y="74" font-size="16" font-weight="900" text-anchor="middle" fill="#0f172a">1</text>
-        </svg>
-      </div>
-
-      <div style="display:flex;gap:14px;flex-wrap:wrap;margin-top:10px;">
-        <div style="display:flex;align-items:center;gap:6px">
-          <b>A =</b>
-          <input type="text" class="calc-input" id="inp-1a-A" placeholder="z. B. 2/8" style="width:95px">
-        </div>
-        <div style="display:flex;align-items:center;gap:6px">
-          <b>B =</b>
-          <input type="text" class="calc-input" id="inp-1a-B" placeholder="z. B. 5/8" style="width:95px">
-        </div>
-        <div style="display:flex;align-items:center;gap:6px">
-          <b>C =</b>
-          <input type="text" class="calc-input" id="inp-1a-C" placeholder="z. B. 7/8" style="width:95px">
-        </div>
-      </div>
-
-      <div class="chip-row">
-        <span style="font-size:12px;color:#64748b;font-weight:700">Schnellauswahl:</span>
-        <button type="button" class="quick-chip" onclick="fillInput('inp-1a-A', '2/8')">A = 2/8</button>
-        <button type="button" class="quick-chip" onclick="fillInput('inp-1a-B', '5/8')">B = 5/8</button>
-        <button type="button" class="quick-chip" onclick="fillInput('inp-1a-C', '7/8')">C = 7/8</button>
-      </div>
-
-      <div class="sol-box" id="sol-1a">
-        <div class="sol-title">💡 Erklärung &amp; Lösung zu Aufgabe 1:</div>
-        Der Abstand zwischen 0 und 1 ist in <b>8 Teile</b> unterteilt. 1 Strich = <span class="frac"><span class="frac-top">1</span><span class="frac-bot">8</span></span>.<br>
-        • <b>A</b> = <b><span class="frac"><span class="frac-top">2</span><span class="frac-bot">8</span></span></b> (oder gekürzt <span class="frac"><span class="frac-top">1</span><span class="frac-bot">4</span></span>)<br>
-        • <b>B</b> = <b><span class="frac"><span class="frac-top">5</span><span class="frac-bot">8</span></span></b><br>
-        • <b>C</b> = <b><span class="frac"><span class="frac-top">7</span><span class="frac-bot">8</span></span></b>
-      </div>
-    </div>
-
-    <!-- Aufgabe 1b -->
-    <div class="task-box">
-      <div class="task-header">
-        <span class="task-num">Aufgabe 2: Brüche größer als 1 ablesen</span>
-        <span class="task-pts">2 Punkte</span>
-      </div>
-      <div class="task-desc">
-        Dieser Zahlenstrahl reicht von 0 bis 2 (Fünftel). Lies <b>D</b> und <b>E</b> ab (z. B. 3/5 oder 1 2/5).
-      </div>
-
-      <div class="number-line-scroll">
-        <svg class="number-line-svg" width="640" height="85" viewBox="0 0 640 85">
-          <line x1="30" y1="42" x2="610" y2="42" stroke="#1e293b" stroke-width="2.5" />
-          <polygon points="615,42 600,37 600,47" fill="#1e293b" />
-
-          <!-- 0 -->
-          <line x1="50" y1="28" x2="50" y2="56" stroke="#1e293b" stroke-width="2.5" />
-          <text x="50" y="74" font-size="16" font-weight="900" text-anchor="middle" fill="#0f172a">0</text>
-
-          <line x1="100" y1="35" x2="100" y2="49" stroke="#64748b" stroke-width="1.8" />
-          <line x1="150" y1="35" x2="150" y2="49" stroke="#64748b" stroke-width="1.8" />
-
-          <!-- D bei 3/5 -->
-          <line x1="200" y1="32" x2="200" y2="52" stroke="#7c3aed" stroke-width="2.5" />
-          <circle cx="200" cy="42" r="5" fill="#7c3aed" />
-          <text x="200" y="22" font-size="15" font-weight="900" text-anchor="middle" fill="#7c3aed">D</text>
-
-          <line x1="250" y1="35" x2="250" y2="49" stroke="#64748b" stroke-width="1.8" />
-
-          <!-- 1 -->
-          <line x1="300" y1="28" x2="300" y2="56" stroke="#1e293b" stroke-width="2.5" />
-          <text x="300" y="74" font-size="16" font-weight="900" text-anchor="middle" fill="#0f172a">1</text>
-
-          <line x1="350" y1="35" x2="350" y2="49" stroke="#64748b" stroke-width="1.8" />
-
-          <!-- E bei 1 2/5 (7/5) -->
-          <line x1="400" y1="32" x2="400" y2="52" stroke="#7c3aed" stroke-width="2.5" />
-          <circle cx="400" cy="42" r="5" fill="#7c3aed" />
-          <text x="400" y="22" font-size="15" font-weight="900" text-anchor="middle" fill="#7c3aed">E</text>
-
-          <line x1="450" y1="35" x2="450" y2="49" stroke="#64748b" stroke-width="1.8" />
-          <line x1="500" y1="35" x2="500" y2="49" stroke="#64748b" stroke-width="1.8" />
-
-          <!-- 2 -->
-          <line x1="550" y1="28" x2="550" y2="56" stroke="#1e293b" stroke-width="2.5" />
-          <text x="550" y="74" font-size="16" font-weight="900" text-anchor="middle" fill="#0f172a">2</text>
-        </svg>
-      </div>
-
-      <div style="display:flex;gap:16px;flex-wrap:wrap;margin-top:10px;">
-        <div style="display:flex;align-items:center;gap:6px">
-          <b>D =</b>
-          <input type="text" class="calc-input" id="inp-1b-D" placeholder="z. B. 3/5" style="width:100px">
-        </div>
-        <div style="display:flex;align-items:center;gap:6px">
-          <b>E =</b>
-          <input type="text" class="calc-input" id="inp-1b-E" placeholder="z. B. 1 2/5" style="width:120px">
-        </div>
-      </div>
-
-      <div class="chip-row">
-        <span style="font-size:12px;color:#64748b;font-weight:700">Schnellauswahl:</span>
-        <button type="button" class="quick-chip" onclick="fillInput('inp-1b-D', '3/5')">D = 3/5</button>
-        <button type="button" class="quick-chip" onclick="fillInput('inp-1b-E', '1 2/5')">E = 1 2/5 (7/5)</button>
-      </div>
-
-      <div class="sol-box" id="sol-1b">
-        <div class="sol-title">💡 Erklärung &amp; Lösung zu Aufgabe 2:</div>
-        Jedes Ganze ist in <b>5 Teile</b> unterteilt.<br>
-        • <b>D</b> liegt bei 3 Teilen: <b><span class="frac"><span class="frac-top">3</span><span class="frac-bot">5</span></span></b><br>
-        • <b>E</b> liegt 2 Teile nach der 1: <b>1 <span class="frac"><span class="frac-top">2</span><span class="frac-bot">5</span></span></b> oder als unechter Bruch <b><span class="frac"><span class="frac-top">7</span><span class="frac-bot">5</span></span></b>.
-      </div>
-    </div>
-
-    <!-- Aufgabe 1c -->
-    <div class="task-box">
-      <div class="task-header">
-        <span class="task-num">Aufgabe 3: Brüche auf dem Zahlenstrahl zuordnen</span>
-        <span class="task-pts">3 Punkte</span>
-      </div>
-      <div class="task-desc">
-        Welcher Bruch gehört zu <b>P1</b>, <b>P2</b> und <b>P3</b>?
-      </div>
-
-      <div class="number-line-scroll">
-        <svg class="number-line-svg" width="640" height="85" viewBox="0 0 640 85">
-          <line x1="30" y1="42" x2="610" y2="42" stroke="#1e293b" stroke-width="2.5" />
-          <polygon points="615,42 600,37 600,47" fill="#1e293b" />
-
-          <!-- 0 -->
-          <line x1="50" y1="28" x2="50" y2="56" stroke="#1e293b" stroke-width="2.5" />
-          <text x="50" y="74" font-size="16" font-weight="900" text-anchor="middle" fill="#0f172a">0</text>
-
-          <line x1="100" y1="35" x2="100" y2="49" stroke="#64748b" stroke-width="1.8" />
-          <line x1="150" y1="35" x2="150" y2="49" stroke="#64748b" stroke-width="1.8" />
-
-          <!-- P1 bei 3/10 -->
-          <line x1="200" y1="32" x2="200" y2="52" stroke="#059669" stroke-width="2.5" />
-          <circle cx="200" cy="42" r="5" fill="#059669" />
-          <text x="200" y="22" font-size="15" font-weight="900" text-anchor="middle" fill="#059669">P1</text>
-
-          <line x1="250" y1="35" x2="250" y2="49" stroke="#64748b" stroke-width="1.8" />
-
-          <!-- P2 bei 5/10 (Mitte 1/2) -->
-          <line x1="300" y1="30" x2="300" y2="54" stroke="#059669" stroke-width="2.5" />
-          <circle cx="300" cy="42" r="5" fill="#059669" />
-          <text x="300" y="22" font-size="15" font-weight="900" text-anchor="middle" fill="#059669">P2</text>
-
-          <line x1="350" y1="35" x2="350" y2="49" stroke="#64748b" stroke-width="1.8" />
-          <line x1="400" y1="35" x2="400" y2="49" stroke="#64748b" stroke-width="1.8" />
-
-          <!-- P3 bei 8/10 -->
-          <line x1="450" y1="32" x2="450" y2="52" stroke="#059669" stroke-width="2.5" />
-          <circle cx="450" cy="42" r="5" fill="#059669" />
-          <text x="450" y="22" font-size="15" font-weight="900" text-anchor="middle" fill="#059669">P3</text>
-
-          <line x1="500" y1="35" x2="500" y2="49" stroke="#64748b" stroke-width="1.8" />
-
-          <!-- 1 -->
-          <line x1="550" y1="28" x2="550" y2="56" stroke="#1e293b" stroke-width="2.5" />
-          <text x="550" y="74" font-size="16" font-weight="900" text-anchor="middle" fill="#0f172a">1</text>
-        </svg>
-      </div>
-
-      <div style="display:flex;gap:16px;flex-wrap:wrap;margin-top:10px;">
-        <div style="display:flex;align-items:center;gap:6px">
-          <b>P1:</b>
-          <select class="calc-input" id="inp-1c-P1" style="width:110px">
-            <option value="">Wählen…</option>
-            <option value="2/10">2/10</option>
-            <option value="3/10">3/10</option>
-            <option value="4/10">4/10</option>
-          </select>
-        </div>
-        <div style="display:flex;align-items:center;gap:6px">
-          <b>P2:</b>
-          <select class="calc-input" id="inp-1c-P2" style="width:130px">
-            <option value="">Wählen…</option>
-            <option value="1/2">1/2 (5/10)</option>
-            <option value="4/10">4/10</option>
-            <option value="6/10">6/10</option>
-          </select>
-        </div>
-        <div style="display:flex;align-items:center;gap:6px">
-          <b>P3:</b>
-          <select class="calc-input" id="inp-1c-P3" style="width:130px">
-            <option value="">Wählen…</option>
-            <option value="7/10">7/10</option>
-            <option value="8/10">8/10 (4/5)</option>
-            <option value="9/10">9/10</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="sol-box" id="sol-1c">
-        <div class="sol-title">💡 Erklärung &amp; Lösung zu Aufgabe 3:</div>
-        Der Zahlenstrahl ist in 10 Zehntel geteilt.<br>
-        • <b>P1</b> = <b><span class="frac"><span class="frac-top">3</span><span class="frac-bot">10</span></span></b><br>
-        • <b>P2</b> liegt genau in der Mitte: <b><span class="frac"><span class="frac-top">1</span><span class="frac-bot">2</span></span></b> (<span class="frac"><span class="frac-top">5</span><span class="frac-bot">10</span></span>)<br>
-        • <b>P3</b> = <b><span class="frac"><span class="frac-top">8</span><span class="frac-bot">10</span></span></b>
-      </div>
-    </div>
-  </div>
-
-  <!-- TEIL 2: BRÜCHE VERGLEICHEN -->
-  <div class="section">
-    <div class="section-title">
-      <span>Teil 2: Brüche vergleichen und ordnen</span>
-      <span class="section-pts">8 Punkte</span>
-    </div>
-
-    <!-- Aufgabe 2a: Gleicher Nenner -->
-    <div class="task-box">
-      <div class="task-header">
-        <span class="task-num">Aufgabe 4: Gleicher Nenner – Tippe &lt;, = oder &gt; an</span>
-        <span class="task-pts">2 Punkte</span>
-      </div>
-      <div class="task-desc">
-        <i>Regel:</i> Bei gleichem Nenner entscheidet der Zähler: Mehr Stücke = größer!
-      </div>
-
-      <div class="compare-grid">
-        <div class="compare-card">
-          <div class="compare-expression">
-            <span class="frac"><span class="frac-top">3</span><span class="frac-bot">7</span></span>
-            <span class="print-comp-box"></span>
-            <span class="frac"><span class="frac-top">5</span><span class="frac-bot">7</span></span>
-          </div>
-          <div class="touch-comp-group" data-target="inp-2a-1">
-            <button type="button" class="touch-comp-btn" data-val="<">&lt;</button>
-            <button type="button" class="touch-comp-btn" data-val="=">=</button>
-            <button type="button" class="touch-comp-btn" data-val=">">&gt;</button>
-          </div>
-          <input type="hidden" id="inp-2a-1" value="">
-        </div>
-
-        <div class="compare-card">
-          <div class="compare-expression">
-            <span class="frac"><span class="frac-top">9</span><span class="frac-bot">11</span></span>
-            <span class="print-comp-box"></span>
-            <span class="frac"><span class="frac-top">4</span><span class="frac-bot">11</span></span>
-          </div>
-          <div class="touch-comp-group" data-target="inp-2a-2">
-            <button type="button" class="touch-comp-btn" data-val="<">&lt;</button>
-            <button type="button" class="touch-comp-btn" data-val="=">=</button>
-            <button type="button" class="touch-comp-btn" data-val=">">&gt;</button>
-          </div>
-          <input type="hidden" id="inp-2a-2" value="">
-        </div>
-      </div>
-
-      <div class="sol-box" id="sol-2a">
-        <div class="sol-title">💡 Lösung zu Aufgabe 4:</div>
-        • <span class="frac"><span class="frac-top">3</span><span class="frac-bot">7</span></span> <b>&lt;</b> <span class="frac"><span class="frac-top">5</span><span class="frac-bot">7</span></span> (3 Siebtel sind kleiner als 5 Siebtel)<br>
-        • <span class="frac"><span class="frac-top">9</span><span class="frac-bot">11</span></span> <b>&gt;</b> <span class="frac"><span class="frac-top">4</span><span class="frac-bot">11</span></span> (9 Elftel sind größer als 4 Elftel)
-      </div>
-    </div>
-
-    <!-- Aufgabe 2b: Gleicher Zähler (Kuchenregel) -->
-    <div class="task-box">
-      <div class="task-header">
-        <span class="task-num">Aufgabe 5: Gleicher Zähler – Kuchenregel!</span>
-        <span class="task-pts">2 Punkte</span>
-      </div>
-      <div class="task-desc">
-        <i>Achtung:</i> Wer eine Pizza durch <b>weniger</b> Freunde teilt, bekommt <b>größere</b> Stücke!
-      </div>
-
-      <div class="compare-grid">
-        <div class="compare-card">
-          <div class="compare-expression">
-            <span class="frac"><span class="frac-top">2</span><span class="frac-bot">3</span></span>
-            <span class="print-comp-box"></span>
-            <span class="frac"><span class="frac-top">2</span><span class="frac-bot">5</span></span>
-          </div>
-          <div class="touch-comp-group" data-target="inp-2b-1">
-            <button type="button" class="touch-comp-btn" data-val="<">&lt;</button>
-            <button type="button" class="touch-comp-btn" data-val="=">=</button>
-            <button type="button" class="touch-comp-btn" data-val=">">&gt;</button>
-          </div>
-          <input type="hidden" id="inp-2b-1" value="">
-        </div>
-
-        <div class="compare-card">
-          <div class="compare-expression">
-            <span class="frac"><span class="frac-top">1</span><span class="frac-bot">4</span></span>
-            <span class="print-comp-box"></span>
-            <span class="frac"><span class="frac-top">1</span><span class="frac-bot">2</span></span>
-          </div>
-          <div class="touch-comp-group" data-target="inp-2b-2">
-            <button type="button" class="touch-comp-btn" data-val="<">&lt;</button>
-            <button type="button" class="touch-comp-btn" data-val="=">=</button>
-            <button type="button" class="touch-comp-btn" data-val=">">&gt;</button>
-          </div>
-          <input type="hidden" id="inp-2b-2" value="">
-        </div>
-      </div>
-
-      <div class="sol-box" id="sol-2b">
-        <div class="sol-title">💡 Lösung zu Aufgabe 5:</div>
-        • <span class="frac"><span class="frac-top">2</span><span class="frac-bot">3</span></span> <b>&gt;</b> <span class="frac"><span class="frac-top">2</span><span class="frac-bot">5</span></span> (Drittel sind viel größer als Fünftel!)<br>
-        • <span class="frac"><span class="frac-top">1</span><span class="frac-bot">4</span></span> <b>&lt;</b> <span class="frac"><span class="frac-top">1</span><span class="frac-bot">2</span></span> (1 Viertel ist kleiner als 1 Halbes)
-      </div>
-    </div>
-
-    <!-- Aufgabe 2c: Erweitern & Gemischt -->
-    <div class="task-box">
-      <div class="task-header">
-        <span class="task-num">Aufgabe 6: Erweitern, Kürzen &amp; Gemischte Zahlen</span>
-        <span class="task-pts">2 Punkte</span>
-      </div>
-      <div class="task-desc">
-        Tippe das richtige Zeichen an:
-      </div>
-
-      <div class="compare-grid">
-        <div class="compare-card">
-          <div class="compare-expression">
-            <span class="frac"><span class="frac-top">3</span><span class="frac-bot">4</span></span>
-            <span class="print-comp-box"></span>
-            <span class="frac"><span class="frac-top">6</span><span class="frac-bot">8</span></span>
-          </div>
-          <div class="touch-comp-group" data-target="inp-2c-1">
-            <button type="button" class="touch-comp-btn" data-val="<">&lt;</button>
-            <button type="button" class="touch-comp-btn" data-val="=">=</button>
-            <button type="button" class="touch-comp-btn" data-val=">">&gt;</button>
-          </div>
-          <input type="hidden" id="inp-2c-1" value="">
-        </div>
-
-        <div class="compare-card">
-          <div class="compare-expression">
-            <span class="mixed"><span class="mixed-whole">1</span><span class="frac"><span class="frac-top">1</span><span class="frac-bot">3</span></span></span>
-            <span class="print-comp-box"></span>
-            <span class="frac"><span class="frac-top">5</span><span class="frac-bot">3</span></span>
-          </div>
-          <div class="touch-comp-group" data-target="inp-2c-2">
-            <button type="button" class="touch-comp-btn" data-val="<">&lt;</button>
-            <button type="button" class="touch-comp-btn" data-val="=">=</button>
-            <button type="button" class="touch-comp-btn" data-val=">">&gt;</button>
-          </div>
-          <input type="hidden" id="inp-2c-2" value="">
-        </div>
-      </div>
-
-      <div class="sol-box" id="sol-2c">
-        <div class="sol-title">💡 Lösung zu Aufgabe 6:</div>
-        • <span class="frac"><span class="frac-top">3</span><span class="frac-bot">4</span></span> <b>=</b> <span class="frac"><span class="frac-top">6</span><span class="frac-bot">8</span></span> (mit 2 erweitert)<br>
-        • 1 <span class="frac"><span class="frac-top">1</span><span class="frac-bot">3</span></span> <b>&lt;</b> <span class="frac"><span class="frac-top">5</span><span class="frac-bot">3</span></span> (denn 1 1/3 = 4/3, und 4/3 &lt; 5/3)
-      </div>
-    </div>
-
-    <!-- Aufgabe 2d: Der Größe nach ordnen -->
-    <div class="task-box">
-      <div class="task-header">
-        <span class="task-num">Aufgabe 7: Brüche der Größe nach ordnen</span>
-        <span class="task-pts">2 Punkte</span>
-      </div>
-      <div class="task-desc">
-        Tippe die Brüche <b>vom kleinsten zum größten</b> der Reihe nach an:
-      </div>
-
-      <!-- Interactive Tap Chips for Phone -->
-      <div class="order-chips-wrap" id="order-chips-container">
-        <button type="button" class="order-chip" data-val="7/9" onclick="tapOrderChip(this)">7/9</button>
-        <button type="button" class="order-chip" data-val="2/9" onclick="tapOrderChip(this)">2/9</button>
-        <button type="button" class="order-chip" data-val="9/9" onclick="tapOrderChip(this)">9/9</button>
-        <button type="button" class="order-chip" data-val="4/9" onclick="tapOrderChip(this)">4/9</button>
-        <button type="button" class="order-chip" data-val="1/9" onclick="tapOrderChip(this)">1/9</button>
-        <button type="button" id="btn-reset-order" onclick="resetOrderSlots()" style="background:#f1f5f9;border:1px solid #cbd5e1;padding:6px 10px;border-radius:10px;font-size:12px;font-weight:800;color:#64748b;cursor:pointer">↺ Neu ordnen</button>
-      </div>
-
-      <div class="order-slots-row">
-        <input type="text" class="order-slot-input" id="inp-2d-1" placeholder="1." readonly> &lt;
-        <input type="text" class="order-slot-input" id="inp-2d-2" placeholder="2." readonly> &lt;
-        <input type="text" class="order-slot-input" id="inp-2d-3" placeholder="3." readonly> &lt;
-        <input type="text" class="order-slot-input" id="inp-2d-4" placeholder="4." readonly> &lt;
-        <input type="text" class="order-slot-input" id="inp-2d-5" placeholder="5." readonly>
-      </div>
-
-      <div class="sol-box" id="sol-2d">
-        <div class="sol-title">💡 Lösung zu Aufgabe 7:</div>
-        Aufsteigend nach Zähler sortiert:<br>
-        <b><span class="frac"><span class="frac-top">1</span><span class="frac-bot">9</span></span> &lt; <span class="frac"><span class="frac-top">2</span><span class="frac-bot">9</span></span> &lt; <span class="frac"><span class="frac-top">4</span><span class="frac-bot">9</span></span> &lt; <span class="frac"><span class="frac-top">7</span><span class="frac-bot">9</span></span> &lt; <span class="frac"><span class="frac-top">9</span><span class="frac-bot">9</span></span> (= 1)</b>
-      </div>
-    </div>
-  </div>
-
-  <!-- TEIL 3: ADDITION & SUBTRAKTION -->
-  <div class="section">
-    <div class="section-title">
-      <span>Teil 3: Gleichnamige Brüche addieren &amp; subtrahieren</span>
-      <span class="section-pts">8 Punkte</span>
-    </div>
-
-    <!-- Aufgabe 3a -->
-    <div class="task-box">
-      <div class="task-header">
-        <span class="task-num">Aufgabe 8: Addition gleichnamiger Brüche</span>
-        <span class="task-pts">2 Punkte</span>
-      </div>
-      <div class="task-desc">
-        <i>Merkregel:</i> Zähler plus Zähler – <b>Nenner bleibt gleich!</b>
-      </div>
-
-      <div class="calc-grid">
-        <div class="calc-card">
-          <span>a) <span class="frac"><span class="frac-top">2</span><span class="frac-bot">7</span></span> + <span class="frac"><span class="frac-top">3</span><span class="frac-bot">7</span></span> = </span>
-          <input type="text" class="calc-input math-focus-in" id="inp-3a-1" placeholder="Ergebnis">
-        </div>
-
-        <div class="calc-card">
-          <span>b) <span class="frac"><span class="frac-top">5</span><span class="frac-bot">12</span></span> + <span class="frac"><span class="frac-top">4</span><span class="frac-bot">12</span></span> = </span>
-          <input type="text" class="calc-input math-focus-in" id="inp-3a-2" placeholder="Ergebnis">
-        </div>
-      </div>
-
-      <div class="sol-box" id="sol-3a">
-        <div class="sol-title">💡 Lösung zu Aufgabe 8:</div>
-        • a) <span class="frac"><span class="frac-top">2</span><span class="frac-bot">7</span></span> + <span class="frac"><span class="frac-top">3</span><span class="frac-bot">7</span></span> = <b><span class="frac"><span class="frac-top">5</span><span class="frac-bot">7</span></span></b><br>
-        • b) <span class="frac"><span class="frac-top">5</span><span class="frac-bot">12</span></span> + <span class="frac"><span class="frac-top">4</span><span class="frac-bot">12</span></span> = <b><span class="frac"><span class="frac-top">9</span><span class="frac-bot">12</span></span></b> (oder gekürzt <b><span class="frac"><span class="frac-top">3</span><span class="frac-bot">4</span></span></b>)
-      </div>
-    </div>
-
-    <!-- Aufgabe 3b -->
-    <div class="task-box">
-      <div class="task-header">
-        <span class="task-num">Aufgabe 9: Subtraktion gleichnamiger Brüche</span>
-        <span class="task-pts">2 Punkte</span>
-      </div>
-      <div class="task-desc">
-        <i>Merkregel:</i> Zähler minus Zähler – <b>Nenner bleibt gleich!</b>
-      </div>
-
-      <div class="calc-grid">
-        <div class="calc-card">
-          <span>a) <span class="frac"><span class="frac-top">7</span><span class="frac-bot">9</span></span> − <span class="frac"><span class="frac-top">4</span><span class="frac-bot">9</span></span> = </span>
-          <input type="text" class="calc-input math-focus-in" id="inp-3b-1" placeholder="Ergebnis">
-        </div>
-
-        <div class="calc-card">
-          <span>b) <span class="frac"><span class="frac-top">8</span><span class="frac-bot">10</span></span> − <span class="frac"><span class="frac-top">2</span><span class="frac-bot">10</span></span> = </span>
-          <input type="text" class="calc-input math-focus-in" id="inp-3b-2" placeholder="Ergebnis">
-        </div>
-      </div>
-
-      <div class="sol-box" id="sol-3b">
-        <div class="sol-title">💡 Lösung zu Aufgabe 9:</div>
-        • a) <span class="frac"><span class="frac-top">7</span><span class="frac-bot">9</span></span> − <span class="frac"><span class="frac-top">4</span><span class="frac-bot">9</span></span> = <b><span class="frac"><span class="frac-top">3</span><span class="frac-bot">9</span></span></b> (gekürzt <b><span class="frac"><span class="frac-top">1</span><span class="frac-bot">3</span></span></b>)<br>
-        • b) <span class="frac"><span class="frac-top">8</span><span class="frac-bot">10</span></span> − <span class="frac"><span class="frac-top">2</span><span class="frac-bot">10</span></span> = <b><span class="frac"><span class="frac-top">6</span><span class="frac-bot">10</span></span></b> (gekürzt <b><span class="frac"><span class="frac-top">3</span><span class="frac-bot">5</span></span></b>)
-      </div>
-    </div>
-
-    <!-- Aufgabe 3c -->
-    <div class="task-box">
-      <div class="task-header">
-        <span class="task-num">Aufgabe 10: Ergebnis als gemischte Zahl</span>
-        <span class="task-pts">2 Punkte</span>
-      </div>
-      <div class="task-desc">
-        Addiere und schreibe das Ergebnis als <b>gemischte Zahl</b> (z. B. 1 2/5):
-      </div>
-
-      <div class="calc-grid">
-        <div class="calc-card">
-          <span>a) <span class="frac"><span class="frac-top">4</span><span class="frac-bot">5</span></span> + <span class="frac"><span class="frac-top">3</span><span class="frac-bot">5</span></span> = </span>
-          <input type="text" class="calc-input math-focus-in" id="inp-3c-1" placeholder="z. B. 1 2/5">
-        </div>
-
-        <div class="calc-card">
-          <span>b) <span class="frac"><span class="frac-top">5</span><span class="frac-bot">6</span></span> + <span class="frac"><span class="frac-top">5</span><span class="frac-bot">6</span></span> = </span>
-          <input type="text" class="calc-input math-focus-in" id="inp-3c-2" placeholder="z. B. 1 4/6">
-        </div>
-      </div>
-
-      <div class="sol-box" id="sol-3c">
-        <div class="sol-title">💡 Lösung zu Aufgabe 10:</div>
-        • a) 4/5 + 3/5 = 7/5 = <b>1 <span class="frac"><span class="frac-top">2</span><span class="frac-bot">5</span></span></b><br>
-        • b) 5/6 + 5/6 = 10/6 = <b>1 <span class="frac"><span class="frac-top">4</span><span class="frac-bot">6</span></span></b> (oder <b>1 <span class="frac"><span class="frac-top">2</span><span class="frac-bot">3</span></span></b>)
-      </div>
-    </div>
-
-    <!-- Aufgabe 3d -->
-    <div class="task-box">
-      <div class="task-header">
-        <span class="task-num">Aufgabe 11: Rechnen mit gemischten Zahlen</span>
-        <span class="task-pts">2 Punkte</span>
-      </div>
-      <div class="task-desc">
-        Rechne die Ganzen und die Brüche zusammen:
-      </div>
-
-      <div class="calc-grid">
-        <div class="calc-card">
-          <span>a) 2 <span class="frac"><span class="frac-top">1</span><span class="frac-bot">8</span></span> + 1 <span class="frac"><span class="frac-top">4</span><span class="frac-bot">8</span></span> = </span>
-          <input type="text" class="calc-input math-focus-in" id="inp-3d-1" placeholder="z. B. 3 5/8">
-        </div>
-
-        <div class="calc-card">
-          <span>b) 3 <span class="frac"><span class="frac-top">6</span><span class="frac-bot">7</span></span> − 1 <span class="frac"><span class="frac-top">2</span><span class="frac-bot">7</span></span> = </span>
-          <input type="text" class="calc-input math-focus-in" id="inp-3d-2" placeholder="z. B. 2 4/7">
-        </div>
-      </div>
-
-      <div class="sol-box" id="sol-3d">
-        <div class="sol-title">💡 Lösung zu Aufgabe 11:</div>
-        • a) Ganze: 2 + 1 = 3. Brüche: 1/8 + 4/8 = 5/8 → <b>3 <span class="frac"><span class="frac-top">5</span><span class="frac-bot">8</span></span></b><br>
-        • b) Ganze: 3 − 1 = 2. Brüche: 6/7 − 2/7 = 4/7 → <b>2 <span class="frac"><span class="frac-top">4</span><span class="frac-bot">7</span></span></b>
-      </div>
-    </div>
-  </div>
-
-  <!-- TEIL 4: SACHAUFGABEN -->
-  <div class="section">
-    <div class="section-title">
-      <span>Teil 4: Text- und Sachaufgaben</span>
-      <span class="section-pts">4 Punkte</span>
-    </div>
-
-    <!-- Aufgabe 4a: Pizza -->
-    <div class="task-box">
-      <div class="task-header">
-        <span class="task-num">Aufgabe 12: Der Pizza-Nachmittag 🍕</span>
-        <span class="task-pts">2 Punkte</span>
-      </div>
-      <div class="task-desc">
-        Rufta und Meron essen Pizza. Von der ersten Pizza bleiben <span class="frac"><span class="frac-top">2</span><span class="frac-bot">8</span></span> übrig, von der zweiten <span class="frac"><span class="frac-top">3</span><span class="frac-bot">8</span></span>.<br>
-        <b>Frage 1:</b> Wie viel Pizza bleibt insgesamt übrig?<br>
-        <b>Frage 2:</b> Wie viel fehlt noch zu einer ganzen Pizza (8/8)?
-      </div>
-
-      <div style="display:flex;flex-direction:column;gap:10px;margin-top:10px">
-        <div class="calc-card">
-          <span>Insgesamt übrig:</span>
-          <input type="text" class="calc-input math-focus-in" id="inp-4a-1" placeholder="z. B. 5/8" style="width:110px">
-        </div>
-        <div class="calc-card">
-          <span>Fehlt zu 1 Ganzem:</span>
-          <input type="text" class="calc-input math-focus-in" id="inp-4a-2" placeholder="z. B. 3/8" style="width:110px">
-        </div>
-      </div>
-
-      <div class="sol-box" id="sol-4a">
-        <div class="sol-title">💡 Lösung zu Aufgabe 12:</div>
-        • <b>Rechnung 1:</b> 2/8 + 3/8 = <b><span class="frac"><span class="frac-top">5</span><span class="frac-bot">8</span></span> Pizza</b><br>
-        • <b>Rechnung 2:</b> 8/8 − 5/8 = <b><span class="frac"><span class="frac-top">3</span><span class="frac-bot">8</span></span> Pizza</b> fehlen noch.
-      </div>
-    </div>
-
-    <!-- Aufgabe 4b: Saft -->
-    <div class="task-box">
-      <div class="task-header">
-        <span class="task-num">Aufgabe 13: Die Apfelsaft-Schorle 🧃</span>
-        <span class="task-pts">2 Punkte</span>
-      </div>
-      <div class="task-desc">
-        In einer Saftkaraffe sind <span class="frac"><span class="frac-top">9</span><span class="frac-bot">10</span></span> Liter Saft. Eldana gießt sich <span class="frac"><span class="frac-top">4</span><span class="frac-bot">10</span></span> Liter ein.<br>
-        <b>Frage:</b> Wie viel Liter Saft sind danach noch in der Karaffe?
-      </div>
-
-      <div class="calc-card" style="margin-top:10px">
-        <span>Noch in der Karaffe:</span>
-        <div style="display:flex;align-items:center;gap:6px">
-          <input type="text" class="calc-input math-focus-in" id="inp-4b" placeholder="z. B. 5/10" style="width:110px">
-          <span>Liter</span>
-        </div>
-      </div>
-
-      <div class="sol-box" id="sol-4b">
-        <div class="sol-title">💡 Lösung zu Aufgabe 13:</div>
-        • <b>Rechnung:</b> 9/10 − 4/10 = <b><span class="frac"><span class="frac-top">5</span><span class="frac-bot">10</span></span> Liter</b> (oder gekürzt <b><span class="frac"><span class="frac-top">1</span><span class="frac-bot">2</span></span> Liter</b>)!
-      </div>
-    </div>
-  </div>
+  <!-- DYNAMIC TASKS ROOT -->
+  <div id="test-tasks-root"></div>
 
   <!-- Digital Result Evaluation Box -->
   <div class="eval-box" id="eval-box">
     <div class="eval-head">
       <div>
         <div style="font-size:12px;font-weight:800;color:#2563eb;text-transform:uppercase">Deine Auswertung:</div>
-        <div class="eval-score" id="eval-score-text">0 / 28 Punkte</div>
+        <div class="eval-score" id="eval-score-text">0 / 30 Punkte</div>
       </div>
       <div class="eval-grade" id="eval-grade-badge">Note 1</div>
     </div>
@@ -1050,18 +409,18 @@ body {
       <table class="grading-table">
         <thead>
           <tr>
-            <th>Note 1</th>
-            <th>Note 2</th>
-            <th>Note 3</th>
-            <th>Note 4</th>
+            <th>Note 1 (Sehr gut)</th>
+            <th>Note 2 (Gut)</th>
+            <th>Note 3 (Befriedigend)</th>
+            <th>Note 4 (Ausreichend)</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td>28 – 25 Pkt.</td>
-            <td>24 – 21 Pkt.</td>
-            <td>20 – 16 Pkt.</td>
-            <td>15 – 12 Pkt.</td>
+            <td>30 – 26 Pkt.</td>
+            <td>25 – 22 Pkt.</td>
+            <td>21 – 17 Pkt.</td>
+            <td>16 – 13 Pkt.</td>
           </tr>
         </tbody>
       </table>
@@ -1077,131 +436,928 @@ body {
 </div>
 
 <script>
-// Answers Key & Evaluation Logic
-const ANSWERS = {
-  // Teil 1: Zahlenstrahl
-  "inp-1a-A": ["2/8", "1/4"],
-  "inp-1a-B": ["5/8"],
-  "inp-1a-C": ["7/8"],
-  "inp-1b-D": ["3/5"],
-  "inp-1b-E": ["7/5", "1 2/5", "12/5"],
-  "inp-1c-P1": ["3/10"],
-  "inp-1c-P2": ["1/2"],
-  "inp-1c-P3": ["8/10"],
-
-  // Teil 2: Vergleichen
-  "inp-2a-1": ["<"],
-  "inp-2a-2": [">"],
-  "inp-2b-1": [">"],
-  "inp-2b-2": ["<"],
-  "inp-2c-1": ["="],
-  "inp-2c-2": ["<"],
-  "inp-2d-1": ["1/9"],
-  "inp-2d-2": ["2/9"],
-  "inp-2d-3": ["4/9"],
-  "inp-2d-4": ["7/9"],
-  "inp-2d-5": ["9/9", "1"],
-
-  // Teil 3: Addieren & Subtrahieren
-  "inp-3a-1": ["5/7"],
-  "inp-3a-2": ["9/12", "3/4"],
-  "inp-3b-1": ["3/9", "1/3"],
-  "inp-3b-2": ["6/10", "3/5"],
-  "inp-3c-1": ["1 2/5", "7/5"],
-  "inp-3c-2": ["1 4/6", "1 2/3", "10/6", "5/3"],
-  "inp-3d-1": ["3 5/8", "29/8"],
-  "inp-3d-2": ["2 4/7", "18/7"],
-
-  // Teil 4: Sachaufgaben
-  "inp-4a-1": ["5/8"],
-  "inp-4a-2": ["3/8"],
-  "inp-4b": ["5/10", "1/2"]
-};
-
-const POINTS_MAP = {
-  "inp-1a-A": 1, "inp-1a-B": 1, "inp-1a-C": 1,
-  "inp-1b-D": 1, "inp-1b-E": 1,
-  "inp-1c-P1": 1, "inp-1c-P2": 1, "inp-1c-P3": 1,
-
-  "inp-2a-1": 1, "inp-2a-2": 1,
-  "inp-2b-1": 1, "inp-2b-2": 1,
-  "inp-2c-1": 1, "inp-2c-2": 1,
-  "inp-2d-1": 0.4, "inp-2d-2": 0.4, "inp-2d-3": 0.4, "inp-2d-4": 0.4, "inp-2d-5": 0.4,
-
-  "inp-3a-1": 1, "inp-3a-2": 1,
-  "inp-3b-1": 1, "inp-3b-2": 1,
-  "inp-3c-1": 1, "inp-3c-2": 1,
-  "inp-3d-1": 1, "inp-3d-2": 1,
-
-  "inp-4a-1": 1, "inp-4a-2": 1,
-  "inp-4b": 2
-};
-
-const STORAGE_KEY = "rufta_brueche_test_v1";
-
-// Fill Quick Chips
-function fillInput(id, val) {
-  const el = document.getElementById(id);
-  if (el) {
-    el.value = val;
-    saveState();
-  }
+// Math Utility Helpers
+function gcd(a, b) {
+  a = Math.abs(a); b = Math.abs(b);
+  while (b) { let t = b; b = a % b; a = t; }
+  return a;
 }
 
-// Touch Compare Buttons Setup
-document.querySelectorAll(".touch-comp-group").forEach(group => {
-  const targetId = group.dataset.target;
-  const hiddenInput = document.getElementById(targetId);
-  group.querySelectorAll(".touch-comp-btn").forEach(btn => {
-    btn.addEventListener("click", () => {
-      group.querySelectorAll(".touch-comp-btn").forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
-      hiddenInput.value = btn.dataset.val;
-      saveState();
+function simplify(n, d) {
+  const g = gcd(n, d);
+  return [n / g, d / g];
+}
+
+function toMixedString(n, d) {
+  const whole = Math.floor(n / d);
+  const rem = n % d;
+  if (rem === 0) return `${whole}`;
+  const [remS, dS] = simplify(rem, d);
+  if (whole === 0) return `${remS}/${dS}`;
+  return `${whole} ${remS}/${dS}`;
+}
+
+function renderFrac(n, d) {
+  return `<span class="frac"><span class="frac-top">${n}</span><span class="frac-bot">${d}</span></span>`;
+}
+
+function renderMixed(whole, n, d) {
+  if (whole === 0) return renderFrac(n, d);
+  return `<span class="mixed"><span class="mixed-whole">${whole}</span>${renderFrac(n, d)}</span>`;
+}
+
+function randInt(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function randChoice(arr) {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+
+// Global State
+let CURRENT_TEST = null;
+let testCounter = 1;
+let solutionsVisible = false;
+
+// DYNAMIC GENERATOR ENGINE
+function generateNewTest() {
+  solutionsVisible = false;
+  document.getElementById("eval-box").classList.remove("visible");
+  document.getElementById("student-score-display").innerText = "___ / 30";
+  document.getElementById("mobile-score-display").innerText = "0/30";
+  document.getElementById("test-version-label").innerText = `Test #${testCounter++}`;
+
+  const T = {
+    answers: {},
+    points: {},
+    solTexts: {}
+  };
+
+  let html = "";
+
+  // ==========================================
+  // TEIL 1: ZAHLENSTRAHL (8 Punkte)
+  // ==========================================
+  html += `
+  <div class="section">
+    <div class="section-title">
+      <span>Teil 1: Brüche am Zahlenstrahl (Anspruchsvoll)</span>
+      <span class="section-pts">8 Punkte</span>
+    </div>
+  `;
+
+  // 1a) Zahlenstrahl von 0 bis 1 mit anspruchsvollem Nenner (6, 8, 9, 10, 12)
+  const den1 = randChoice([6, 8, 9, 10, 12]);
+  // 3 distinct points
+  const pList1 = [];
+  while (pList1.length < 3) {
+    const r = randInt(1, den1 - 1);
+    if (!pList1.includes(r)) pList1.push(r);
+  }
+  pList1.sort((a,b) => a - b);
+  const [valA, valB, valC] = pList1;
+
+  // Render SVG 1a
+  const svgWidth = 640;
+  const marginX = 50;
+  const axisLength = 500;
+  const stepX = axisLength / den1;
+
+  let ticksSvg1 = "";
+  // 0 tick
+  ticksSvg1 += `<line x1="${marginX}" y1="26" x2="${marginX}" y2="58" stroke="#1e293b" stroke-width="2.5" />`;
+  ticksSvg1 += `<text x="${marginX}" y="76" font-size="16" font-weight="900" text-anchor="middle" fill="#0f172a">0</text>`;
+
+  // Intermediate ticks
+  for (let i = 1; i < den1; i++) {
+    const curX = marginX + i * stepX;
+    if (i === valA) {
+      ticksSvg1 += `<line x1="${curX}" y1="30" x2="${curX}" y2="54" stroke="#2563eb" stroke-width="2.5" />`;
+      ticksSvg1 += `<circle cx="${curX}" cy="42" r="5.5" fill="#2563eb" />`;
+      ticksSvg1 += `<text x="${curX}" y="20" font-size="16" font-weight="900" text-anchor="middle" fill="#2563eb">A</text>`;
+    } else if (i === valB) {
+      ticksSvg1 += `<line x1="${curX}" y1="30" x2="${curX}" y2="54" stroke="#2563eb" stroke-width="2.5" />`;
+      ticksSvg1 += `<circle cx="${curX}" cy="42" r="5.5" fill="#2563eb" />`;
+      ticksSvg1 += `<text x="${curX}" y="20" font-size="16" font-weight="900" text-anchor="middle" fill="#2563eb">B</text>`;
+    } else if (i === valC) {
+      ticksSvg1 += `<line x1="${curX}" y1="30" x2="${curX}" y2="54" stroke="#2563eb" stroke-width="2.5" />`;
+      ticksSvg1 += `<circle cx="${curX}" cy="42" r="5.5" fill="#2563eb" />`;
+      ticksSvg1 += `<text x="${curX}" y="20" font-size="16" font-weight="900" text-anchor="middle" fill="#2563eb">C</text>`;
+    } else {
+      ticksSvg1 += `<line x1="${curX}" y1="35" x2="${curX}" y2="49" stroke="#64748b" stroke-width="1.8" />`;
+    }
+  }
+
+  // 1 tick
+  const endX = marginX + axisLength;
+  ticksSvg1 += `<line x1="${endX}" y1="26" x2="${endX}" y2="58" stroke="#1e293b" stroke-width="2.5" />`;
+  ticksSvg1 += `<text x="${endX}" y="76" font-size="16" font-weight="900" text-anchor="middle" fill="#0f172a">1</text>`;
+
+  // Solutions 1a
+  const [sAn, sAd] = simplify(valA, den1);
+  const [sBn, sBd] = simplify(valB, den1);
+  const [sCn, sCd] = simplify(valC, den1);
+
+  T.answers["inp-1a-A"] = [`${valA}/${den1}`, `${sAn}/${sAd}`];
+  T.answers["inp-1a-B"] = [`${valB}/${den1}`, `${sBn}/${sBd}`];
+  T.answers["inp-1a-C"] = [`${valC}/${den1}`, `${sCn}/${sCd}`];
+  T.points["inp-1a-A"] = 1; T.points["inp-1a-B"] = 1; T.points["inp-1a-C"] = 1;
+
+  html += `
+    <div class="task-box">
+      <div class="task-header">
+        <span class="task-num">Aufgabe 1: Brüche zwischen 0 und 1 ablesen</span>
+        <span class="task-pts">3 Punkte</span>
+      </div>
+      <div class="task-desc">
+        Finde zuerst heraus, in wie viele gleich große Teile die Strecke von 0 bis 1 unterteilt ist (= Nenner!). Bestimme dann die Brüche bei <b>A</b>, <b>B</b> und <b>C</b>:
+      </div>
+      <div class="number-line-scroll">
+        <svg class="number-line-svg" width="640" height="85" viewBox="0 0 640 85">
+          <line x1="20" y1="42" x2="620" y2="42" stroke="#1e293b" stroke-width="2.5" />
+          <polygon points="625,42 610,37 610,47" fill="#1e293b" />
+          ${ticksSvg1}
+        </svg>
+      </div>
+      <div style="display:flex;gap:14px;flex-wrap:wrap;margin-top:10px;">
+        <div style="display:flex;align-items:center;gap:6px">
+          <b>A =</b>
+          <input type="text" class="calc-input math-focus-in" id="inp-1a-A" placeholder="z. B. 2/8" style="width:100px">
+        </div>
+        <div style="display:flex;align-items:center;gap:6px">
+          <b>B =</b>
+          <input type="text" class="calc-input math-focus-in" id="inp-1a-B" placeholder="z. B. 5/8" style="width:100px">
+        </div>
+        <div style="display:flex;align-items:center;gap:6px">
+          <b>C =</b>
+          <input type="text" class="calc-input math-focus-in" id="inp-1a-C" placeholder="z. B. 7/8" style="width:100px">
+        </div>
+      </div>
+      <div class="sol-box" id="sol-1a">
+        <div class="sol-title">💡 Erklärung &amp; Lösung zu Aufgabe 1:</div>
+        Die Strecke ist in genau <b>${den1} Abschnitte</b> unterteilt (1 Schritt = ${renderFrac(1, den1)}).<br>
+        • <b>A</b> = <b>${renderFrac(valA, den1)}</b> ${sAn !== valA ? `(oder gekürzt ${renderFrac(sAn, sAd)})` : ""}<br>
+        • <b>B</b> = <b>${renderFrac(valB, den1)}</b> ${sBn !== valB ? `(oder gekürzt ${renderFrac(sBn, sBd)})` : ""}<br>
+        • <b>C</b> = <b>${renderFrac(valC, den1)}</b> ${sCn !== valC ? `(oder gekürzt ${renderFrac(sCn, sCd)})` : ""}
+      </div>
+    </div>
+  `;
+
+  // 1b) Zahlenstrahl von 0 bis 2 (über 1 Ganzes hinaus, Fünftel oder Sechstel oder Siebtel)
+  const den2 = randChoice([5, 6, 7, 8]);
+  const valD = randInt(2, den2 - 1);
+  const valE = randInt(den2 + 1, den2 + den2 - 2);
+  const stepX2 = 250 / den2;
+
+  let ticksSvg2 = "";
+  // 0 tick
+  ticksSvg2 += `<line x1="50" y1="26" x2="50" y2="58" stroke="#1e293b" stroke-width="2.5" />`;
+  ticksSvg2 += `<text x="50" y="76" font-size="16" font-weight="900" text-anchor="middle" fill="#0f172a">0</text>`;
+
+  for (let i = 1; i <= den2 * 2; i++) {
+    const curX = 50 + i * stepX2;
+    if (i === den2) {
+      // 1
+      ticksSvg2 += `<line x1="${curX}" y1="26" x2="${curX}" y2="58" stroke="#1e293b" stroke-width="2.5" />`;
+      ticksSvg2 += `<text x="${curX}" y="76" font-size="16" font-weight="900" text-anchor="middle" fill="#0f172a">1</text>`;
+    } else if (i === den2 * 2) {
+      // 2
+      ticksSvg2 += `<line x1="${curX}" y1="26" x2="${curX}" y2="58" stroke="#1e293b" stroke-width="2.5" />`;
+      ticksSvg2 += `<text x="${curX}" y="76" font-size="16" font-weight="900" text-anchor="middle" fill="#0f172a">2</text>`;
+    } else if (i === valD) {
+      ticksSvg2 += `<line x1="${curX}" y1="30" x2="${curX}" y2="54" stroke="#7c3aed" stroke-width="2.5" />`;
+      ticksSvg2 += `<circle cx="${curX}" cy="42" r="5.5" fill="#7c3aed" />`;
+      ticksSvg2 += `<text x="${curX}" y="20" font-size="16" font-weight="900" text-anchor="middle" fill="#7c3aed">D</text>`;
+    } else if (i === valE) {
+      ticksSvg2 += `<line x1="${curX}" y1="30" x2="${curX}" y2="54" stroke="#7c3aed" stroke-width="2.5" />`;
+      ticksSvg2 += `<circle cx="${curX}" cy="42" r="5.5" fill="#7c3aed" />`;
+      ticksSvg2 += `<text x="${curX}" y="20" font-size="16" font-weight="900" text-anchor="middle" fill="#7c3aed">E</text>`;
+    } else {
+      ticksSvg2 += `<line x1="${curX}" y1="35" x2="${curX}" y2="49" stroke="#64748b" stroke-width="1.8" />`;
+    }
+  }
+
+  const mixedE = toMixedString(valE, den2);
+  const [sDn, sDd] = simplify(valD, den2);
+  const [sEn, sEd] = simplify(valE, den2);
+
+  T.answers["inp-1b-D"] = [`${valD}/${den2}`, `${sDn}/${sDd}`];
+  T.answers["inp-1b-E"] = [mixedE, `${valE}/${den2}`, `${sEn}/${sEd}`, `1 ${valE - den2}/${den2}`];
+  T.points["inp-1b-D"] = 1.5; T.points["inp-1b-E"] = 1.5;
+
+  html += `
+    <div class="task-box">
+      <div class="task-header">
+        <span class="task-num">Aufgabe 2: Brüche größer als 1 ablesen</span>
+        <span class="task-pts">3 Punkte</span>
+      </div>
+      <div class="task-desc">
+        Dieser Zahlenstrahl reicht von 0 bis 2. Lies die Punkte <b>D</b> und <b>E</b> ab (bei E gerne als gemischte Zahl, z. B. 1 2/5):
+      </div>
+      <div class="number-line-scroll">
+        <svg class="number-line-svg" width="640" height="85" viewBox="0 0 640 85">
+          <line x1="20" y1="42" x2="620" y2="42" stroke="#1e293b" stroke-width="2.5" />
+          <polygon points="625,42 610,37 610,47" fill="#1e293b" />
+          ${ticksSvg2}
+        </svg>
+      </div>
+      <div style="display:flex;gap:16px;flex-wrap:wrap;margin-top:10px;">
+        <div style="display:flex;align-items:center;gap:6px">
+          <b>D =</b>
+          <input type="text" class="calc-input math-focus-in" id="inp-1b-D" placeholder="z. B. 3/5" style="width:110px">
+        </div>
+        <div style="display:flex;align-items:center;gap:6px">
+          <b>E =</b>
+          <input type="text" class="calc-input math-focus-in" id="inp-1b-E" placeholder="z. B. 1 3/5" style="width:130px">
+        </div>
+      </div>
+      <div class="sol-box" id="sol-1b">
+        <div class="sol-title">💡 Erklärung &amp; Lösung zu Aufgabe 2:</div>
+        Jedes Ganze ist in <b>${den2} Teile</b> eingeteilt.<br>
+        • <b>D</b> liegt bei ${valD} Teilen: <b>${renderFrac(valD, den2)}</b><br>
+        • <b>E</b> liegt bei ${valE} Teilen (also ${valE - den2} Teile nach der 1): <b>${mixedE}</b> (oder ${renderFrac(valE, den2)})
+      </div>
+    </div>
+  `;
+
+  // 1c) Position bestimmen: "An welchem Strich nach der 0 liegt der Bruch X?"
+  const den3 = randChoice([8, 10, 12]);
+  const num3 = randInt(3, den3 - 2);
+  T.answers["inp-1c"] = [`${num3}`];
+  T.points["inp-1c"] = 2;
+
+  html += `
+    <div class="task-box">
+      <div class="task-header">
+        <span class="task-num">Aufgabe 3: Einteilung &amp; Position bestimmen</span>
+        <span class="task-pts">2 Punkte</span>
+      </div>
+      <div class="task-desc">
+        Ein Zahlenstrahl von 0 bis 1 ist in <b>${den3} gleich große Abschnitte</b> unterteilt.<br>
+        Am wievielten Strich nach der 0 liegt der Bruch <b>${renderFrac(num3, den3)}</b>?
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;margin-top:8px">
+        <span>Am</span>
+        <input type="text" class="calc-input math-focus-in" id="inp-1c" placeholder="Zahl" style="width:80px">
+        <span>. Strich nach der 0.</span>
+      </div>
+      <div class="sol-box" id="sol-1c">
+        <div class="sol-title">💡 Lösung zu Aufgabe 3:</div>
+        Da der Zahlenstrahl in ${den3} Teile geteilt ist, liegt der Zähler direkt am Strich: Am <b>${num3}. Strich</b>!
+      </div>
+    </div>
+  </div>
+  `;
+
+  // ==========================================
+  // TEIL 2: BRÜCHE VERGLEICHEN & ERWEITERN (8 Punkte)
+  // ==========================================
+  html += `
+  <div class="section">
+    <div class="section-title">
+      <span>Teil 2: Brüche vergleichen und ordnen (Schwer)</span>
+      <span class="section-pts">8 Punkte</span>
+    </div>
+  `;
+
+  // 2a: Verschiedene Nenner durch Erweitern (z.B. 3/4 vs 5/6, oder 5/8 vs 7/12, oder 2/3 vs 8/12)
+  const comparePairs = [
+    { n1: 3, d1: 4, n2: 5, d2: 6 }, // 9/12 vs 10/12 (<)
+    { n1: 5, d1: 8, n2: 7, d2: 12 }, // 15/24 vs 14/24 (>)
+    { n1: 2, d1: 3, n2: 8, d2: 12 }, // 8/12 vs 8/12 (=)
+    { n1: 4, d1: 5, n2: 7, d2: 10 }, // 8/10 vs 7/10 (>)
+    { n1: 5, d1: 6, n2: 11, d2: 12 }, // 10/12 vs 11/12 (<)
+    { n1: 3, d1: 8, n2: 6, d2: 16 } // 6/16 vs 6/16 (=)
+  ];
+  const pair1 = randChoice(comparePairs);
+  let pair2 = randChoice(comparePairs);
+  while (pair2 === pair1) pair2 = randChoice(comparePairs);
+
+  const compVal1 = (pair1.n1 * pair1.d2 < pair1.n2 * pair1.d1) ? "<" : (pair1.n1 * pair1.d2 > pair1.n2 * pair1.d1 ? ">" : "=");
+  const compVal2 = (pair2.n1 * pair2.d2 < pair2.n2 * pair2.d1) ? "<" : (pair2.n1 * pair2.d2 > pair2.n2 * pair2.d1 ? ">" : "=");
+
+  T.answers["inp-2a-1"] = [compVal1];
+  T.answers["inp-2a-2"] = [compVal2];
+  T.points["inp-2a-1"] = 1; T.points["inp-2a-2"] = 1;
+
+  html += `
+    <div class="task-box">
+      <div class="task-header">
+        <span class="task-num">Aufgabe 4: Verschiedene Nenner – Erst auf Hauptnenner erweitern!</span>
+        <span class="task-pts">2 Punkte</span>
+      </div>
+      <div class="task-desc">
+        Tippe &lt;, = oder &gt; an. <i>Tipp: Erweitere beide Brüche auf denselben Nenner, um sie zu vergleichen!</i>
+      </div>
+      <div class="compare-grid">
+        <div class="compare-card">
+          <div class="compare-expression">
+            ${renderFrac(pair1.n1, pair1.d1)}
+            <span class="print-comp-box"></span>
+            ${renderFrac(pair1.n2, pair1.d2)}
+          </div>
+          <div class="touch-comp-group" data-target="inp-2a-1">
+            <button type="button" class="touch-comp-btn" data-val="<">&lt;</button>
+            <button type="button" class="touch-comp-btn" data-val="=">=</button>
+            <button type="button" class="touch-comp-btn" data-val=">">&gt;</button>
+          </div>
+          <input type="hidden" id="inp-2a-1" value="">
+        </div>
+
+        <div class="compare-card">
+          <div class="compare-expression">
+            ${renderFrac(pair2.n1, pair2.d1)}
+            <span class="print-comp-box"></span>
+            ${renderFrac(pair2.n2, pair2.d2)}
+          </div>
+          <div class="touch-comp-group" data-target="inp-2a-2">
+            <button type="button" class="touch-comp-btn" data-val="<">&lt;</button>
+            <button type="button" class="touch-comp-btn" data-val="=">=</button>
+            <button type="button" class="touch-comp-btn" data-val=">">&gt;</button>
+          </div>
+          <input type="hidden" id="inp-2a-2" value="">
+        </div>
+      </div>
+      <div class="sol-box" id="sol-2a">
+        <div class="sol-title">💡 Lösung zu Aufgabe 4:</div>
+        • ${renderFrac(pair1.n1, pair1.d1)} <b>${compVal1}</b> ${renderFrac(pair1.n2, pair1.d2)} (Kreuzweise erweitert: ${pair1.n1}·${pair1.d2} = ${pair1.n1 * pair1.d2} vs. ${pair1.n2}·${pair1.d1} = ${pair1.n2 * pair1.d1})<br>
+        • ${renderFrac(pair2.n1, pair2.d1)} <b>${compVal2}</b> ${renderFrac(pair2.n2, pair2.d2)} (Erweitert: ${pair2.n1 * pair2.d2} vs. ${pair2.n2 * pair2.d1})
+      </div>
+    </div>
+  `;
+
+  // 2b: Gleicher Zähler ("Kuchenregel") mit knappen Nennern (z.B. 4/7 vs 4/9 oder 5/11 vs 5/8)
+  const cakeNum1 = randChoice([3, 4, 5, 7]);
+  const cakeDen1_a = randChoice([7, 8, 9]);
+  const cakeDen1_b = randChoice([11, 12, 13]);
+  const compValCake1 = cakeDen1_a < cakeDen1_b ? ">" : "<";
+
+  const cakeNum2 = randChoice([2, 5, 6]);
+  const cakeDen2_a = randChoice([13, 14, 15]);
+  const cakeDen2_b = randChoice([7, 9, 10]);
+  const compValCake2 = cakeDen2_a < cakeDen2_b ? ">" : "<";
+
+  T.answers["inp-2b-1"] = [compValCake1];
+  T.answers["inp-2b-2"] = [compValCake2];
+  T.points["inp-2b-1"] = 1; T.points["inp-2b-2"] = 1;
+
+  html += `
+    <div class="task-box">
+      <div class="task-header">
+        <span class="task-num">Aufgabe 5: Gleicher Zähler – Denke an die Kuchenregel!</span>
+        <span class="task-pts">2 Punkte</span>
+      </div>
+      <div class="task-desc">
+        Wenn die Zähler gleich sind: Welcher Bruch ist größer?
+      </div>
+      <div class="compare-grid">
+        <div class="compare-card">
+          <div class="compare-expression">
+            ${renderFrac(cakeNum1, cakeDen1_a)}
+            <span class="print-comp-box"></span>
+            ${renderFrac(cakeNum1, cakeDen1_b)}
+          </div>
+          <div class="touch-comp-group" data-target="inp-2b-1">
+            <button type="button" class="touch-comp-btn" data-val="<">&lt;</button>
+            <button type="button" class="touch-comp-btn" data-val="=">=</button>
+            <button type="button" class="touch-comp-btn" data-val=">">&gt;</button>
+          </div>
+          <input type="hidden" id="inp-2b-1" value="">
+        </div>
+
+        <div class="compare-card">
+          <div class="compare-expression">
+            ${renderFrac(cakeNum2, cakeDen2_a)}
+            <span class="print-comp-box"></span>
+            ${renderFrac(cakeNum2, cakeDen2_b)}
+          </div>
+          <div class="touch-comp-group" data-target="inp-2b-2">
+            <button type="button" class="touch-comp-btn" data-val="<">&lt;</button>
+            <button type="button" class="touch-comp-btn" data-val="=">=</button>
+            <button type="button" class="touch-comp-btn" data-val=">">&gt;</button>
+          </div>
+          <input type="hidden" id="inp-2b-2" value="">
+        </div>
+      </div>
+      <div class="sol-box" id="sol-2b">
+        <div class="sol-title">💡 Lösung zu Aufgabe 5:</div>
+        • ${renderFrac(cakeNum1, cakeDen1_a)} <b>${compValCake1}</b> ${renderFrac(cakeNum1, cakeDen1_b)} (Wer durch weniger teilt, hat größere Stücke!)<br>
+        • ${renderFrac(cakeNum2, cakeDen2_a)} <b>${compValCake2}</b> ${renderFrac(cakeNum2, cakeDen2_b)}
+      </div>
+    </div>
+  `;
+
+  // 2c: Gemischte Zahlen mit unechten Brüchen vergleichen
+  // E.g. 2 3/5 vs 14/5 (13/5 < 14/5)
+  const mixDen = randChoice([4, 5, 6, 7]);
+  const mixW = randInt(2, 3);
+  const mixRem = randInt(1, mixDen - 1);
+  const mixNum = mixW * mixDen + mixRem; // equal
+  // variant 1: compared with mixNum + 1 or - 1
+  const offset = randChoice([-1, 0, 1]);
+  const compValMix1 = offset > 0 ? "<" : (offset < 0 ? ">" : "=");
+  const compImproper = mixNum + offset;
+
+  T.answers["inp-2c-1"] = [compValMix1];
+  T.points["inp-2c-1"] = 1;
+
+  // 2c-2: Unechte Brüche vs Ganze (z.B. 17/4 vs 4 -> 17/4 > 16/4)
+  const intDen = randChoice([3, 4, 5]);
+  const intW = randInt(3, 4);
+  const intOffset = randChoice([-1, 1]);
+  const intNum = intW * intDen + intOffset;
+  const compValMix2 = intOffset > 0 ? ">" : "<";
+
+  T.answers["inp-2c-2"] = [compValMix2];
+  T.points["inp-2c-2"] = 1;
+
+  html += `
+    <div class="task-box">
+      <div class="task-header">
+        <span class="task-num">Aufgabe 6: Gemischte Zahlen und unechte Brüche vergleichen</span>
+        <span class="task-pts">2 Punkte</span>
+      </div>
+      <div class="task-desc">
+        Wandle im Kopf die gemischte Zahl in einen unechten Bruch um:
+      </div>
+      <div class="compare-grid">
+        <div class="compare-card">
+          <div class="compare-expression">
+            ${renderMixed(mixW, mixRem, mixDen)}
+            <span class="print-comp-box"></span>
+            ${renderFrac(compImproper, mixDen)}
+          </div>
+          <div class="touch-comp-group" data-target="inp-2c-1">
+            <button type="button" class="touch-comp-btn" data-val="<">&lt;</button>
+            <button type="button" class="touch-comp-btn" data-val="=">=</button>
+            <button type="button" class="touch-comp-btn" data-val=">">&gt;</button>
+          </div>
+          <input type="hidden" id="inp-2c-1" value="">
+        </div>
+
+        <div class="compare-card">
+          <div class="compare-expression">
+            ${renderFrac(intNum, intDen)}
+            <span class="print-comp-box"></span>
+            <span style="font-size:22px;font-weight:900">${intW}</span>
+          </div>
+          <div class="touch-comp-group" data-target="inp-2c-2">
+            <button type="button" class="touch-comp-btn" data-val="<">&lt;</button>
+            <button type="button" class="touch-comp-btn" data-val="=">=</button>
+            <button type="button" class="touch-comp-btn" data-val=">">&gt;</button>
+          </div>
+          <input type="hidden" id="inp-2c-2" value="">
+        </div>
+      </div>
+      <div class="sol-box" id="sol-2c">
+        <div class="sol-title">💡 Lösung zu Aufgabe 6:</div>
+        • ${mixW} ${renderFrac(mixRem, mixDen)} = ${renderFrac(mixNum, mixDen)} <b>${compValMix1}</b> ${renderFrac(compImproper, mixDen)}<br>
+        • ${renderFrac(intNum, intDen)} <b>${compValMix2}</b> ${intW} (denn ${intW} Ganze = ${renderFrac(intW * intDen, intDen)})
+      </div>
+    </div>
+  `;
+
+  // 2d: 5 Brüche der Größe nach ordnen
+  const sortDen = randChoice([13, 14, 15, 17]);
+  const sortNums = [];
+  while (sortNums.length < 5) {
+    const r = randInt(1, sortDen);
+    if (!sortNums.includes(r)) sortNums.push(r);
+  }
+  const unsortedNums = [...sortNums].sort(() => Math.random() - 0.5);
+  const sortedNums = [...sortNums].sort((a,b) => a - b);
+
+  sortedNums.forEach((n, idx) => {
+    T.answers[`inp-2d-${idx+1}`] = [`${n}/${sortDen}`];
+    if (n === sortDen) T.answers[`inp-2d-${idx+1}`].push("1");
+    T.points[`inp-2d-${idx+1}`] = 0.4;
+  });
+
+  html += `
+    <div class="task-box">
+      <div class="task-header">
+        <span class="task-num">Aufgabe 7: Brüche der Größe nach ordnen</span>
+        <span class="task-pts">2 Punkte</span>
+      </div>
+      <div class="task-desc">
+        Ordne diese 5 Brüche <b>vom kleinsten zum größten</b>:<br>
+        <div style="font-weight:900;font-size:16px;margin:8px 0;display:flex;gap:12px;flex-wrap:wrap">
+          ${unsortedNums.map(n => renderFrac(n, sortDen)).join(" , ")}
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-weight:900;font-size:16px;color:#2563eb">
+        <input type="text" class="calc-input math-focus-in" id="inp-2d-1" placeholder="1." style="width:75px"> &lt;
+        <input type="text" class="calc-input math-focus-in" id="inp-2d-2" placeholder="2." style="width:75px"> &lt;
+        <input type="text" class="calc-input math-focus-in" id="inp-2d-3" placeholder="3." style="width:75px"> &lt;
+        <input type="text" class="calc-input math-focus-in" id="inp-2d-4" placeholder="4." style="width:75px"> &lt;
+        <input type="text" class="calc-input math-focus-in" id="inp-2d-5" placeholder="5." style="width:75px">
+      </div>
+      <div class="sol-box" id="sol-2d">
+        <div class="sol-title">💡 Lösung zu Aufgabe 7:</div>
+        Aufsteigend nach Zähler sortiert:<br>
+        <b>${sortedNums.map(n => renderFrac(n, sortDen)).join(" &lt; ")}</b>
+      </div>
+    </div>
+  </div>
+  `;
+
+  // ==========================================
+  // TEIL 3: ADDITION & SUBTRAKTION (10 Punkte)
+  // ==========================================
+  html += `
+  <div class="section">
+    <div class="section-title">
+      <span>Teil 3: Gleichnamige Brüche rechnen (Kürzen &amp; Übertrag Pflicht!)</span>
+      <span class="section-pts">10 Punkte</span>
+    </div>
+  `;
+
+  // 3a: Addition mit KÜRZEN (z.B. 5/12 + 1/12 = 6/12 = 1/2)
+  const addSimplPool = [
+    { n1: 5, n2: 1, d: 12, resN: 6, resD: 12, simpN: 1, simpD: 2 },
+    { n1: 3, n2: 5, d: 16, resN: 8, resD: 16, simpN: 1, simpD: 2 },
+    { n1: 7, n2: 2, d: 18, resN: 9, resD: 18, simpN: 1, simpD: 2 },
+    { n1: 3, n2: 3, d: 10, resN: 6, resD: 10, simpN: 3, simpD: 5 },
+    { n1: 7, n2: 5, d: 16, resN: 12, resD: 16, simpN: 3, simpD: 4 },
+    { n1: 2, n2: 4, d: 9, resN: 6, resD: 9, simpN: 2, simpD: 3 }
+  ];
+  const p3a1 = randChoice(addSimplPool);
+  let p3a2 = randChoice(addSimplPool);
+  while (p3a2 === p3a1) p3a2 = randChoice(addSimplPool);
+
+  T.answers["inp-3a-1"] = [`${p3a1.simpN}/${p3a1.simpD}`, `${p3a1.resN}/${p3a1.resD}`];
+  T.answers["inp-3a-2"] = [`${p3a2.simpN}/${p3a2.simpD}`, `${p3a2.resN}/${p3a2.resD}`];
+  T.points["inp-3a-1"] = 1; T.points["inp-3a-2"] = 1;
+
+  html += `
+    <div class="task-box">
+      <div class="task-header">
+        <span class="task-num">Aufgabe 8: Addition – Achtung: Kürze dein Ergebnis vollständig!</span>
+        <span class="task-pts">2 Punkte</span>
+      </div>
+      <div class="task-desc">
+        Addiere und kürze das Ergebnis so weit wie möglich:
+      </div>
+      <div class="calc-grid">
+        <div class="calc-card">
+          <span>a) ${renderFrac(p3a1.n1, p3a1.d)} + ${renderFrac(p3a1.n2, p3a1.d)} = </span>
+          <input type="text" class="calc-input math-focus-in" id="inp-3a-1" placeholder="Gekürzt!">
+        </div>
+        <div class="calc-card">
+          <span>b) ${renderFrac(p3a2.n1, p3a2.d)} + ${renderFrac(p3a2.n2, p3a2.d)} = </span>
+          <input type="text" class="calc-input math-focus-in" id="inp-3a-2" placeholder="Gekürzt!">
+        </div>
+      </div>
+      <div class="sol-box" id="sol-3a">
+        <div class="sol-title">💡 Lösung zu Aufgabe 8:</div>
+        • a) ${renderFrac(p3a1.n1, p3a1.d)} + ${renderFrac(p3a1.n2, p3a1.d)} = ${renderFrac(p3a1.resN, p3a1.d)} = <b>${renderFrac(p3a1.simpN, p3a1.simpD)}</b><br>
+        • b) ${renderFrac(p3a2.n1, p3a2.d)} + ${renderFrac(p3a2.n2, p3a2.d)} = ${renderFrac(p3a2.resN, p3a2.d)} = <b>${renderFrac(p3a2.simpN, p3a2.simpD)}</b>
+      </div>
+    </div>
+  `;
+
+  // 3b: Subtraktion mit KÜRZEN (z.B. 11/14 - 3/14 = 8/14 = 4/7)
+  const subSimplPool = [
+    { n1: 11, n2: 3, d: 16, resN: 8, resD: 16, simpN: 1, simpD: 2 },
+    { n1: 13, n2: 4, d: 15, resN: 9, resD: 15, simpN: 3, simpD: 5 },
+    { n1: 9, n2: 3, d: 14, resN: 6, resD: 14, simpN: 3, simpD: 7 },
+    { n1: 11, n2: 5, d: 18, resN: 6, resD: 18, simpN: 1, simpD: 3 },
+    { n1: 17, n2: 7, d: 20, resN: 10, resD: 20, simpN: 1, simpD: 2 },
+    { n1: 13, n2: 5, d: 12, resN: 8, resD: 12, simpN: 2, simpD: 3 }
+  ];
+  const p3b1 = randChoice(subSimplPool);
+  let p3b2 = randChoice(subSimplPool);
+  while (p3b2 === p3b1) p3b2 = randChoice(subSimplPool);
+
+  T.answers["inp-3b-1"] = [`${p3b1.simpN}/${p3b1.simpD}`, `${p3b1.resN}/${p3b1.resD}`];
+  T.answers["inp-3b-2"] = [`${p3b2.simpN}/${p3b2.simpD}`, `${p3b2.resN}/${p3b2.resD}`];
+  T.points["inp-3b-1"] = 1; T.points["inp-3b-2"] = 1;
+
+  html += `
+    <div class="task-box">
+      <div class="task-header">
+        <span class="task-num">Aufgabe 9: Subtraktion – Achtung: Kürze dein Ergebnis!</span>
+        <span class="task-pts">2 Punkte</span>
+      </div>
+      <div class="task-desc">
+        Subtrahiere und kürze das Ergebnis:
+      </div>
+      <div class="calc-grid">
+        <div class="calc-card">
+          <span>a) ${renderFrac(p3b1.n1, p3b1.d)} − ${renderFrac(p3b1.n2, p3b1.d)} = </span>
+          <input type="text" class="calc-input math-focus-in" id="inp-3b-1" placeholder="Gekürzt!">
+        </div>
+        <div class="calc-card">
+          <span>b) ${renderFrac(p3b2.n1, p3b2.d)} − ${renderFrac(p3b2.n2, p3b2.d)} = </span>
+          <input type="text" class="calc-input math-focus-in" id="inp-3b-2" placeholder="Gekürzt!">
+        </div>
+      </div>
+      <div class="sol-box" id="sol-3b">
+        <div class="sol-title">💡 Lösung zu Aufgabe 9:</div>
+        • a) ${renderFrac(p3b1.n1, p3b1.d)} − ${renderFrac(p3b1.n2, p3b1.d)} = ${renderFrac(p3b1.resN, p3b1.d)} = <b>${renderFrac(p3b1.simpN, p3b1.simpD)}</b><br>
+        • b) ${renderFrac(p3b2.n1, p3b2.d)} − ${renderFrac(p3b2.n2, p3b2.d)} = ${renderFrac(p3b2.resN, p3b2.d)} = <b>${renderFrac(p3b2.simpN, p3b2.simpD)}</b>
+      </div>
+    </div>
+  `;
+
+  // 3c: Addition mit Ergebnis > 1 als gemischte Zahl
+  const den3c = randChoice([5, 6, 7, 8, 9]);
+  const n3c1 = randInt(den3c - 3, den3c - 1);
+  const n3c2 = randInt(2, den3c - 1);
+  const sum3c = n3c1 + n3c2;
+  const mix3c = toMixedString(sum3c, den3c);
+
+  const den3c_b = randChoice([6, 8, 10]);
+  const n3c_b1 = randInt(den3c_b - 2, den3c_b - 1);
+  const n3c_b2 = randInt(3, den3c_b - 1);
+  const sum3c_b = n3c_b1 + n3c_b2;
+  const mix3c_b = toMixedString(sum3c_b, den3c_b);
+
+  T.answers["inp-3c-1"] = [mix3c, `${sum3c}/${den3c}`];
+  T.answers["inp-3c-2"] = [mix3c_b, `${sum3c_b}/${den3c_b}`];
+  T.points["inp-3c-1"] = 1; T.points["inp-3c-2"] = 1;
+
+  html += `
+    <div class="task-box">
+      <div class="task-header">
+        <span class="task-num">Aufgabe 10: Addition über 1 Ganzes hinaus (Gemischte Zahl!)</span>
+        <span class="task-pts">2 Punkte</span>
+      </div>
+      <div class="task-desc">
+        Schreibe das Ergebnis als <b>gemischte Zahl</b> (z. B. 1 3/5):
+      </div>
+      <div class="calc-grid">
+        <div class="calc-card">
+          <span>a) ${renderFrac(n3c1, den3c)} + ${renderFrac(n3c2, den3c)} = </span>
+          <input type="text" class="calc-input math-focus-in" id="inp-3c-1" placeholder="z. B. 1 2/5">
+        </div>
+        <div class="calc-card">
+          <span>b) ${renderFrac(n3c_b1, den3c_b)} + ${renderFrac(n3c_b2, den3c_b)} = </span>
+          <input type="text" class="calc-input math-focus-in" id="inp-3c-2" placeholder="z. B. 1 3/8">
+        </div>
+      </div>
+      <div class="sol-box" id="sol-3c">
+        <div class="sol-title">💡 Lösung zu Aufgabe 10:</div>
+        • a) ${renderFrac(n3c1, den3c)} + ${renderFrac(n3c2, den3c)} = ${renderFrac(sum3c, den3c)} = <b>${mix3c}</b><br>
+        • b) ${renderFrac(n3c_b1, den3c_b)} + ${renderFrac(n3c_b2, den3c_b)} = ${renderFrac(sum3c_b, den3c_b)} = <b>${mix3c_b}</b>
+      </div>
+    </div>
+  `;
+
+  // 3d: Subtraktion MIT Übertrag / Entbündeln (Klasse 6 Königsdisziplin!)
+  // e.g. 3 1/5 - 1 4/5 = 2 6/5 - 1 4/5 = 1 2/5
+  const den3d_1 = randChoice([5, 6, 7, 8]);
+  const rem3d_1 = randInt(1, den3d_1 - 3);
+  const rem3d_2 = randInt(rem3d_1 + 1, den3d_1 - 1);
+  const w3d_1 = randInt(3, 5);
+  const w3d_2 = randInt(1, w3d_1 - 1);
+
+  const resW_1 = (w3d_1 - 1) - w3d_2;
+  const resRem_1 = den3d_1 + rem3d_1 - rem3d_2;
+  const mixAns3d_1 = toMixedString(resW_1 * den3d_1 + resRem_1, den3d_1);
+
+  // Second problem: Whole minus fraction, e.g. 3 - 2/5 = 2 3/5
+  const wholeVal = randInt(2, 4);
+  const subDen = randChoice([5, 7, 8, 9]);
+  const subNum = randInt(2, subDen - 1);
+  const resWhole = wholeVal - 1;
+  const resNumSub = subDen - subNum;
+  const mixAns3d_2 = `${resWhole} ${resNumSub}/${subDen}`;
+
+  T.answers["inp-3d-1"] = [mixAns3d_1, `${resW_1 * den3d_1 + resRem_1}/${den3d_1}`];
+  T.answers["inp-3d-2"] = [mixAns3d_2, `${resWhole * subDen + resNumSub}/${subDen}`];
+  T.points["inp-3d-1"] = 1; T.points["inp-3d-2"] = 1;
+
+  html += `
+    <div class="task-box">
+      <div class="task-header">
+        <span class="task-num">Aufgabe 11: Subtraktion mit Übertrag (Entbündeln!)</span>
+        <span class="task-pts">2 Punkte</span>
+      </div>
+      <div class="task-desc">
+        <i>Schwerpunkt der Klassenarbeit:</i> Wandle 1 Ganzes in Bruchteile um, wenn der Zähler vorne zu klein ist!
+      </div>
+      <div class="calc-grid">
+        <div class="calc-card">
+          <span>a) ${renderMixed(w3d_1, rem3d_1, den3d_1)} − ${renderMixed(w3d_2, rem3d_2, den3d_1)} = </span>
+          <input type="text" class="calc-input math-focus-in" id="inp-3d-1" placeholder="z. B. 1 2/5">
+        </div>
+        <div class="calc-card">
+          <span>b) ${wholeVal} − ${renderFrac(subNum, subDen)} = </span>
+          <input type="text" class="calc-input math-focus-in" id="inp-3d-2" placeholder="z. B. 2 3/5">
+        </div>
+      </div>
+      <div class="sol-box" id="sol-3d">
+        <div class="sol-title">💡 Erklärung &amp; Lösung zu Aufgabe 11:</div>
+        • a) Da ${rem3d_1} kleiner als ${rem3d_2} ist, borgen wir 1 Ganzes aus:<br>
+          ${w3d_1} ${renderFrac(rem3d_1, den3d_1)} = ${w3d_1 - 1} ${renderFrac(den3d_1 + rem3d_1, den3d_1)}<br>
+          ${w3d_1 - 1} ${renderFrac(den3d_1 + rem3d_1, den3d_1)} − ${w3d_2} ${renderFrac(rem3d_2, den3d_1)} = <b>${mixAns3d_1}</b><br>
+        • b) Wandle 1 Ganzes um: ${wholeVal} = ${wholeVal - 1} ${renderFrac(subDen, subDen)}<br>
+          ${wholeVal - 1} ${renderFrac(subDen, subDen)} − ${renderFrac(subNum, subDen)} = <b>${mixAns3d_2}</b>
+      </div>
+    </div>
+  `;
+
+  // 3e: Lückenaufgaben (Welche Zahl gehört in die Lücke?)
+  const den3e = randChoice([11, 13, 14, 15]);
+  const num3e_total = randInt(7, den3e - 1);
+  const num3e_start = randInt(2, num3e_total - 2);
+  const num3e_gap = num3e_total - num3e_start;
+
+  // Gap 2: 1 - Box = frac
+  const den3e_2 = randChoice([7, 8, 9, 10]);
+  const num3e_target = randInt(2, den3e_2 - 2);
+  const num3e_gap2 = den3e_2 - num3e_target;
+
+  T.answers["inp-3e-1"] = [`${num3e_gap}/${den3e}`];
+  T.answers["inp-3e-2"] = [`${num3e_gap2}/${den3e_2}`];
+  T.points["inp-3e-1"] = 1; T.points["inp-3e-2"] = 1;
+
+  html += `
+    <div class="task-box">
+      <div class="task-header">
+        <span class="task-num">Aufgabe 12: Lückenaufgaben – Finde den fehlenden Bruch</span>
+        <span class="task-pts">2 Punkte</span>
+      </div>
+      <div class="task-desc">
+        Welcher Bruch gehört in die Box <b>?</b>, damit die Gleichung stimmt?
+      </div>
+      <div class="calc-grid">
+        <div class="calc-card">
+          <span>a) ${renderFrac(num3e_start, den3e)} + <b>[ ? ]</b> = ${renderFrac(num3e_total, den3e)}</span>
+          <input type="text" class="calc-input math-focus-in" id="inp-3e-1" placeholder="Bruch">
+        </div>
+        <div class="calc-card">
+          <span>b) 1 − <b>[ ? ]</b> = ${renderFrac(num3e_target, den3e_2)}</span>
+          <input type="text" class="calc-input math-focus-in" id="inp-3e-2" placeholder="Bruch">
+        </div>
+      </div>
+      <div class="sol-box" id="sol-3e">
+        <div class="sol-title">💡 Lösung zu Aufgabe 12:</div>
+        • a) ${renderFrac(num3e_total, den3e)} − ${renderFrac(num3e_start, den3e)} = <b>${renderFrac(num3e_gap, den3e)}</b><br>
+        • b) ${renderFrac(den3e_2, den3e_2)} − ${renderFrac(num3e_target, den3e_2)} = <b>${renderFrac(num3e_gap2, den3e_2)}</b>
+      </div>
+    </div>
+  </div>
+  `;
+
+  // ==========================================
+  // TEIL 4: SACHAUFGABEN (4 Punkte)
+  // ==========================================
+  html += `
+  <div class="section">
+    <div class="section-title">
+      <span>Teil 4: Zweischrittige Text- &amp; Sachaufgaben</span>
+      <span class="section-pts">4 Punkte</span>
+    </div>
+  `;
+
+  // Story Task 1: Holzleiste / Basteln (2 Punkte)
+  const denS1 = randChoice([5, 8, 10]);
+  const totalW = randInt(3, 4);
+  const cut1 = randInt(1, denS1 - 3);
+  const cut2_w = 1;
+  const cut2_rem = randInt(1, denS1 - 2);
+
+  // Total cut
+  const totalCutW = cut2_w;
+  const totalCutRem = cut1 + cut2_rem;
+  const totalCutMixed = toMixedString(totalCutW * denS1 + totalCutRem, denS1);
+
+  // Remaining wood: totalW - totalCut
+  const remWoodVal = (totalW * denS1) - (totalCutW * denS1 + totalCutRem);
+  const remWoodMixed = toMixedString(remWoodVal, denS1);
+
+  T.answers["inp-4a-1"] = [totalCutMixed, `${totalCutW * denS1 + totalCutRem}/${denS1}`];
+  T.answers["inp-4a-2"] = [remWoodMixed, `${remWoodVal}/${denS1}`];
+  T.points["inp-4a-1"] = 1; T.points["inp-4a-2"] = 1;
+
+  html += `
+    <div class="task-box">
+      <div class="task-header">
+        <span class="task-num">Aufgabe 13: Werkunterricht – Die Holzleiste</span>
+        <span class="task-pts">2 Punkte</span>
+      </div>
+      <div class="task-desc">
+        Rufta hat für ein Bastelprojekt eine Holzleiste von <b>${totalW} Metern</b> Länge.<br>
+        Zuerst sägt sie ein Stück von <b>${renderFrac(cut1, denS1)} m</b> ab. Danach sägt sie noch ein zweites Stück von <b>${renderMixed(cut2_w, cut2_rem, denS1)} m</b> ab.<br>
+        <b>Frage 1:</b> Wie viele Meter Holz hat Rufta insgesamt abgesägt? (Als gemischte Zahl)<br>
+        <b>Frage 2:</b> Wie lang ist das verbleibende Reststück der Holzleiste?
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;margin-top:10px">
+        <div class="calc-card">
+          <span>Insgesamt abgesägt:</span>
+          <div style="display:flex;align-items:center;gap:6px">
+            <input type="text" class="calc-input math-focus-in" id="inp-4a-1" placeholder="z. B. 1 3/5" style="width:120px">
+            <span>m</span>
+          </div>
+        </div>
+        <div class="calc-card">
+          <span>Länge des Reststücks:</span>
+          <div style="display:flex;align-items:center;gap:6px">
+            <input type="text" class="calc-input math-focus-in" id="inp-4a-2" placeholder="z. B. 2 1/5" style="width:120px">
+            <span>m</span>
+          </div>
+        </div>
+      </div>
+      <div class="sol-box" id="sol-4a">
+        <div class="sol-title">💡 Erklärung &amp; Lösung zu Aufgabe 13:</div>
+        • <b>Rechnung 1:</b> ${renderFrac(cut1, denS1)} + ${renderMixed(cut2_w, cut2_rem, denS1)} = <b>${totalCutMixed} Meter</b><br>
+        • <b>Rechnung 2:</b> ${totalW} m − ${totalCutMixed} m = ${totalW - 1} ${renderFrac(denS1, denS1)} m − ${totalCutMixed} m = <b>${remWoodMixed} Meter</b> Rest.
+      </div>
+    </div>
+  `;
+
+  // Story Task 2: Saftflasche / Schulfest (2 Punkte)
+  const denS2 = randChoice([6, 8, 10, 12]);
+  const startCap = randInt(denS2 - 2, denS2 - 1);
+  const drink1 = randInt(2, startCap - 2);
+  const after1 = startCap - drink1;
+  const drink2 = randInt(1, after1 - 1);
+  const finalRem = after1 - drink2;
+  const [fSimpN, fSimpD] = simplify(finalRem, denS2);
+
+  T.answers["inp-4b-1"] = [`${after1}/${denS2}`, `${simplify(after1, denS2)[0]}/${simplify(after1, denS2)[1]}`];
+  T.answers["inp-4b-2"] = [`${fSimpN}/${fSimpD}`, `${finalRem}/${denS2}`];
+  T.points["inp-4b-1"] = 1; T.points["inp-4b-2"] = 1;
+
+  html += `
+    <div class="task-box">
+      <div class="task-header">
+        <span class="task-num">Aufgabe 14: Der Saftkrug beim Schulfest</span>
+        <span class="task-pts">2 Punkte</span>
+      </div>
+      <div class="task-desc">
+        In einem Krug befinden sich <b>${renderFrac(startCap, denS2)} Liter</b> Apfelsaft.<br>
+        Zuerst schenkt Rufta sich <b>${renderFrac(drink1, denS2)} Liter</b> ein. Später nimmt Meron noch <b>${renderFrac(drink2, denS2)} Liter</b>.<br>
+        <b>Frage 1:</b> Wie viel Liter Saft sind nach Ruftas Glas noch im Krug?<br>
+        <b>Frage 2:</b> Wie viel Liter Saft bleiben am Ende übrig? (Achtung: Vollständig kürzen!)
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;margin-top:10px">
+        <div class="calc-card">
+          <span>Nach Ruftas Glas:</span>
+          <div style="display:flex;align-items:center;gap:6px">
+            <input type="text" class="calc-input math-focus-in" id="inp-4b-1" placeholder="Bruch" style="width:110px">
+            <span>Liter</span>
+          </div>
+        </div>
+        <div class="calc-card">
+          <span>Am Ende übrig (gekürzt!):</span>
+          <div style="display:flex;align-items:center;gap:6px">
+            <input type="text" class="calc-input math-focus-in" id="inp-4b-2" placeholder="Gekürzt!" style="width:110px">
+            <span>Liter</span>
+          </div>
+        </div>
+      </div>
+      <div class="sol-box" id="sol-4b">
+        <div class="sol-title">💡 Erklärung &amp; Lösung zu Aufgabe 14:</div>
+        • <b>Rechnung 1:</b> ${renderFrac(startCap, denS2)} − ${renderFrac(drink1, denS2)} = <b>${renderFrac(after1, denS2)} Liter</b><br>
+        • <b>Rechnung 2:</b> ${renderFrac(after1, denS2)} − ${renderFrac(drink2, denS2)} = ${renderFrac(finalRem, denS2)} = <b>${renderFrac(fSimpN, fSimpD)} Liter</b>
+      </div>
+    </div>
+  </div>
+  `;
+
+  // Render into DOM
+  document.getElementById("test-tasks-root").innerHTML = html;
+  CURRENT_TEST = T;
+
+  // Bind Touch Comparison Buttons
+  document.querySelectorAll(".touch-comp-group").forEach(group => {
+    const targetId = group.dataset.target;
+    const hiddenInput = document.getElementById(targetId);
+    group.querySelectorAll(".touch-comp-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        group.querySelectorAll(".touch-comp-btn").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        hiddenInput.value = btn.dataset.val;
+      });
     });
   });
-});
 
-// Interactive Order Chips (Aufgabe 7)
-const orderSlotIds = ["inp-2d-1", "inp-2d-2", "inp-2d-3", "inp-2d-4", "inp-2d-5"];
+  // Bind Virtual Keyboard Helper
+  const kbBar = document.getElementById("mobile-keyboard-bar");
+  document.querySelectorAll(".math-focus-in").forEach(input => {
+    input.addEventListener("focus", () => {
+      activeInput = input;
+      if (window.innerWidth <= 680) kbBar.classList.add("visible");
+    });
+    input.addEventListener("blur", () => {
+      setTimeout(() => {
+        if (document.activeElement !== activeInput) kbBar.classList.remove("visible");
+      }, 200);
+    });
+  });
 
-function tapOrderChip(btn) {
-  if (btn.classList.contains("used")) return;
-  const emptySlotId = orderSlotIds.find(id => !document.getElementById(id).value);
-  if (emptySlotId) {
-    document.getElementById(emptySlotId).value = btn.dataset.val;
-    btn.classList.add("used");
-    saveState();
-  }
+  // Scroll smoothly to top
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-function resetOrderSlots() {
-  orderSlotIds.forEach(id => { document.getElementById(id).value = ""; });
-  document.querySelectorAll(".order-chip").forEach(b => b.classList.remove("used"));
-  saveState();
-}
-
-// Virtual Keyboard Helpers
 let activeInput = null;
-const kbBar = document.getElementById("mobile-keyboard-bar");
-
-document.querySelectorAll(".math-focus-in").forEach(input => {
-  input.addEventListener("focus", () => {
-    activeInput = input;
-    if (window.innerWidth <= 680) kbBar.classList.add("visible");
-  });
-  input.addEventListener("blur", () => {
-    setTimeout(() => {
-      if (document.activeElement !== activeInput) kbBar.classList.remove("visible");
-    }, 200);
-  });
-});
-
 function insertChar(char) {
   if (!activeInput) return;
   activeInput.value += char;
   activeInput.focus();
-  saveState();
 }
 
 function normalizeInput(val) {
@@ -1212,66 +1368,25 @@ function normalizeInput(val) {
     .toLowerCase();
 }
 
-// Save & Restore State in LocalStorage
-function saveState() {
-  const data = {};
-  Object.keys(ANSWERS).forEach(id => {
-    const el = document.getElementById(id);
-    if (el) data[id] = el.value;
-  });
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-  } catch(e){}
-}
-
-function restoreState() {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return;
-    const data = JSON.parse(raw);
-    Object.keys(data).forEach(id => {
-      const el = document.getElementById(id);
-      if (el) {
-        el.value = data[id];
-        // If it's a touch compare button, reflect it
-        const compGroup = document.querySelector(`.touch-comp-group[data-target="${id}"]`);
-        if (compGroup) {
-          const matchBtn = Array.from(compGroup.querySelectorAll(".touch-comp-btn")).find(b => b.dataset.val === data[id]);
-          if (matchBtn) matchBtn.classList.add("active");
-        }
-      }
-    });
-    // Sync order chips
-    orderSlotIds.forEach(id => {
-      const val = (data[id] || "");
-      if (val) {
-        const chip = Array.from(document.querySelectorAll(".order-chip")).find(c => c.dataset.val === val && !c.classList.contains("used"));
-        if (chip) chip.classList.add("used");
-      }
-    });
-  } catch(e){}
-}
-
-// Check Answers
 function checkAnswers() {
+  if (!CURRENT_TEST) return;
   let earnedPoints = 0;
-  const totalPoints = 28;
+  const totalPoints = 30;
 
-  Object.keys(ANSWERS).forEach(id => {
+  Object.keys(CURRENT_TEST.answers).forEach(id => {
     const el = document.getElementById(id);
     if (!el) return;
     const userVal = normalizeInput(el.value);
-    const validAnswers = ANSWERS[id].map(normalizeInput);
+    const validAnswers = CURRENT_TEST.answers[id].map(normalizeInput);
 
     const isMatch = validAnswers.some(ans => ans === userVal);
     const compGroup = document.querySelector(`.touch-comp-group[data-target="${id}"]`);
-    const parentCard = el.closest(".calc-card, .compare-card, .task-box");
 
     if (isMatch) {
       el.classList.add("is-correct");
       el.classList.remove("is-wrong");
       if (compGroup) compGroup.classList.add("is-correct");
-      earnedPoints += (POINTS_MAP[id] || 1);
+      earnedPoints += (CURRENT_TEST.points[id] || 1);
     } else {
       el.classList.add("is-wrong");
       el.classList.remove("is-correct");
@@ -1281,7 +1396,7 @@ function checkAnswers() {
 
   earnedPoints = Math.round(earnedPoints * 10) / 10;
   document.getElementById("student-score-display").innerText = `${earnedPoints} / ${totalPoints}`;
-  document.getElementById("mobile-score-display").innerText = `${earnedPoints} / ${totalPoints} Pkt.`;
+  document.getElementById("mobile-score-display").innerText = `${earnedPoints}/${totalPoints}`;
 
   // Evaluate Grade
   const evalBox = document.getElementById("eval-box");
@@ -1294,25 +1409,25 @@ function checkAnswers() {
 
   let gradeClass = "grade-1";
   let gradeText = "Note 1 (Sehr gut)";
-  let feedback = "🎉 Überragend, Rufta! Du beherrschst Brüche am Zahlenstrahl, das Vergleichen und die Addition/Subtraktion wie ein echter Profi! Die Klassenarbeit kann kommen!";
+  let feedback = "🎉 Überragend, Rufta! Du beherrschst Bruchrechnung auf Gymnasial-Niveau! Absolut fit für die Arbeit am 18.11.!";
 
-  if (earnedPoints >= 25) {
+  if (earnedPoints >= 26) {
     gradeClass = "grade-1"; gradeText = "Note 1 (Sehr gut) 🌟";
-    feedback = "🎉 Fantastisch, Rufta! Fast volle Punktzahl! Du hast alle Bruchregeln perfekt im Kopf!";
+    feedback = "🎉 Fantastisch, Rufta! Volle Mathe-Power! Selbst die schweren Aufgaben mit Übertrag hast du fehlerfrei gemeistert!";
     triggerConfetti();
-  } else if (earnedPoints >= 21) {
+  } else if (earnedPoints >= 22) {
     gradeClass = "grade-2"; gradeText = "Note 2 (Gut) 👏";
-    feedback = "👏 Sehr gut gemacht! Du hast die Grundlagen voll verstanden. Schau dir nur noch einmal kurz die kleinen Leichtsinnsfehler an!";
+    feedback = "👏 Sehr gut gemacht! Du hast die anspruchsvollen Bruchregeln voll verstanden. Schau dir nur noch kurz die Erklärungen zu den Fehlern an!";
     triggerConfetti();
-  } else if (earnedPoints >= 16) {
+  } else if (earnedPoints >= 17) {
     gradeClass = "grade-3"; gradeText = "Note 3 (Befriedigend) 👍";
-    feedback = "👍 Guter Schnitt! Das meiste klappt schon gut. Wiederhole noch kurz die Kuchenregel und das Kürzen der Ergebnisse!";
-  } else if (earnedPoints >= 12) {
+    feedback = "👍 Solide Leistung! Wiederhole noch kurz das Entbündeln bei der Subtraktion und das vollständige Kürzen!";
+  } else if (earnedPoints >= 13) {
     gradeClass = "grade-4"; gradeText = "Note 4 (Ausreichend) 💪";
-    feedback = "💪 Bestanden! Aber bis zur Arbeit am 18.11. lohnt es sich, noch 2-3 Übungen mit Mama oder Andreas zu wiederholen. Du schaffst das!";
+    feedback = "💪 Bestanden! Aber bis zur Arbeit am 18.11. lohnt es sich, noch 2-3 Übungen zu wiederholen. Drücke einfach auf 'Neuer Test'!";
   } else {
     gradeClass = "grade-5"; gradeText = "Übungsbedarf 📚";
-    feedback = "Kopf hoch! Brüche sind reine Übungssache. Schau dir unten die Erklärungen an und probiere den Test danach noch einmal!";
+    feedback = "Kopf hoch! Brüche erfordern Übung. Klicke auf 'Lösungen', schau dir die Rechenwege an und starte dann direkt einen neuen Test!";
   }
 
   evalGradeBadge.className = `eval-grade ${gradeClass}`;
@@ -1320,10 +1435,8 @@ function checkAnswers() {
   evalFeedback.innerHTML = feedback;
 
   evalBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  saveState();
 }
 
-let solutionsVisible = false;
 function toggleSolutions() {
   solutionsVisible = !solutionsVisible;
   const btns = document.querySelectorAll(".btn-solution");
@@ -1336,18 +1449,17 @@ function toggleSolutions() {
   });
 }
 
-function resetTest() {
-  if (!confirm("Möchtest du alle Eingaben zurücksetzen und von vorne beginnen?")) return;
-  document.querySelectorAll(".calc-input, .order-slot-input").forEach(el => {
+function resetInputsOnly() {
+  if (!confirm("Möchtest du alle deine Eingaben leeren?")) return;
+  document.querySelectorAll(".calc-input").forEach(el => {
     el.value = "";
     el.classList.remove("is-correct", "is-wrong");
   });
   document.querySelectorAll(".touch-comp-btn").forEach(b => b.classList.remove("active"));
-  document.querySelectorAll(".order-chip").forEach(b => b.classList.remove("used"));
+  document.querySelectorAll(".touch-comp-group").forEach(g => g.classList.remove("is-correct", "is-wrong"));
   document.getElementById("eval-box").classList.remove("visible");
-  document.getElementById("student-score-display").innerText = "___ / 28";
-  document.getElementById("mobile-score-display").innerText = "0 / 28 Pkt.";
-  localStorage.removeItem(STORAGE_KEY);
+  document.getElementById("student-score-display").innerText = "___ / 30";
+  document.getElementById("mobile-score-display").innerText = "0/30";
   if (solutionsVisible) toggleSolutions();
 }
 
@@ -1398,13 +1510,8 @@ function triggerConfetti() {
   render();
 }
 
-// Auto-save on input change
-document.querySelectorAll(".calc-input").forEach(el => {
-  el.addEventListener("input", saveState);
-});
-
-// Restore saved answers on load
-restoreState();
+// Initialize on Load
+generateNewTest();
 </script>
 
 </body>
