@@ -331,21 +331,18 @@ body {
     <button class="btn-action btn-new" onclick="generateNewTest()">🔄 Neuer Test mit neuen Aufgaben</button>
     <button class="btn-action btn-print" onclick="window.print()">🖨️ Drucken / PDF</button>
     <button class="btn-action btn-check" onclick="checkAnswers()">✓ Test auswerten</button>
-    <button class="btn-action btn-solution" onclick="toggleSolutions()">💡 Lösungen</button>
+    <button class="btn-action" style="background:#475569;color:#fff;" onclick="promptMamaPin()">🔒 Eltern-Lösungen (PIN)</button>
     <button class="btn-action btn-reset" onclick="resetInputsOnly()">↺ Felder leeren</button>
   </div>
 </div>
 
 <!-- Sticky Bottom Bar for Mobile Phones -->
 <div class="mobile-bottom-bar">
-  <button class="btn-action btn-new" onclick="generateNewTest()" style="padding:10px 12px;font-size:13px;border-radius:12px">
+  <button class="btn-action btn-new" onclick="generateNewTest()" style="padding:10px 14px;font-size:13px;border-radius:12px">
     🔄 Neu
   </button>
-  <button class="btn-action btn-check" onclick="checkAnswers()" style="flex:1;font-size:14px;padding:10px 12px;border-radius:12px">
-    ✓ Auswerten (<span id="mobile-score-display">0/30</span>)
-  </button>
-  <button class="btn-action btn-solution" onclick="toggleSolutions()" style="padding:10px 12px;font-size:13px;border-radius:12px">
-    💡 Lösungen
+  <button class="btn-action btn-check" onclick="checkAnswers()" style="flex:1;font-size:14px;padding:10px 14px;border-radius:12px;font-weight:800;">
+    ✓ Test auswerten (<span id="mobile-score-display">0/30</span>)
   </button>
 </div>
 
@@ -385,6 +382,11 @@ body {
         <span id="student-score-display">___ / 30</span>
       </div>
     </div>
+
+    <div style="margin-top:12px;background:#f8fafc;border:1px solid #cbd5e1;border-radius:10px;padding:10px 14px;font-size:13px;color:#334155;display:flex;align-items:center;gap:10px;">
+      <span style="font-size:18px;">✍️</span>
+      <div><b>Eingabe-Tipp:</b> Schreibe Brüche einfach mit Schrägstrich (z. B. <code>3/4</code>) und gemischte Zahlen mit Leerzeichen (z. B. <code>1 1/2</code>). Auf dem Smartphone kannst du dafür unten die Tasten <code>/</code> und <code>Leerzeichen</code> antippen!</div>
+    </div>
   </div>
 
   <!-- DYNAMIC TASKS ROOT -->
@@ -400,6 +402,14 @@ body {
       <div class="eval-grade" id="eval-grade-badge">Note 1</div>
     </div>
     <div id="eval-feedback" style="font-size:14.5px;color:#1e3a8a;line-height:1.5"></div>
+    <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+      <button class="btn-action" id="btn-show-solutions-eval" onclick="unlockSolutionsAfterEvaluation()" style="background:#059669;color:#fff;font-size:14px;padding:10px 18px;border-radius:10px;font-weight:800;border:none;box-shadow:0 2px 8px rgba(16,185,129,0.3);cursor:pointer;">
+        🔍 Musterlösungen &amp; Rechenwege ansehen
+      </button>
+      <button class="btn-action btn-new" onclick="generateNewTest()" style="font-size:14px;padding:10px 16px;border-radius:10px;font-weight:700;">
+        🔄 Neuer Test mit neuen Aufgaben
+      </button>
+    </div>
   </div>
 
   <!-- Print Grading Sheet & Signature -->
@@ -483,6 +493,11 @@ let solutionsVisible = false;
 function generateNewTest() {
   solutionsVisible = false;
   document.getElementById("eval-box").classList.remove("visible");
+  const evalSolBtn = document.getElementById("btn-show-solutions-eval");
+  if (evalSolBtn) {
+    evalSolBtn.innerText = "🔍 Musterlösungen & Rechenwege ansehen";
+    evalSolBtn.style.background = "#059669";
+  }
   document.getElementById("student-score-display").innerText = "___ / 30";
   document.getElementById("mobile-score-display").innerText = "0/30";
   document.getElementById("test-version-label").innerText = `Test #${testCounter++}`;
@@ -582,15 +597,15 @@ function generateNewTest() {
       <div style="display:flex;gap:14px;flex-wrap:wrap;margin-top:10px;">
         <div style="display:flex;align-items:center;gap:6px">
           <b>A =</b>
-          <input type="text" class="calc-input math-focus-in" id="inp-1a-A" placeholder="z. B. 2/8" style="width:100px">
+          <input type="text" class="calc-input math-focus-in" id="inp-1a-A" placeholder="" style="width:100px">
         </div>
         <div style="display:flex;align-items:center;gap:6px">
           <b>B =</b>
-          <input type="text" class="calc-input math-focus-in" id="inp-1a-B" placeholder="z. B. 5/8" style="width:100px">
+          <input type="text" class="calc-input math-focus-in" id="inp-1a-B" placeholder="" style="width:100px">
         </div>
         <div style="display:flex;align-items:center;gap:6px">
           <b>C =</b>
-          <input type="text" class="calc-input math-focus-in" id="inp-1a-C" placeholder="z. B. 7/8" style="width:100px">
+          <input type="text" class="calc-input math-focus-in" id="inp-1a-C" placeholder="" style="width:100px">
         </div>
       </div>
       <div class="sol-box" id="sol-1a">
@@ -664,11 +679,11 @@ function generateNewTest() {
       <div style="display:flex;gap:16px;flex-wrap:wrap;margin-top:10px;">
         <div style="display:flex;align-items:center;gap:6px">
           <b>D =</b>
-          <input type="text" class="calc-input math-focus-in" id="inp-1b-D" placeholder="z. B. 3/5" style="width:110px">
+          <input type="text" class="calc-input math-focus-in" id="inp-1b-D" placeholder="" style="width:110px">
         </div>
         <div style="display:flex;align-items:center;gap:6px">
           <b>E =</b>
-          <input type="text" class="calc-input math-focus-in" id="inp-1b-E" placeholder="z. B. 1 3/5" style="width:130px">
+          <input type="text" class="calc-input math-focus-in" id="inp-1b-E" placeholder="" style="width:130px">
         </div>
       </div>
       <div class="sol-box" id="sol-1b">
@@ -698,7 +713,7 @@ function generateNewTest() {
       </div>
       <div style="display:flex;align-items:center;gap:8px;margin-top:8px">
         <span>Am</span>
-        <input type="text" class="calc-input math-focus-in" id="inp-1c" placeholder="Zahl" style="width:80px">
+        <input type="text" class="calc-input math-focus-in" id="inp-1c" placeholder="" style="width:80px">
         <span>. Strich nach der 0.</span>
       </div>
       <div class="sol-box" id="sol-1c">
@@ -946,11 +961,11 @@ function generateNewTest() {
         </div>
       </div>
       <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-weight:900;font-size:16px;color:#2563eb">
-        <input type="text" class="calc-input math-focus-in" id="inp-2d-1" placeholder="1." style="width:75px"> &lt;
-        <input type="text" class="calc-input math-focus-in" id="inp-2d-2" placeholder="2." style="width:75px"> &lt;
-        <input type="text" class="calc-input math-focus-in" id="inp-2d-3" placeholder="3." style="width:75px"> &lt;
-        <input type="text" class="calc-input math-focus-in" id="inp-2d-4" placeholder="4." style="width:75px"> &lt;
-        <input type="text" class="calc-input math-focus-in" id="inp-2d-5" placeholder="5." style="width:75px">
+        <input type="text" class="calc-input math-focus-in" id="inp-2d-1" placeholder="" style="width:75px"> &lt;
+        <input type="text" class="calc-input math-focus-in" id="inp-2d-2" placeholder="" style="width:75px"> &lt;
+        <input type="text" class="calc-input math-focus-in" id="inp-2d-3" placeholder="" style="width:75px"> &lt;
+        <input type="text" class="calc-input math-focus-in" id="inp-2d-4" placeholder="" style="width:75px"> &lt;
+        <input type="text" class="calc-input math-focus-in" id="inp-2d-5" placeholder="" style="width:75px">
       </div>
       <div class="sol-box" id="sol-2d">
         <div class="sol-title">💡 Lösung zu Aufgabe 7:</div>
@@ -1001,11 +1016,11 @@ function generateNewTest() {
       <div class="calc-grid">
         <div class="calc-card">
           <span>a) ${renderFrac(p3a1.n1, p3a1.d)} + ${renderFrac(p3a1.n2, p3a1.d)} = </span>
-          <input type="text" class="calc-input math-focus-in" id="inp-3a-1" placeholder="Gekürzt!">
+          <input type="text" class="calc-input math-focus-in" id="inp-3a-1" placeholder="">
         </div>
         <div class="calc-card">
           <span>b) ${renderFrac(p3a2.n1, p3a2.d)} + ${renderFrac(p3a2.n2, p3a2.d)} = </span>
-          <input type="text" class="calc-input math-focus-in" id="inp-3a-2" placeholder="Gekürzt!">
+          <input type="text" class="calc-input math-focus-in" id="inp-3a-2" placeholder="">
         </div>
       </div>
       <div class="sol-box" id="sol-3a">
@@ -1045,11 +1060,11 @@ function generateNewTest() {
       <div class="calc-grid">
         <div class="calc-card">
           <span>a) ${renderFrac(p3b1.n1, p3b1.d)} − ${renderFrac(p3b1.n2, p3b1.d)} = </span>
-          <input type="text" class="calc-input math-focus-in" id="inp-3b-1" placeholder="Gekürzt!">
+          <input type="text" class="calc-input math-focus-in" id="inp-3b-1" placeholder="">
         </div>
         <div class="calc-card">
           <span>b) ${renderFrac(p3b2.n1, p3b2.d)} − ${renderFrac(p3b2.n2, p3b2.d)} = </span>
-          <input type="text" class="calc-input math-focus-in" id="inp-3b-2" placeholder="Gekürzt!">
+          <input type="text" class="calc-input math-focus-in" id="inp-3b-2" placeholder="">
         </div>
       </div>
       <div class="sol-box" id="sol-3b">
@@ -1089,11 +1104,11 @@ function generateNewTest() {
       <div class="calc-grid">
         <div class="calc-card">
           <span>a) ${renderFrac(n3c1, den3c)} + ${renderFrac(n3c2, den3c)} = </span>
-          <input type="text" class="calc-input math-focus-in" id="inp-3c-1" placeholder="z. B. 1 2/5">
+          <input type="text" class="calc-input math-focus-in" id="inp-3c-1" placeholder="">
         </div>
         <div class="calc-card">
           <span>b) ${renderFrac(n3c_b1, den3c_b)} + ${renderFrac(n3c_b2, den3c_b)} = </span>
-          <input type="text" class="calc-input math-focus-in" id="inp-3c-2" placeholder="z. B. 1 3/8">
+          <input type="text" class="calc-input math-focus-in" id="inp-3c-2" placeholder="">
         </div>
       </div>
       <div class="sol-box" id="sol-3c">
@@ -1140,11 +1155,11 @@ function generateNewTest() {
       <div class="calc-grid">
         <div class="calc-card">
           <span>a) ${renderMixed(w3d_1, rem3d_1, den3d_1)} − ${renderMixed(w3d_2, rem3d_2, den3d_1)} = </span>
-          <input type="text" class="calc-input math-focus-in" id="inp-3d-1" placeholder="z. B. 1 2/5">
+          <input type="text" class="calc-input math-focus-in" id="inp-3d-1" placeholder="">
         </div>
         <div class="calc-card">
           <span>b) ${wholeVal} − ${renderFrac(subNum, subDen)} = </span>
-          <input type="text" class="calc-input math-focus-in" id="inp-3d-2" placeholder="z. B. 2 3/5">
+          <input type="text" class="calc-input math-focus-in" id="inp-3d-2" placeholder="">
         </div>
       </div>
       <div class="sol-box" id="sol-3d">
@@ -1185,11 +1200,11 @@ function generateNewTest() {
       <div class="calc-grid">
         <div class="calc-card">
           <span>a) ${renderFrac(num3e_start, den3e)} + <b>[ ? ]</b> = ${renderFrac(num3e_total, den3e)}</span>
-          <input type="text" class="calc-input math-focus-in" id="inp-3e-1" placeholder="Bruch">
+          <input type="text" class="calc-input math-focus-in" id="inp-3e-1" placeholder="">
         </div>
         <div class="calc-card">
           <span>b) 1 − <b>[ ? ]</b> = ${renderFrac(num3e_target, den3e_2)}</span>
-          <input type="text" class="calc-input math-focus-in" id="inp-3e-2" placeholder="Bruch">
+          <input type="text" class="calc-input math-focus-in" id="inp-3e-2" placeholder="">
         </div>
       </div>
       <div class="sol-box" id="sol-3e">
@@ -1248,14 +1263,14 @@ function generateNewTest() {
         <div class="calc-card">
           <span>Insgesamt abgesägt:</span>
           <div style="display:flex;align-items:center;gap:6px">
-            <input type="text" class="calc-input math-focus-in" id="inp-4a-1" placeholder="z. B. 1 3/5" style="width:120px">
+            <input type="text" class="calc-input math-focus-in" id="inp-4a-1" placeholder="" style="width:120px">
             <span>m</span>
           </div>
         </div>
         <div class="calc-card">
           <span>Länge des Reststücks:</span>
           <div style="display:flex;align-items:center;gap:6px">
-            <input type="text" class="calc-input math-focus-in" id="inp-4a-2" placeholder="z. B. 2 1/5" style="width:120px">
+            <input type="text" class="calc-input math-focus-in" id="inp-4a-2" placeholder="" style="width:120px">
             <span>m</span>
           </div>
         </div>
@@ -1297,14 +1312,14 @@ function generateNewTest() {
         <div class="calc-card">
           <span>Nach Ruftas Glas:</span>
           <div style="display:flex;align-items:center;gap:6px">
-            <input type="text" class="calc-input math-focus-in" id="inp-4b-1" placeholder="Bruch" style="width:110px">
+            <input type="text" class="calc-input math-focus-in" id="inp-4b-1" placeholder="" style="width:110px">
             <span>Liter</span>
           </div>
         </div>
         <div class="calc-card">
           <span>Am Ende übrig (gekürzt!):</span>
           <div style="display:flex;align-items:center;gap:6px">
-            <input type="text" class="calc-input math-focus-in" id="inp-4b-2" placeholder="Gekürzt!" style="width:110px">
+            <input type="text" class="calc-input math-focus-in" id="inp-4b-2" placeholder="" style="width:110px">
             <span>Liter</span>
           </div>
         </div>
@@ -1427,7 +1442,7 @@ function checkAnswers() {
     feedback = "💪 Bestanden! Aber bis zur Arbeit am 18.11. lohnt es sich, noch 2-3 Übungen zu wiederholen. Drücke einfach auf 'Neuer Test'!";
   } else {
     gradeClass = "grade-5"; gradeText = "Übungsbedarf 📚";
-    feedback = "Kopf hoch! Brüche erfordern Übung. Klicke auf 'Lösungen', schau dir die Rechenwege an und starte dann direkt einen neuen Test!";
+    feedback = "Kopf hoch! Brüche erfordern Übung. Klicke unten auf 'Musterlösungen & Rechenwege ansehen', schau dir die Erklärungen an und starte dann direkt einen neuen Test!";
   }
 
   evalGradeBadge.className = `eval-grade ${gradeClass}`;
@@ -1437,16 +1452,35 @@ function checkAnswers() {
   evalBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 
-function toggleSolutions() {
+function unlockSolutionsAfterEvaluation() {
   solutionsVisible = !solutionsVisible;
-  const btns = document.querySelectorAll(".btn-solution");
-  btns.forEach(b => {
-    b.innerText = solutionsVisible ? "🙈 Lösungen verbergen" : "💡 Lösungen";
-  });
+  const btn = document.getElementById("btn-show-solutions-eval");
+  if (btn) {
+    btn.innerText = solutionsVisible ? "🙈 Lösungen wieder verbergen" : "🔍 Musterlösungen & Rechenwege ansehen";
+    btn.style.background = solutionsVisible ? "#475569" : "#059669";
+  }
   document.querySelectorAll(".sol-box").forEach(b => {
     if (solutionsVisible) b.classList.add("visible");
     else b.classList.remove("visible");
   });
+  if (solutionsVisible) {
+    const firstSol = document.querySelector(".sol-box");
+    if (firstSol) firstSol.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+}
+
+function promptMamaPin() {
+  const pin = prompt("🔒 Eltern-Zugang: Bitte PIN eingeben (Standard: 1234):");
+  if (pin === "1234" || pin === "mama" || pin === "Mama") {
+    solutionsVisible = !solutionsVisible;
+    document.querySelectorAll(".sol-box").forEach(b => {
+      if (solutionsVisible) b.classList.add("visible");
+      else b.classList.remove("visible");
+    });
+    alert(solutionsVisible ? "Musterlösungen wurden eingeblendet." : "Musterlösungen wurden wieder ausgeblendet.");
+  } else if (pin !== null) {
+    alert("Falsche PIN! Die Lösungen bleiben geschützt.");
+  }
 }
 
 function resetInputsOnly() {
@@ -1460,7 +1494,13 @@ function resetInputsOnly() {
   document.getElementById("eval-box").classList.remove("visible");
   document.getElementById("student-score-display").innerText = "___ / 30";
   document.getElementById("mobile-score-display").innerText = "0/30";
-  if (solutionsVisible) toggleSolutions();
+  solutionsVisible = false;
+  document.querySelectorAll(".sol-box").forEach(b => b.classList.remove("visible"));
+  const evalSolBtn = document.getElementById("btn-show-solutions-eval");
+  if (evalSolBtn) {
+    evalSolBtn.innerText = "🔍 Musterlösungen & Rechenwege ansehen";
+    evalSolBtn.style.background = "#059669";
+  }
 }
 
 // Confetti Effect
